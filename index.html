@@ -1,1 +1,701 @@
-WIP
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emil Pastor — AI, Data and Graph</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #111318;
+      --ink-2: #313640;
+      --ink-3: #636b7a;
+      --ink-4: #9ba3b0;
+      --surface: #f8f8f6;
+      --surf-2: #f0efe9;
+      --surf-3: #e8e6de;
+      --border: #e2e0d8;
+      --border-2: #cac8be;
+      --kong: #00335a;
+      --kong-2: #005490;
+      --kong-3: #0075c2;
+      --accent: #0097e4;
+      --go: #00c8a0;
+      --warn: #e07a20;
+      --f-display: 'Fraunces', Georgia, serif;
+      --f-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --f-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --max-w: 1000px;
+      --header-h: 60px;
+      --r-sm: 5px;
+      --r-md: 10px;
+      --r-lg: 16px;
+      --sh-sm: 0 1px 4px rgba(0,0,0,.06), 0 2px 12px rgba(0,0,0,.04);
+      --sh-md: 0 4px 20px rgba(0,0,0,.09), 0 1px 4px rgba(0,0,0,.04);
+      --ease: cubic-bezier(.4,0,.2,1);
+      --dur: 200ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+    body { font-family: var(--f-body); background: var(--surface); color: var(--ink); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--header-h); z-index: 200;
+      background: rgba(248,248,246,.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 2rem;
+    }
+
+    .header-inner {
+      width: 100%; max-width: var(--max-w);
+      margin: 0 auto; display: flex; align-items: center; gap: 16px;
+    }
+
+    .header-logo {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+
+    .logo-box {
+      width: 30px; height: 30px; background: var(--kong);
+      border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center;
+    }
+
+    .logo-initials {
+      font-family: var(--f-display); font-size: 12px; font-weight: 700;
+      color: #fff; letter-spacing: 0.02em;
+    }
+
+    .header-wordmark {
+      font-weight: 700; font-size: 13.5px; color: var(--ink); letter-spacing: -.01em;
+    }
+
+    .header-sep { width: 1px; height: 18px; background: var(--border-2); flex-shrink: 0; }
+
+    .header-sub {
+      font-family: var(--f-mono); font-size: 10.5px; color: var(--ink-3);
+      letter-spacing: .04em; flex: 1;
+    }
+
+    .nav-links {
+      display: flex; gap: 0; list-style: none; margin-left: auto;
+    }
+
+    .nav-links a {
+      font-size: 12.5px; font-weight: 500; color: var(--ink-3);
+      padding: 0 14px; height: var(--header-h); display: flex; align-items: center;
+      transition: color var(--dur) var(--ease); white-space: nowrap;
+    }
+
+    .nav-links a:hover { color: var(--ink); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--kong);
+      color: #fff;
+      padding: 96px 2rem 64px;
+      margin-top: var(--header-h);
+    }
+
+    .hero-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 280px;
+      gap: 64px; align-items: center;
+    }
+
+    .hero-kicker {
+      font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em;
+      text-transform: uppercase; color: rgba(255,255,255,.45);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+      opacity: 0; animation: fadeUp 0.7s 0.1s ease forwards;
+    }
+
+    .kicker-dot {
+      width: 5px; height: 5px; border-radius: 50%; background: var(--go); flex-shrink: 0;
+    }
+
+    .hero-headline {
+      font-family: var(--f-display);
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 700; line-height: 1.1;
+      color: #fff; letter-spacing: -.02em; margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.8s 0.25s ease forwards;
+    }
+
+    .hero-headline em { font-style: italic; color: rgba(255,255,255,.65); }
+
+    .hero-body {
+      font-size: 15px; color: rgba(255,255,255,.62);
+      line-height: 1.8; max-width: 520px; margin-bottom: 28px;
+      opacity: 0; animation: fadeUp 0.8s 0.4s ease forwards;
+    }
+
+    .hero-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      opacity: 0; animation: fadeUp 0.8s 0.55s ease forwards;
+    }
+
+    .hero-tag {
+      font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .06em;
+      text-transform: uppercase; color: rgba(255,255,255,.45);
+      border: 1px solid rgba(255,255,255,.13); border-radius: var(--r-sm); padding: 3px 8px;
+    }
+
+    .hero-aside {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--r-lg); padding: 24px;
+      opacity: 0; animation: fadeUp 0.8s 0.5s ease forwards;
+    }
+
+    .aside-label {
+      font-family: var(--f-mono); font-size: 9px; letter-spacing: .10em;
+      text-transform: uppercase; color: rgba(255,255,255,.30); margin-bottom: 16px;
+    }
+
+    .aside-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .aside-stat {
+      background: rgba(255,255,255,.06); border-radius: var(--r-sm); padding: 12px 14px;
+    }
+
+    .aside-stat-value {
+      font-family: var(--f-display); font-size: 22px; font-weight: 700;
+      color: #fff; line-height: 1;
+    }
+
+    .aside-stat-label {
+      font-size: 9.5px; color: rgba(255,255,255,.38); margin-top: 4px; font-family: var(--f-mono);
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section-wrap {
+      max-width: var(--max-w); margin: 0 auto; padding: 64px 2rem;
+    }
+
+    .section-eyebrow {
+      font-family: var(--f-mono); font-size: 10px; letter-spacing: .10em;
+      text-transform: uppercase; color: var(--ink-4); margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: var(--f-display); font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+      font-weight: 700; color: var(--ink); letter-spacing: -.02em; margin-bottom: 32px;
+    }
+
+    .section-divider {
+      border: none; border-top: 1px solid var(--border); margin: 0 0 48px;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--surface); }
+
+    .about-pullout {
+      background: #fff; border: 1px solid var(--border);
+      border-left: 3px solid var(--kong);
+      border-radius: 0 var(--r-md) var(--r-md) 0;
+      padding: 20px 24px; margin-bottom: 32px; box-shadow: var(--sh-sm);
+    }
+
+    .about-pullout p { font-size: 15px; color: var(--ink-2); line-height: 1.8; }
+    .about-pullout strong { color: var(--ink); font-weight: 600; }
+
+    .about-body p {
+      font-size: 14.5px; color: var(--ink-3); line-height: 1.8; margin-bottom: 14px;
+    }
+
+    .about-body p strong { color: var(--ink-2); font-weight: 600; }
+
+    .tags-section { margin-top: 28px; }
+
+    .tags-label {
+      font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .10em;
+      text-transform: uppercase; color: var(--ink-4); margin-bottom: 10px; display: block;
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .tag {
+      font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .05em;
+      color: var(--ink-3); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 3px 9px;
+      background: var(--surf-2);
+    }
+
+    /* ── WRITING ── */
+    #writing { background: var(--surf-2); }
+
+    .writing-list { display: flex; flex-direction: column; }
+
+    .writing-item {
+      display: grid; grid-template-columns: 110px 1fr 24px;
+      align-items: center; gap: 24px; padding: 20px 0;
+      border-top: 1px solid var(--border);
+      transition: background var(--dur) var(--ease);
+      cursor: pointer;
+    }
+
+    .writing-item:last-child { border-bottom: 1px solid var(--border); }
+
+    .writing-item:hover .writing-arrow { color: var(--kong); opacity: 1; transform: translateX(3px); }
+    .writing-item:hover .writing-title { color: var(--kong); }
+
+    .writing-platform {
+      font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--kong-3);
+      background: rgba(0,117,194,.08); border-radius: var(--r-sm);
+      padding: 3px 8px; display: inline-block;
+    }
+
+    .writing-title {
+      font-family: var(--f-display); font-size: 1rem;
+      font-weight: 700; margin-bottom: 3px; color: var(--ink);
+      transition: color var(--dur) var(--ease);
+    }
+
+    .writing-desc { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+
+    .writing-arrow {
+      font-size: 1.1rem; color: var(--ink-4); opacity: 0.4;
+      transition: color var(--dur) var(--ease), opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--surface); }
+
+    .timeline { display: flex; flex-direction: column; }
+
+    .timeline-item {
+      display: grid; grid-template-columns: 150px 1fr;
+      gap: 32px; padding: 20px 0; border-top: 1px solid var(--border);
+    }
+
+    .timeline-item:last-child { border-bottom: 1px solid var(--border); }
+
+    .tl-period {
+      font-family: var(--f-mono); font-size: 10px; color: var(--ink-4);
+      letter-spacing: .06em; padding-top: 3px; line-height: 1.6;
+    }
+
+    .tl-role {
+      font-family: var(--f-display); font-size: 1rem;
+      font-weight: 700; margin-bottom: 2px; color: var(--ink);
+    }
+
+    .tl-company {
+      font-family: var(--f-mono); font-size: 10px; color: var(--kong-3);
+      letter-spacing: .06em; margin-bottom: 6px;
+    }
+
+    .tl-desc { font-size: 13.5px; color: var(--ink-3); line-height: 1.7; }
+
+    /* ── SPEAKING ── */
+    #speaking { background: var(--surf-2); }
+
+    .speaking-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    }
+
+    .speaking-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r-md); padding: 20px 24px;
+      box-shadow: var(--sh-sm);
+    }
+
+    .speaking-type {
+      font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--kong-3); margin-bottom: 12px; display: block;
+    }
+
+    .speaking-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+
+    .speaking-list li {
+      font-size: 13.5px; color: var(--ink-3);
+      padding-left: 14px; position: relative; line-height: 1.5;
+    }
+
+    .speaking-list li::before {
+      content: '—'; position: absolute; left: 0;
+      color: var(--border-2); font-size: 11px;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--surface); }
+
+    .contact-heading {
+      font-family: var(--f-display);
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      font-weight: 700; line-height: 1.15; margin-bottom: 10px; color: var(--ink);
+    }
+
+    .contact-heading em { font-style: italic; color: var(--kong-3); }
+
+    .contact-sub {
+      color: var(--ink-3); margin-bottom: 28px; max-width: 480px; font-size: 14.5px;
+    }
+
+    .contact-links { display: flex; flex-direction: column; }
+
+    .contact-link {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 0; border-top: 1px solid var(--border);
+      transition: padding-left var(--dur) var(--ease), color var(--dur) var(--ease);
+      font-size: 13.5px; color: var(--ink-2);
+    }
+
+    .contact-link:last-child { border-bottom: 1px solid var(--border); }
+    .contact-link:hover { padding-left: 8px; color: var(--kong); }
+
+    .contact-link-icon {
+      font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--ink-4); min-width: 68px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border); padding: 20px 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 10px; background: var(--surf-2);
+    }
+
+    footer p {
+      font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em;
+      color: var(--ink-4); text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-aside { display: none; }
+    }
+
+    @media (max-width: 700px) {
+      .timeline-item { grid-template-columns: 1fr; gap: 4px; }
+      .writing-item { grid-template-columns: 90px 1fr 20px; gap: 12px; }
+      .speaking-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <div class="logo-box"><span class="logo-initials">EP</span></div>
+        <span class="header-wordmark">Emil Pastor</span>
+      </div>
+      <div class="header-sep"></div>
+      <span class="header-sub">AI &middot; Data &middot; Graph</span>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#writing">Writing</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#speaking">Speaking</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-kicker">
+          <span class="kicker-dot"></span>
+          Sydney, Australia &mdash; Solutions Engineering Leader
+        </p>
+        <h1 class="hero-headline">
+          Emil<br><em>Pastor</em>
+        </h1>
+        <p class="hero-body">
+          I help enterprises move from AI experimentation to systems that hold up in production. Across AI, data, and graph, I bridge deep technical architecture with commercial rigour — building platforms designed to last, not just to demo.
+        </p>
+        <div class="hero-tags">
+          <span class="hero-tag">AI Systems</span>
+          <span class="hero-tag">Data Architecture</span>
+          <span class="hero-tag">Graph Intelligence</span>
+          <span class="hero-tag">Scalable AI + Data Systems</span>
+          <span class="hero-tag">Value Engineering</span>
+          <span class="hero-tag">Regulated Environments</span>
+        </div>
+      </div>
+      <div class="hero-aside">
+        <p class="aside-label">At a Glance</p>
+        <div class="aside-stats">
+          <div class="aside-stat">
+            <div class="aside-stat-value">15+</div>
+            <div class="aside-stat-label">Years Enterprise Tech</div>
+          </div>
+          <div class="aside-stat">
+            <div class="aside-stat-value">ANZ</div>
+            <div class="aside-stat-label">SE Leader, Neo4j</div>
+          </div>
+          <div class="aside-stat">
+            <div class="aside-stat-value">AI</div>
+            <div class="aside-stat-label">Agentic + GenAI Systems</div>
+          </div>
+          <div class="aside-stat">
+            <div class="aside-stat-value">VE</div>
+            <div class="aside-stat-label">Value Engineered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section id="about">
+    <div class="section-wrap">
+      <p class="section-eyebrow reveal">01 — About</p>
+      <h2 class="section-title reveal">Who I Am</h2>
+      <hr class="section-divider" />
+      <div class="about-pullout reveal">
+        <p>Enterprise AI and data architecture leader, based in Sydney. I architect and operationalise <strong>AI, data, and graph systems</strong> for regulated enterprise environments — translating advanced capability into production-scale platforms that deliver measurable commercial impact.</p>
+      </div>
+      <div class="about-body reveal">
+        <p>
+          My career spans <strong>Teradata, EY, McKinsey/QuantumBlack, and Microsoft Azure</strong>, each chapter deepening a conviction that the right architecture changes everything. I currently lead Solutions Engineering at Neo4j ANZ, working with some of Australia's most complex data environments.
+        </p>
+        <p>
+          I focus on helping enterprises build <strong>AI systems, data platforms, and graph intelligence capabilities</strong> that are production-ready across financial services, government, and resource sectors — not just architecturally sound in theory, but operationally resilient in practice.
+        </p>
+        <p>
+          I write under the banner <strong>Value Engineered</strong>, exploring how rigorous value thinking should shape every AI and data architecture decision.
+        </p>
+        <div class="tags-section">
+          <span class="tags-label">Core Expertise</span>
+          <div class="tags">
+            <span class="tag">Agentic AI</span>
+            <span class="tag">GraphRAG</span>
+            <span class="tag">LLM Systems</span>
+            <span class="tag">Model Context Protocol</span>
+            <span class="tag">Neo4j</span>
+            <span class="tag">Knowledge Graphs</span>
+            <span class="tag">Data Architecture</span>
+            <span class="tag">Cloud Data Platforms</span>
+            <span class="tag">Azure</span>
+            <span class="tag">AWS Bedrock</span>
+            <span class="tag">Snowflake</span>
+            <span class="tag">Databricks</span>
+            <span class="tag">Python</span>
+            <span class="tag">Spark</span>
+            <span class="tag">Value Engineering</span>
+            <span class="tag">Pre-Sales Architecture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Writing -->
+  <section id="writing">
+    <div class="section-wrap">
+      <p class="section-eyebrow reveal">02 — Writing</p>
+      <h2 class="section-title reveal">Case Studies and Articles</h2>
+      <hr class="section-divider" />
+      <div class="writing-list reveal">
+
+        <a class="writing-item" href="loanguardai.html">
+          <span class="writing-platform">Case Study</span>
+          <div>
+            <p class="writing-title">LoanGuard AI</p>
+            <p class="writing-desc">A multi-agent GraphRAG compliance platform built on Neo4j and Claude. Graph-native audit trails, APRA regulatory data, and what vanilla RAG misses in production.</p>
+          </div>
+          <span class="writing-arrow">→</span>
+        </a>
+
+        <a class="writing-item" href="kongaigovernance.html">
+          <span class="writing-platform">Case Study</span>
+          <div>
+            <p class="writing-title">AI Governance — Enforcement Layer</p>
+            <p class="writing-desc">Governed multi-agent compliance using Kong-issued agent identities and ACL enforcement. What enterprise API governance looks like when your agents need passports.</p>
+          </div>
+          <span class="writing-arrow">→</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience">
+    <div class="section-wrap">
+      <p class="section-eyebrow reveal">03 — Experience</p>
+      <h2 class="section-title reveal">Career</h2>
+      <hr class="section-divider" />
+      <div class="timeline reveal">
+
+        <div class="timeline-item">
+          <span class="tl-period">2021 — Present</span>
+          <div>
+            <h3 class="tl-role">Solutions Engineering Leader, ANZ</h3>
+            <p class="tl-company">Neo4j</p>
+            <p class="tl-desc">Leading a regional SE team across enterprise, public sector, and commercial segments, translating AI, data, and graph capability into production-grade architecture for Australia and New Zealand's most complex data challenges.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="tl-period">2020 — 2021</span>
+          <div>
+            <h3 class="tl-role">Cloud Solutions Architect, Data and AI</h3>
+            <p class="tl-company">Microsoft</p>
+            <p class="tl-desc">Pre-sales architecture across Azure Data and AI for enterprise and public sector customers throughout APAC, acting as Territory CTO and CDO advisor.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="tl-period">2017 — 2020</span>
+          <div>
+            <h3 class="tl-role">Principal (Jr) Consultant</h3>
+            <p class="tl-company">McKinsey and Company / QuantumBlack</p>
+            <p class="tl-desc">Advanced analytics and data strategy for global clients in mining, telco, and media, delivering production ML systems with measurable commercial impact.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="tl-period">2016 — 2017</span>
+          <div>
+            <h3 class="tl-role">Senior Consultant</h3>
+            <p class="tl-company">Ernst and Young</p>
+            <p class="tl-desc">Enterprise data integration and entity resolution for financial services M&amp;A programs, advising on governance-driven architecture and regulatory readiness.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="tl-period">2011 — 2016</span>
+          <div>
+            <h3 class="tl-role">Professional Services Consultant</h3>
+            <p class="tl-company">Teradata</p>
+            <p class="tl-desc">Enterprise data modelling and analytics platform delivery across banking, telco, transport, and retail clients throughout APAC.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Speaking -->
+  <section id="speaking">
+    <div class="section-wrap">
+      <p class="section-eyebrow reveal">04 — Speaking and Advisory</p>
+      <h2 class="section-title reveal">Talks, Lectures and Community</h2>
+      <hr class="section-divider" />
+      <div class="speaking-grid reveal">
+
+        <div class="speaking-card">
+          <span class="speaking-type">Conference Speaking</span>
+          <ul class="speaking-list">
+            <li>Gartner Data and Analytics Summit</li>
+            <li>Graph Summit ANZ</li>
+            <li>ANZ Data Engineering Meetups</li>
+            <li>Open Data Science Conference</li>
+            <li>Digital Banking Asia</li>
+            <li>Azure Community Events</li>
+          </ul>
+        </div>
+
+        <div class="speaking-card">
+          <span class="speaking-type">Guest Lectures</span>
+          <ul class="speaking-list">
+            <li>University of Sydney</li>
+            <li>Macquarie University</li>
+            <li>University of New South Wales</li>
+            <li>Asian Institute of Management</li>
+          </ul>
+        </div>
+
+        <div class="speaking-card">
+          <span class="speaking-type">Community</span>
+          <ul class="speaking-list">
+            <li>Organiser, ANZ Graph Database Meetups</li>
+          </ul>
+        </div>
+
+        <div class="speaking-card">
+          <span class="speaking-type">Advisory</span>
+          <ul class="speaking-list">
+            <li>Technology Advisor, Cherry Recommends</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="section-wrap">
+      <p class="section-eyebrow reveal">05 — Contact</p>
+      <h2 class="section-title reveal">Get in Touch</h2>
+      <hr class="section-divider" />
+      <div class="reveal">
+        <h2 class="contact-heading">Let's build something <em>real.</em></h2>
+        <p class="contact-sub">If you're working on an AI, data, or graph problem in financial services, government, or any regulated environment, I'd like to hear from you.</p>
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:emil.pastor89@gmail.com">
+            <span class="contact-link-icon">Email</span>
+            <span>emil.pastor89@gmail.com</span>
+          </a>
+          <a class="contact-link" href="https://linkedin.com/in/emilpastor" target="_blank" rel="noopener">
+            <span class="contact-link-icon">LinkedIn</span>
+            <span>linkedin.com/in/emilpastor</span>
+          </a>
+          <a class="contact-link" href="https://github.com/emillaurence" target="_blank" rel="noopener">
+            <span class="contact-link-icon">GitHub</span>
+            <span>github.com/emillaurence</span>
+          </a>
+          <a class="contact-link" href="https://valueengineered.substack.com" target="_blank" rel="noopener">
+            <span class="contact-link-icon">Substack</span>
+            <span>Value Engineered</span>
+          </a>
+          <a class="contact-link" href="https://medium.com/@emilpastor" target="_blank" rel="noopener">
+            <span class="contact-link-icon">Medium</span>
+            <span>medium.com/@emilpastor</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Emil Pastor</p>
+    <p>Sydney, Australia</p>
+    <p>AI and data systems built for production, not just demos.</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

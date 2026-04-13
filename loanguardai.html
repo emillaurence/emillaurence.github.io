@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LoanGuard AI — Graph-Based Agentic Compliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ================================================================
+   TOKENS
+================================================================ */
+:root{
+  --ink:#111318;--ink-2:#313640;--ink-3:#636b7a;--ink-4:#9ba3b0;
+  --surface:#f8f8f6;--surf-2:#f0efe9;--surf-3:#e8e6de;
+  --border:#e2e0d8;--border-2:#cac8be;
+  --kong:#00335a;--kong-2:#005490;--kong-3:#0075c2;
+  --accent:#0097e4;--go:#00c8a0;--warn:#e07a20;--danger:#c84040;
+  --f-display:'Fraunces',Georgia,serif;
+  --f-body:'Plus Jakarta Sans',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono','Courier New',monospace;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;
+  --sp-6:32px;--sp-7:48px;--sp-8:64px;--sp-9:96px;
+  --max-w:1180px;--header-h:60px;--tab-h:44px;--chrome-h:104px;
+  --r-sm:5px;--r-md:10px;--r-lg:16px;
+  --sh-sm:0 1px 4px rgba(0,0,0,.06),0 2px 12px rgba(0,0,0,.04);
+  --sh-md:0 4px 20px rgba(0,0,0,.09),0 1px 4px rgba(0,0,0,.04);
+  --sh-lg:0 12px 48px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.06);
+  --ease:cubic-bezier(.4,0,.2,1);--dur:200ms;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--f-body);background:var(--surface);color:var(--ink);line-height:1.6;}
+img{display:block;max-width:100%;}
+button{cursor:pointer;}
+a{color:inherit;text-decoration:none;}
+
+/* HEADER */
+.site-header{position:fixed;top:0;left:0;right:0;height:var(--header-h);z-index:200;background:rgba(248,248,246,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 var(--sp-7);}
+.header-inner{width:100%;max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;gap:var(--sp-3);}
+.header-logo{display:flex;align-items:center;gap:var(--sp-3);flex-shrink:0;}
+.logo-box{width:30px;height:30px;background:var(--kong);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;}
+.header-wordmark{font-weight:700;font-size:13.5px;color:var(--ink);letter-spacing:-.01em;}
+.header-sep{width:1px;height:18px;background:var(--border-2);flex-shrink:0;}
+.header-sub{font-family:var(--f-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em;flex:1;}
+.presenter-corner{display:flex;align-items:center;gap:var(--sp-3);flex-shrink:0;margin-left:auto;}
+.presenter-text{text-align:right;}
+.presenter-name{font-size:12px;font-weight:600;color:var(--ink);line-height:1.2;}
+.presenter-role{font-family:var(--f-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.03em;margin-top:2px;}
+.presenter-photo{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);overflow:hidden;background:var(--surf-2);flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.photo-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--kong);background:linear-gradient(135deg,#d8eaf5,#bfd7ee);}
+
+/* TABS */
+.tab-nav{position:fixed;top:var(--header-h);left:0;right:0;height:var(--tab-h);z-index:190;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:stretch;padding:0 var(--sp-7);overflow-x:auto;scrollbar-width:none;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-nav-inner{display:flex;align-items:stretch;max-width:var(--max-w);width:100%;margin:0 auto;}
+.tab-btn{display:inline-flex;align-items:center;gap:var(--sp-2);padding:0 var(--sp-5);background:none;border:none;font-family:var(--f-body);font-size:12.5px;font-weight:500;color:var(--ink-3);white-space:nowrap;position:relative;transition:color var(--dur) var(--ease);}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:var(--sp-5);right:var(--sp-5);height:2px;background:var(--kong);border-radius:2px 2px 0 0;transform:scaleX(0);transition:transform var(--dur) var(--ease);}
+.tab-btn:hover{color:var(--ink-2);}
+.tab-btn.active{color:var(--ink);font-weight:600;}
+.tab-btn.active::after{transform:scaleX(1);}
+
+/* MAIN / PANELS */
+main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
+.panel{display:none;}
+.panel.active{display:block;animation:fade-in var(--dur) var(--ease) both;}
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+
+/* HERO */
+.hero{background:var(--kong);color:#fff;padding:var(--sp-9) var(--sp-7) var(--sp-8);}
+.hero-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1fr 295px;gap:var(--sp-8);align-items:center;}
+@media(max-width:860px){.hero-inner{grid-template-columns:1fr;}.hero-aside{display:none;}}
+.hero-kicker{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:var(--sp-4);display:flex;align-items:center;gap:var(--sp-2);}
+.kicker-dot{width:5px;height:5px;border-radius:50%;background:var(--go);flex-shrink:0;}
+.hero-headline{font-family:var(--f-display);font-size:clamp(24px,3.2vw,42px);font-weight:700;line-height:1.14;color:#fff;letter-spacing:-.02em;margin-bottom:var(--sp-5);}
+.hero-headline em{font-style:italic;color:rgba(255,255,255,.7);}
+.hero-body{font-size:15px;color:rgba(255,255,255,.62);line-height:1.75;max-width:540px;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-6);}
+.tag{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-sm);padding:3px 8px;}
+.hero-aside{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:var(--r-lg);padding:var(--sp-5);}
+.aside-label{font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.30);margin-bottom:var(--sp-4);}
+.aside-stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+.aside-stat{background:rgba(255,255,255,.06);border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);}
+.aside-stat-value{font-family:var(--f-display);font-size:26px;font-weight:700;color:#fff;line-height:1;}
+.aside-stat-label{font-size:10px;color:rgba(255,255,255,.38);margin-top:3px;font-family:var(--f-mono);}
+
+/* SUMMARY BODY */
+.summary-body{max-width:var(--max-w);margin:0 auto;padding:var(--sp-8) var(--sp-7);}
+.section-eyebrow{font-family:var(--f-mono);font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-3);}
+.section-title{font-family:var(--f-display);font-size:clamp(18px,2vw,24px);font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:var(--sp-5);}
+.exec-pullout{background:#fff;border:1px solid var(--border);border-left:3px solid var(--kong);border-radius:0 var(--r-md) var(--r-md) 0;padding:var(--sp-5) var(--sp-6);margin-bottom:var(--sp-8);box-shadow:var(--sh-sm);}
+.exec-pullout p{font-size:15px;color:var(--ink-2);line-height:1.8;}
+.exec-pullout strong{color:var(--ink);font-weight:600;}
+.prose-cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-7);margin-bottom:var(--sp-8);}
+@media(max-width:720px){.prose-cols{grid-template-columns:1fr;}}
+.prose-block h3{font-family:var(--f-display);font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.015em;margin-bottom:var(--sp-3);}
+.prose-block p{font-size:13.5px;color:var(--ink-2);line-height:1.78;}
+.prose-block p+p{margin-top:var(--sp-3);}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--sp-4);margin-bottom:var(--sp-8);}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:var(--sp-5);transition:box-shadow var(--dur) var(--ease);}
+.card:hover{box-shadow:var(--sh-md);}
+.card-icon{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:var(--sp-4);}
+.ci-navy{background:rgba(0,51,90,.08);}.ci-blue{background:rgba(0,151,228,.10);}.ci-teal{background:rgba(0,200,160,.10);}.ci-amber{background:rgba(224,122,32,.10);}.ci-danger{background:rgba(200,64,64,.08);}
+.card-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:var(--sp-2);}
+.card-desc{font-size:12.5px;color:var(--ink-3);line-height:1.65;}
+.mono{font-family:var(--f-mono);font-size:11px;background:var(--surf-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:1px 5px;color:var(--ink-2);}
+.layers-band{background:var(--kong);border-radius:var(--r-lg);padding:var(--sp-6);margin-bottom:var(--sp-8);}
+.layers-band-label{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.30);margin-bottom:var(--sp-4);}
+.layers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3);}
+@media(max-width:680px){.layers-grid{grid-template-columns:1fr 1fr;}}
+.layer-cell{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-sm);padding:var(--sp-4);}
+.layer-num{font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.28);margin-bottom:4px;}
+.layer-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:4px;}
+.layer-detail{font-size:11px;color:rgba(255,255,255,.40);line-height:1.5;}
+.why-list{list-style:none;display:flex;flex-direction:column;gap:var(--sp-4);}
+.why-item{display:flex;align-items:flex-start;gap:var(--sp-4);padding:var(--sp-4);background:#fff;border:1px solid var(--border);border-radius:var(--r-md);}
+.why-num{width:22px;height:22px;border-radius:50%;background:var(--kong);color:#fff;font-family:var(--f-mono);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.why-text{font-size:13.5px;color:var(--ink-2);line-height:1.7;}
+.why-text strong{color:var(--ink);font-weight:600;}
+.mt-6{margin-top:var(--sp-6);}.mt-8{margin-top:var(--sp-8);}.mb-6{margin-bottom:var(--sp-6);}.mb-8{margin-bottom:var(--sp-8);}
+
+/* DIAGRAM PANELS */
+.diag-page{max-width:var(--max-w);margin:0 auto;padding:var(--sp-6) var(--sp-7) var(--sp-9);}
+.diag-header{margin-bottom:var(--sp-5);padding-bottom:var(--sp-4);border-bottom:1px solid var(--border);}
+.diag-eyebrow{font-family:var(--f-mono);font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-2);}
+.diag-title{font-family:var(--f-display);font-size:clamp(20px,2.5vw,30px);font-weight:700;color:var(--ink);letter-spacing:-.02em;}
+.diag-hint{font-size:11.5px;color:var(--ink-4);font-family:var(--f-mono);margin-top:var(--sp-2);letter-spacing:.02em;}
+.diag-layout{display:grid;grid-template-columns:1fr 340px;gap:var(--sp-5);align-items:start;}
+@media(max-width:980px){.diag-layout{grid-template-columns:1fr;}}
+.diag-canvas{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-5);box-shadow:var(--sh-sm);min-height:460px;position:relative;overflow:hidden;}
+.detail-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-5);box-shadow:var(--sh-sm);position:sticky;top:calc(var(--chrome-h) + var(--sp-4));min-height:200px;}
+.dp-idle{color:var(--ink-4);font-size:13px;font-family:var(--f-mono);text-align:center;padding:var(--sp-7) 0;letter-spacing:.03em;}
+.dp-title{font-family:var(--f-display);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:var(--sp-3);letter-spacing:-.015em;}
+.dp-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:var(--r-sm);margin-bottom:var(--sp-3);}
+.dp-body{font-size:13px;color:var(--ink-3);line-height:1.72;}
+.dp-body p+p{margin-top:var(--sp-3);}
+.dp-props{margin-top:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-2);}
+.dp-prop{display:flex;align-items:flex-start;gap:var(--sp-3);font-size:12px;}
+.dp-prop-key{font-family:var(--f-mono);font-size:10px;color:var(--ink-4);letter-spacing:.04em;flex-shrink:0;padding-top:1px;min-width:80px;}
+.dp-prop-val{color:var(--ink-2);line-height:1.55;word-break:break-word;}
+
+/* INTERACTIVE NODES */
+.inode{cursor:pointer;border-radius:var(--r-md);border:1.5px solid transparent;transition:box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);user-select:none;}
+.inode:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.inode.selected{border-color:var(--kong)!important;box-shadow:0 0 0 3px rgba(0,51,90,.14),var(--sh-md);}
+.ea-ctrl-node{background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.13);border-radius:var(--r-md);padding:var(--sp-3);text-align:center;cursor:pointer;transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);user-select:none;}
+.ea-ctrl-node:hover{background:rgba(255,255,255,.16);transform:translateY(-1px);}
+.ea-ctrl-node.selected{border-color:#fff!important;background:rgba(255,255,255,.22)!important;}
+.n-icon{font-size:18px;margin-bottom:4px;}
+.n-label{font-size:11.5px;font-weight:600;color:var(--ink-2);}
+.n-sub{font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:2px;}
+
+/* Sequence rows */
+.seq-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;margin-bottom:6px;padding:3px var(--sp-2);border-radius:var(--r-sm);cursor:pointer;transition:background var(--dur) var(--ease);position:relative;align-items:center;min-height:40px;user-select:none;}
+.seq-row:hover{background:var(--surf-2);}
+.seq-row.active-row{background:rgba(0,51,90,.06);}
+.seq-sep{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);padding:var(--sp-2) var(--sp-2) var(--sp-1);border-top:1px dashed var(--border);margin-top:var(--sp-2);}
+.lf{display:flex;flex-direction:column;align-items:center;}
+.lf-dot{width:8px;height:8px;border-radius:50%;background:var(--border-2);}
+.seq-arrow-overlay{position:absolute;top:50%;transform:translateY(-50%);height:2px;display:flex;align-items:center;pointer-events:none;}
+.arr-line{height:1.5px;flex:1;background:var(--border-2);}
+.arr-line.solid{background:var(--ink-3);}
+.arr-line.dashed{background:repeating-linear-gradient(to right,var(--ink-4) 0,var(--ink-4) 4px,transparent 4px,transparent 8px);}
+.arr-line.teal{background:var(--go);}
+.arr-line.danger{background:var(--danger);}
+.arr-tip{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;}
+.arr-tip.right{border-left:7px solid var(--ink-3);}
+.arr-tip.left{border-right:7px solid var(--ink-3);}
+.arr-tip.right.teal{border-left-color:var(--go);}
+.arr-tip.left.teal{border-right-color:var(--go);}
+.arr-spacer{flex:1;}
+
+/* Chip */
+.seq-chip{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.02em;padding:3px 9px;border-radius:20px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+.sc-normal{background:var(--surf-3);color:var(--ink-2);}
+.sc-ai{background:rgba(0,119,194,.12);color:var(--kong-2);}
+.sc-graph{background:rgba(0,51,90,.10);color:var(--kong);}
+.sc-trace{background:rgba(0,200,160,.12);color:#006a52;}
+.sc-resp{background:rgba(240,240,235,.8);color:var(--ink-3);border:1px solid var(--border);}
+.sc-warn{background:rgba(224,122,32,.12);color:var(--warn);}
+
+/* Exec node */
+.ea-exec-node{background:var(--surf-2);border:1.5px solid var(--border);padding:var(--sp-3);border-radius:var(--r-md);text-align:center;}
+
+/* Graph data model panel */
+.gm-canvas{display:flex;flex-direction:column;gap:var(--sp-4);}
+.gm-layer{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-4);}
+.gm-layer-head{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-4);}
+.gm-layer-badge{font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-sm);}
+.gm-layer-title{font-size:13px;font-weight:600;color:var(--ink);}
+.gm-nodes{display:flex;flex-wrap:wrap;gap:var(--sp-2);}
+.gm-node{cursor:pointer;border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3);border:1.5px solid;display:flex;align-items:center;gap:var(--sp-2);transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);}
+.gm-node:hover{transform:translateY(-1px);box-shadow:var(--sh-sm);}
+.gm-node.selected{box-shadow:0 0 0 3px rgba(0,51,90,.18);}
+.gnode.selected ellipse:first-of-type{stroke-width:3.5;filter:drop-shadow(0 0 8px rgba(0,51,90,.45));}
+.gnode:hover ellipse:first-of-type{stroke-width:3;filter:drop-shadow(0 0 5px rgba(0,51,90,.25));}
+.grel text{transition:fill .15s;}
+.grel:hover text{fill:#00335a!important;font-weight:700;}
+.grel.selected text{fill:#00335a!important;font-weight:700;text-decoration:underline;}
+.gm-node-icon{font-size:14px;}
+.gm-node-label{font-size:12px;font-weight:600;}
+.gm-node-sub{font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:1px;}
+.gm-rels{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-3);}
+.gm-rel{font-family:var(--f-mono);font-size:10px;color:var(--ink-3);background:var(--surf-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px 7px;}
+
+/* FOOTER */
+.site-footer{border-top:1px solid var(--border);padding:var(--sp-5) var(--sp-7);display:flex;align-items:center;justify-content:space-between;font-size:11px;font-family:var(--f-mono);color:var(--ink-4);}
+.footer-links{display:flex;gap:var(--sp-5);}
+.footer-links a{color:var(--ink-4);transition:color var(--dur) var(--ease);}
+.footer-links a:hover{color:var(--kong-3);}
+
+/* TOOLTIP */
+#tooltip{position:fixed;z-index:9999;pointer-events:none;background:var(--ink);color:#fff;font-family:var(--f-mono);font-size:11px;padding:5px 10px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .15s var(--ease);max-width:240px;white-space:normal;line-height:1.4;}
+#tooltip.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div id="tooltip"></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logo">
+      <div class="logo-box">
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <!-- Graph icon: nodes + edges -->
+          <circle cx="8"  cy="3"  r="1.6" fill="white"/>
+          <circle cx="3"  cy="11" r="1.6" fill="white"/>
+          <circle cx="13" cy="11" r="1.6" fill="white"/>
+          <circle cx="8"  cy="11" r="1.6" fill="rgba(255,255,255,.55)"/>
+          <line x1="8" y1="4.6" x2="3"  y2="9.4"  stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+          <line x1="8" y1="4.6" x2="13" y2="9.4"  stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+          <line x1="8" y1="4.6" x2="8"  y2="9.4"  stroke="rgba(255,255,255,0.55)" stroke-width="1"/>
+          <line x1="3" y1="11" x2="8"  y2="11"    stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+          <line x1="8" y1="11" x2="13" y2="11"    stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+        </svg>
+      </div>
+      <span class="header-wordmark">LoanGuard AI</span>
+    </div>
+    <div class="header-sep"></div>
+    <span class="header-sub">GraphRAG · Agentic Compliance · APRA · Neo4j + Claude · 2026</span>
+    <div class="presenter-corner">
+      <div class="presenter-text">
+        <div class="presenter-name">Emil Pastor</div>
+        <div class="presenter-role">Applied AI and Data</div>
+      </div>
+      <div class="presenter-photo"><div class="photo-fallback">EP</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tab-nav" role="tablist">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" data-target="panel-summary">Summary</button>
+    <button class="tab-btn" data-target="panel-architecture">System Architecture</button>
+    <button class="tab-btn" data-target="panel-pipeline">Agent Pipeline</button>
+    <button class="tab-btn" data-target="panel-graph">Graph Data Model</button>
+    <button class="tab-btn" data-target="panel-compliance">Compliance Engine</button>
+    <button class="tab-btn" data-target="panel-sequence">System Control Flow</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ================================================================
+     PANEL 1 — SUMMARY
+================================================================ -->
+<div class="panel active" id="panel-summary">
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-kicker"><span class="kicker-dot"></span>Graph-Based Agentic AI · APRA Compliance · Production Architecture</p>
+        <h1 class="hero-headline">Compliance decisions need<br>reasoning chains, not scores.<br><em>Graphs make the reasoning explainable.</em></h1>
+        <p class="hero-body">A multi-agent APRA compliance monitoring system built on Neo4j, Claude, and OpenAI Embeddings — demonstrating that graph-native architecture is the only way to make AI-driven regulatory decisions auditable and defensible at production scale.</p>
+        <div class="hero-tags">
+          <span class="tag">Neo4j AuraDB</span><span class="tag">Claude Sonnet + Haiku</span>
+          <span class="tag">OpenAI Embeddings</span><span class="tag">GraphRAG</span>
+          <span class="tag">FastMCP · Streamlit</span><span class="tag">APRA APS-112 · APG-223 · APS-220</span>
+          <span class="tag">3-Layer Knowledge Graph</span><span class="tag">Apache 2.0</span>
+        </div>
+      </div>
+      <div class="hero-aside">
+        <div class="aside-label">System at a Glance</div>
+        <div class="aside-stats">
+          <div class="aside-stat"><div class="aside-stat-value">3</div><div class="aside-stat-label">APRA Regulations</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">8</div><div class="aside-stat-label">MCP Tools</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">3</div><div class="aside-stat-label">Graph Layers</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">6</div><div class="aside-stat-label">Anomaly Patterns</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">466</div><div class="aside-stat-label">Loan Applications</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">189</div><div class="aside-stat-label">Reg. Chunks (RAG)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="summary-body">
+    <div class="exec-pullout">
+      <div class="section-eyebrow">The Problem</div>
+      <p>Compliance officers and risk analysts need <strong>explainable, evidence-backed verdicts</strong> — not black-box scores. When a regulator asks "why was this loan approved?", the answer must be traceable to specific regulatory text, threshold values, and the reasoning chain that produced the decision. <strong>LoanGuard AI makes every compliance verdict auditable by design</strong>, persisting full reasoning chains, cited regulatory sections, and semantic evidence to a Neo4j knowledge graph.</p>
+    </div>
+
+    <div class="prose-cols">
+      <div class="prose-block">
+        <h3>Why a Knowledge Graph?</h3>
+        <p>Financial compliance is inherently relational. A single loan application connects a borrower, their ownership structure, their jurisdiction, their industry, and multiple APRA regulations — across three distinct data layers. A relational database treats each layer in isolation. A graph makes the traversal native.</p>
+        <p>LoanGuard AI's three-layer Neo4j graph connects financial entities (Layer 1) to regulatory obligations (Layer 2) through a Jurisdiction bridge, then writes compliance assessments (Layer 3) as first-class graph nodes — creating a queryable audit trail that spans the full decision chain.</p>
+      </div>
+      <div class="prose-block">
+        <h3>Why Agentic AI?</h3>
+        <p>Compliance questions are not single-step lookups. They require multi-step reasoning: traverse the entity graph, retrieve applicable regulations, evaluate thresholds against actual data, surface anomaly patterns, and synthesise a verdict with citations. That is an agent loop, not a prompt.</p>
+        <p>The Orchestrator routes questions to specialist agents — ComplianceAgent for threshold evaluation and InvestigationAgent for graph traversal and AML risk signals — running them in parallel when both are needed. Every tool call is tracked. Every reasoning step is persisted.</p>
+      </div>
+    </div>
+
+    <!-- 3-layer band -->
+    <div class="layers-band mb-8">
+      <div class="layers-band-label">Three-Layer Neo4j Knowledge Graph</div>
+      <div class="layers-grid">
+        <div class="layer-cell">
+          <div class="layer-num">LAYER 1</div>
+          <div class="layer-name">Entity Graph</div>
+          <div class="layer-detail">Borrowers, LoanApplications, BankAccounts, Transactions, Collateral, Officers, Jurisdictions, Industries — loaded from synthetic CSVs</div>
+        </div>
+        <div class="layer-cell">
+          <div class="layer-num">LAYER 2</div>
+          <div class="layer-name">Regulatory Graph</div>
+          <div class="layer-detail">APS-112, APG-223, APS-220 — extracted from APRA PDFs by Claude; chunked and embedded with OpenAI text-embedding-3-small for semantic RAG</div>
+        </div>
+        <div class="layer-cell">
+          <div class="layer-num">LAYER 3</div>
+          <div class="layer-name">Assessment Graph</div>
+          <div class="layer-detail">Runtime compliance results written by agents: Assessment, Finding, ReasoningStep nodes — forming a complete, queryable audit trail per decision</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Key Design Decisions</div>
+    <div class="section-title">What makes this production-grade</div>
+
+    <div class="cards mb-8">
+      <div class="card">
+        <div class="card-icon ci-navy">🔗</div>
+        <div class="card-title">Jurisdiction Bridge</div>
+        <div class="card-desc">Borrowers link to <span class="mono">Jurisdiction</span> nodes via <span class="mono">RESIDES_IN</span> / <span class="mono">REGISTERED_IN</span>. Regulations declare which jurisdictions they govern. No direct many-to-many. Extending to New Zealand requires only new nodes — no schema changes.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-blue">⚡</div>
+        <div class="card-title">Parallel Agent Execution</div>
+        <div class="card-desc">When both compliance and investigation are needed, the Orchestrator dispatches to ComplianceAgent and InvestigationAgent simultaneously via <span class="mono">ThreadPoolExecutor</span>. Pre-run traverse calls are also parallelised per regulation.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-teal">📋</div>
+        <div class="card-title">threshold_type in Data</div>
+        <div class="card-desc">Each Threshold node carries <span class="mono">threshold_type</span>: minimum, maximum, trigger, or informational. Compliance semantics live in the graph, not in code — so regulatory changes re-run the pipeline, they don't require code changes.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-amber">🎯</div>
+        <div class="card-title">Prompt Caching</div>
+        <div class="card-desc">The ComplianceAgent marks its system prompt (containing the full graph schema + APRA context) with <span class="mono">cache_control: ephemeral</span>. This eliminates repeated token processing across agent iterations and across queries for the same regulation.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-danger">🛡️</div>
+        <div class="card-title">Prompt Injection Defence</div>
+        <div class="card-desc">Every tool result passes through <span class="mono">guard_tool_result()</span> before entering the agent context. Structural <span class="mono">[TOOL DATA]</span> framing plus nine regex patterns covering common injection attempts — logged, not redacted.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-navy">🔍</div>
+        <div class="card-title">GraphRAG with Scores</div>
+        <div class="card-desc">Similarity scores from <span class="mono">retrieve_regulatory_chunks</span> are stored on <span class="mono">CITES_CHUNK</span> relationship properties — so <span class="mono">trace_evidence</span> can recover them for the Evidence panel without re-running vector search.</div>
+      </div>
+    </div>
+
+    <div class="section-eyebrow mt-8">Why graph is different</div>
+    <div class="section-title">The connections that compliance actually needs</div>
+
+    <ul class="why-list mb-8">
+      <li class="why-item">
+        <div class="why-num">1</div>
+        <div class="why-text"><strong>Cross-layer traversal in a single query.</strong> From a loan application, traverse to its borrower, to their jurisdiction, to the applicable regulations, to specific threshold values — in one Cypher hop chain. In a relational system, this is five joins and an ORM nightmare.</div>
+      </li>
+      <li class="why-item">
+        <div class="why-num">2</div>
+        <div class="why-text"><strong>Anomaly patterns that require relationship depth.</strong> Transaction structuring, layered ownership (OWNS chains of depth ≥ 2), guarantor concentration — these are fundamentally graph patterns. They require traversing relationship chains, not scanning tables.</div>
+      </li>
+      <li class="why-item">
+        <div class="why-num">3</div>
+        <div class="why-text"><strong>Audit trails as first-class graph nodes.</strong> Layer 3 Assessment, Finding, and ReasoningStep nodes are linked to the entities and regulatory sections they reference. The audit trail is not a log file — it is a queryable subgraph that can be traversed, visualised, and replayed.</div>
+      </li>
+      <li class="why-item">
+        <div class="why-num">4</div>
+        <div class="why-text"><strong>Semantic similarity that respects document boundaries.</strong> <span class="mono">SEMANTICALLY_SIMILAR</span> edges connect chunks from different regulations (cosine > 0.85) — but not same-document pairs. Agents can traverse regulatory cross-references semantically, not just by citation.</div>
+      </li>
+    </ul>
+
+    <div style="background:var(--kong);border-radius:var(--r-lg);padding:var(--sp-5) var(--sp-6);">
+      <div style="display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-3);">
+        <span style="font-family:var(--f-mono);font-size:9.5px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.35);">Read the full series</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);">
+        <a href="https://medium.com/@emilpastor/architecting-graph-based-agentic-system-when-a-regulator-asks-why-was-this-loan-approved-aeeb37aa313a" target="_blank" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-md);padding:var(--sp-4);display:block;transition:background .2s;">
+          <div style="font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Part 1 · Medium</div>
+          <div style="font-size:13px;font-weight:600;color:#fff;line-height:1.4;">Architecting a Graph-Based Agentic System</div>
+          <div style="font-size:11.5px;color:rgba(255,255,255,.45);margin-top:4px;">When a regulator asks "why was this loan approved?"</div>
+        </a>
+        <a href="https://medium.com/@emilpastor/building-graph-based-agentic-systems-failures-fixes-and-how-the-answer-gets-there-be2c1dd082e4" target="_blank" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-md);padding:var(--sp-4);display:block;transition:background .2s;">
+          <div style="font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Part 2 · Medium</div>
+          <div style="font-size:13px;font-weight:600;color:#fff;line-height:1.4;">Building Graph-Based Agentic Systems</div>
+          <div style="font-size:11.5px;color:rgba(255,255,255,.45);margin-top:4px;">Failures, fixes, and how the answer gets there</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL 2 — SYSTEM ARCHITECTURE
+================================================================ -->
+<div class="panel" id="panel-architecture">
+  <div class="diag-page">
+    <div class="diag-header">
+      <div class="diag-eyebrow">System Architecture</div>
+      <div class="diag-title">End-to-End Component Overview</div>
+      <div class="diag-hint">↗ Click any component to see its role in the system</div>
+    </div>
+    <div class="diag-layout">
+      <div class="diag-canvas">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-4);">
+
+          <!-- UI LAYER -->
+          <div>
+            <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-2);">User Interface</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);">
+              <div class="inode ea-exec-node" data-diag="arch" data-node="streamlit" style="background:#fff4f0;border-color:#e8c0a8;">
+                <div class="n-icon">🖥️</div><div class="n-label">Streamlit Dashboard</div><div class="n-sub">app.py — chat + compliance UI</div>
+              </div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="notebooks" style="background:#f0f8ff;border-color:#a8c8e8;">
+                <div class="n-icon">📓</div><div class="n-label">Jupyter Notebooks</div><div class="n-sub">311–317 interactive development</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AGENT LAYER -->
+          <div style="background:var(--kong);border-radius:var(--r-lg);padding:var(--sp-4);">
+            <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.40);margin-bottom:var(--sp-3);">Agent Pipeline</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-2);">
+              <div class="ea-ctrl-node" data-diag="arch" data-node="orchestrator" style="border-left:3px solid #4a9eff;">
+                <div style="font-size:18px;margin-bottom:4px;">🎯</div>
+                <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">Orchestrator</div>
+                <div style="font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);line-height:1.4;">Routes intent · dispatches agents · synthesises response</div>
+              </div>
+              <div class="ea-ctrl-node" data-diag="arch" data-node="compliance" style="border-left:3px solid #00d4aa;">
+                <div style="font-size:18px;margin-bottom:4px;">⚖️</div>
+                <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">ComplianceAgent</div>
+                <div style="font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);line-height:1.4;">Threshold evaluation · Layer 3 persistence · per-regulation loop</div>
+              </div>
+              <div class="ea-ctrl-node" data-diag="arch" data-node="investigation" style="border-left:3px solid #ffa040;">
+                <div style="font-size:18px;margin-bottom:4px;">🔎</div>
+                <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">InvestigationAgent</div>
+                <div style="font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);line-height:1.4;">Graph traversal · anomaly detection · risk signal surfacing</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MCP TOOL LAYER -->
+          <div>
+            <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-2);">MCP Tool Layer (FastMCP)</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
+              <div class="inode ea-exec-node" data-diag="arch" data-node="traverse"><div class="n-icon">🗺️</div><div class="n-label">traverse_compliance_path</div><div class="n-sub">L1→L2 via Jurisdiction</div></div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="retrieve"><div class="n-icon">🔍</div><div class="n-label">retrieve_regulatory_chunks</div><div class="n-sub">vector semantic search</div></div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="anomalies"><div class="n-icon">⚠️</div><div class="n-label">detect_graph_anomalies</div><div class="n-sub">6 Cypher patterns</div></div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="evaluate"><div class="n-icon">✅</div><div class="n-label">evaluate_thresholds</div><div class="n-sub">PASS / BREACH / TRIGGER</div></div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="persist"><div class="n-icon">💾</div><div class="n-label">persist_assessment</div><div class="n-sub">idempotent MERGE to L3</div></div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="trace"><div class="n-icon">🧵</div><div class="n-label">trace_evidence</div><div class="n-sub">walk Assessment → cited nodes</div></div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="cypher-read"><div class="n-icon">📖</div><div class="n-label">read-neo4j-cypher</div><div class="n-sub">ad-hoc read queries</div></div>
+              <div class="inode ea-exec-node" data-diag="arch" data-node="cypher-write"><div class="n-icon">✏️</div><div class="n-label">write-neo4j-cypher</div><div class="n-sub">L3 writes only</div></div>
+            </div>
+          </div>
+
+          <!-- DATA LAYER -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-2);">
+            <div class="inode ea-exec-node" data-diag="arch" data-node="neo4j" style="border-left:3px solid var(--kong);">
+              <div class="n-icon">🕸️</div><div class="n-label">Neo4j AuraDB</div><div class="n-sub">3-layer knowledge graph</div>
+            </div>
+            <div class="inode ea-exec-node" data-diag="arch" data-node="claude-api" style="border-left:3px solid var(--accent);">
+              <div class="n-icon">🤖</div><div class="n-label">Anthropic API</div><div class="n-sub">Sonnet (agents) · Haiku (routing)</div>
+            </div>
+            <div class="inode ea-exec-node" data-diag="arch" data-node="openai-api" style="border-left:3px solid var(--go);">
+              <div class="n-icon">📐</div><div class="n-label">OpenAI Embeddings</div><div class="n-sub">text-embedding-3-small (1536-d)</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DETAIL PANEL -->
+      <div class="detail-panel" id="arch-detail">
+        <div class="dp-idle" id="arch-idle">← Click a component</div>
+        <div id="arch-content" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL 3 — AGENT PIPELINE
+================================================================ -->
+<div class="panel" id="panel-pipeline">
+  <div class="diag-page">
+    <div class="diag-header">
+      <div class="diag-eyebrow">Agent Pipeline</div>
+      <div class="diag-title">Orchestrator → ComplianceAgent + InvestigationAgent</div>
+      <div class="diag-hint">↗ Click any stage to see what happens inside</div>
+    </div>
+    <div class="diag-layout">
+      <div class="diag-canvas">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);">
+
+          <!-- Stage 1: User Question -->
+          <div class="inode" data-diag="pipe" data-node="question" style="background:var(--surf-2);border:1.5px solid var(--border);padding:var(--sp-4);display:flex;align-items:center;gap:var(--sp-4);">
+            <div style="font-size:24px;">💬</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--ink);">User Question</div>
+              <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-3);">"Is LOAN-0002 compliant with APG-223?" · "Show suspicious connections around BRW-0001."</div>
+            </div>
+          </div>
+
+          <div style="text-align:center;font-family:var(--f-mono);font-size:9px;color:var(--ink-4);">↓ Routing call (Claude Haiku · MODEL_FAST · 512 tokens)</div>
+
+          <!-- Stage 2: Routing -->
+          <div class="inode" data-diag="pipe" data-node="routing" style="background:#fff;border:1.5px solid var(--kong);border-radius:var(--r-md);padding:var(--sp-4);">
+            <div style="display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-3);">
+              <div style="font-size:20px;">🗺️</div>
+              <div style="font-size:13px;font-weight:700;color:var(--ink);">Orchestrator: Routing</div>
+              <div style="font-family:var(--f-mono);font-size:9px;background:rgba(0,51,90,.08);color:var(--kong);padding:2px 7px;border-radius:var(--r-sm);">intent classification</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);">
+              <div style="background:var(--surf-2);border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3);font-family:var(--f-mono);font-size:10px;color:var(--ink-2);">entity_ids</div>
+              <div style="background:var(--surf-2);border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3);font-family:var(--f-mono);font-size:10px;color:var(--ink-2);">regulations</div>
+              <div style="background:var(--surf-2);border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3);font-family:var(--f-mono);font-size:10px;color:var(--ink-2);">needs_agents</div>
+            </div>
+          </div>
+
+          <div style="text-align:center;font-family:var(--f-mono);font-size:9px;color:var(--ink-4);">↓ Parallel dispatch when both needed (ThreadPoolExecutor)</div>
+
+          <!-- Stage 3: Agents side by side -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);">
+            <div class="inode" data-diag="pipe" data-node="comp-agent" style="background:rgba(0,200,160,.06);border:1.5px solid rgba(0,200,160,.3);border-radius:var(--r-md);padding:var(--sp-4);">
+              <div style="font-size:18px;margin-bottom:var(--sp-2);">⚖️</div>
+              <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:var(--sp-2);">ComplianceAgent</div>
+              <div style="font-family:var(--f-mono);font-size:9.5px;color:var(--ink-3);line-height:1.6;">
+                1. Pre-run traverse (parallel per regulation)<br>
+                2. evaluate_thresholds → PASS/BREACH/TRIGGER<br>
+                3. retrieve_regulatory_chunks (optional)<br>
+                4. persist_assessment → Layer 3
+              </div>
+              <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap;">
+                <span style="font-family:var(--f-mono);font-size:9px;background:rgba(0,200,160,.12);color:#006a52;padding:2px 6px;border-radius:3px;">max 14 iterations</span>
+                <span style="font-family:var(--f-mono);font-size:9px;background:var(--surf-2);color:var(--ink-4);padding:2px 6px;border-radius:3px;">temperature=0</span>
+              </div>
+            </div>
+            <div class="inode" data-diag="pipe" data-node="inv-agent" style="background:rgba(224,122,32,.06);border:1.5px solid rgba(224,122,32,.3);border-radius:var(--r-md);padding:var(--sp-4);">
+              <div style="font-size:18px;margin-bottom:var(--sp-2);">🔎</div>
+              <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:var(--sp-2);">InvestigationAgent</div>
+              <div style="font-family:var(--f-mono);font-size:9.5px;color:var(--ink-3);line-height:1.6;">
+                1. Pre-run detect_graph_anomalies (scoped)<br>
+                2. One comprehensive first-degree query<br>
+                3. Targeted follow-ups (≤3 more calls)<br>
+                4. Structured risk signal summary
+              </div>
+              <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap;">
+                <span style="font-family:var(--f-mono);font-size:9px;background:rgba(224,122,32,.12);color:var(--warn);padding:2px 6px;border-radius:3px;">7 tool call budget</span>
+                <span style="font-family:var(--f-mono);font-size:9px;background:var(--surf-2);color:var(--ink-4);padding:2px 6px;border-radius:3px;">6 history pairs</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:center;font-family:var(--f-mono);font-size:9px;color:var(--ink-4);">↓ trace_evidence fetches cited sections + chunks · Synthesis call</div>
+
+          <!-- Stage 4: Synthesis -->
+          <div class="inode" data-diag="pipe" data-node="synthesis" style="background:var(--surf-2);border:1.5px solid var(--border);padding:var(--sp-4);border-radius:var(--r-md);">
+            <div style="display:flex;align-items:center;gap:var(--sp-3);">
+              <div style="font-size:20px;">📝</div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--ink);">Orchestrator: Synthesis</div>
+                <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-3);">Merges outputs → InvestigationResponse: answer + verdict + findings + cited_sections + cited_chunks + next_steps</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 5: Response -->
+          <div class="inode" data-diag="pipe" data-node="response" style="background:rgba(0,51,90,.06);border:1.5px solid rgba(0,51,90,.2);padding:var(--sp-4);border-radius:var(--r-md);">
+            <div style="display:flex;align-items:center;gap:var(--sp-3);">
+              <div style="font-size:20px;">🖥️</div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--ink);">Streamlit UI</div>
+                <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-3);">Verdict banner · Routing expander · Findings severity chart · Evidence panel · Entity Profile · Recommended next steps</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="detail-panel" id="pipe-detail">
+        <div class="dp-idle" id="pipe-idle">← Click a stage</div>
+        <div id="pipe-content" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     PANEL 4 — GRAPH DATA MODEL
+================================================================ -->
+<!-- ================================================================
+     PANEL 4 — GRAPH DATA MODEL
+================================================================ -->
+<!-- ================================================================
+     PANEL 4 — GRAPH DATA MODEL
+================================================================ -->
+<!-- ================================================================
+     PANEL 4 — GRAPH DATA MODEL
+================================================================ -->
+<div class="panel" id="panel-graph">
+  <div class="diag-page" style="display:flex;flex-direction:column;height:100%;overflow:hidden;">
+    <div class="diag-header" style="flex-shrink:0;">
+      <div class="diag-eyebrow">Graph Data Model</div>
+      <div class="diag-title">Three-Layer Neo4j Property Graph</div>
+      <div class="diag-hint">↗ Click any node or relationship label to explore details</div>
+    </div>
+    <div style="flex:1;display:flex;overflow:hidden;">
+      <div style="flex:1;overflow:auto;padding:10px 12px 8px;">
+        <svg id="graph-svg" viewBox="0 0 920 670" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:680px;height:auto;display:block;font-family:'Plus Jakarta Sans',sans-serif;">
+          <defs>
+            <marker id="arr"    markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,1 L8.5,4.5 L0,8 Z" fill="#475569"/></marker>
+            <marker id="arr-sm" markerWidth="8" markerHeight="8" refX="7" refY="4"   orient="auto"><path d="M0,0.5 L7.5,4 L0,7.5 Z" fill="#64748b"/></marker>
+            <marker id="arr-ds" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#94a3b8"/></marker>
+          </defs>
+          <!-- LAYER ZONES -->
+          <rect x="4"   y="4"   width="458" height="360" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+          <text x="16"  y="23"  font-family="'JetBrains Mono',monospace" font-size="10" fill="#15803d" font-weight="700" letter-spacing="1">LAYER 1: FINANCIAL LOAN DATA</text>
+          <rect x="472" y="4"   width="444" height="360" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+          <text x="484" y="23"  font-family="'JetBrains Mono',monospace" font-size="10" fill="#1e40af" font-weight="700" letter-spacing="1">LAYER 2: REGULATORY DOCUMENTS</text>
+          <rect x="4"   y="376" width="912" height="280" rx="8" fill="#f8fafc" stroke="#93c5fd" stroke-width="2"/>
+          <text x="16"  y="395" font-family="'JetBrains Mono',monospace" font-size="10" fill="#1e40af" font-weight="700" letter-spacing="1">LAYER 3: COMPLIANCE ASSESSMENT REASONING</text>
+
+          <!-- L1 NODES -->
+          <g class="gnode" data-diag="gm" data-node="transaction"  transform="translate(82,100)"  style="cursor:pointer;"><ellipse rx="50" ry="36" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text text-anchor="middle" y="-4" font-size="11" font-weight="600" fill="#92400e">Transacti-</text><text text-anchor="middle" y="11" font-size="11" font-weight="600" fill="#92400e">on</text></g>
+          <g class="gnode" data-diag="gm" data-node="officer"      transform="translate(238,82)"   style="cursor:pointer;"><ellipse rx="46" ry="34" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><text text-anchor="middle" y="5" font-size="12" font-weight="600" fill="#0c4a6e">Officer</text></g>
+          <g class="gnode" data-diag="gm" data-node="address"      transform="translate(390,82)"   style="cursor:pointer;"><ellipse rx="46" ry="34" fill="#ffe4e6" stroke="#f43f5e" stroke-width="2"/><text text-anchor="middle" y="5" font-size="12" font-weight="600" fill="#9f1239">Address</text></g>
+          <g class="gnode" data-diag="gm" data-node="bankaccount"  transform="translate(82,210)"   style="cursor:pointer;"><ellipse rx="56" ry="38" fill="#d1fae5" stroke="#059669" stroke-width="2"/><text text-anchor="middle" y="-5" font-size="11" font-weight="600" fill="#065f46">Bank</text><text text-anchor="middle" y="11" font-size="11" font-weight="600" fill="#065f46">Account</text></g>
+          <g class="gnode" data-diag="gm" data-node="borrower"     transform="translate(248,210)"  style="cursor:pointer;"><ellipse rx="62" ry="44" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/><text text-anchor="middle" y="6" font-size="14" font-weight="700" fill="#1e3a8a">Borrower</text></g>
+          <g class="gnode" data-diag="gm" data-node="jurisdiction" transform="translate(400,210)"  style="cursor:pointer;"><ellipse rx="50" ry="38" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/><text text-anchor="middle" y="-4" font-size="10.5" font-weight="600" fill="#7c2d12">Jurisdictio-</text><text text-anchor="middle" y="11" font-size="10.5" font-weight="600" fill="#7c2d12">n</text></g>
+          <g class="gnode" data-diag="gm" data-node="collateral"   transform="translate(82,318)"   style="cursor:pointer;"><ellipse rx="52" ry="34" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.8"/><text text-anchor="middle" y="5" font-size="12" font-weight="600" fill="#475569">Collateral</text></g>
+          <g class="gnode" data-diag="gm" data-node="loanapp"      transform="translate(248,318)"  style="cursor:pointer;"><ellipse rx="62" ry="42" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/><text text-anchor="middle" y="-5" font-size="12" font-weight="700" fill="#4c1d95">Loan</text><text text-anchor="middle" y="11" font-size="12" font-weight="700" fill="#4c1d95">Application</text></g>
+          <g class="gnode" data-diag="gm" data-node="industry"     transform="translate(400,318)"  style="cursor:pointer;"><ellipse rx="50" ry="34" fill="#ccfbf1" stroke="#0d9488" stroke-width="2"/><text text-anchor="middle" y="5" font-size="12" font-weight="600" fill="#134e4a">Industry</text></g>
+
+          <!-- L1 ARROWS -->
+          <line x1="82"  y1="136" x2="82"  y2="172" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="73"  y1="172" x2="73"  y2="136" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="234" y1="116" x2="234" y2="166" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="300" y1="186" x2="356" y2="110" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="186" y1="210" x2="138" y2="210" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="310" y1="210" x2="350" y2="210" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="236" y1="276" x2="236" y2="254" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="260" y1="276" x2="260" y2="254" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="186" y1="318" x2="134" y2="318" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="310" y1="318" x2="350" y2="318" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+
+          <!-- L1 LABELS -->
+          <g class="grel" data-diag="gm" data-node="rel-from-account"    style="cursor:pointer;"><text x="88"  y="151" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">FROM_ACCOUNT</text><text x="22"  y="167" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">TO_ACCOUNT</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-director-of"     style="cursor:pointer;"><text x="172" y="144" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">DIRECTOR_OF</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-located-at"      style="cursor:pointer;"><text x="348" y="142" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace" transform="rotate(-52,348,142)">LOCATED_AT</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-has-account"     style="cursor:pointer;"><text x="138" y="204" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">HAS_ACCOUNT</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-registered-in"   style="cursor:pointer;"><text x="312" y="203" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">REGISTERED_IN</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-guaranteed-by"   style="cursor:pointer;"><text x="152" y="268" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">GUARANTEED_BY</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-submitted-by"    style="cursor:pointer;"><text x="264" y="268" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">SUBMITTED_BY</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-backed-by"       style="cursor:pointer;"><text x="134" y="311" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">BACKED_BY</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-belongs-industry" style="cursor:pointer;"><text x="310" y="311" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">BELONGS_TO_INDUSTRY</text></g>
+
+          <!-- L2 NODES -->
+          <g class="gnode" data-diag="gm" data-node="requirement" transform="translate(640,90)"  style="cursor:pointer;"><ellipse rx="56" ry="40" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text text-anchor="middle" y="-4" font-size="11" font-weight="600" fill="#7f1d1d">Requireme-</text><text text-anchor="middle" y="12" font-size="11" font-weight="600" fill="#7f1d1d">nt</text></g>
+          <g class="gnode" data-diag="gm" data-node="threshold"   transform="translate(836,90)"  style="cursor:pointer;"><ellipse rx="52" ry="38" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.8"/><text text-anchor="middle" y="5" font-size="12" font-weight="600" fill="#475569">Threshold</text></g>
+          <g class="gnode" data-diag="gm" data-node="regulation"  transform="translate(594,216)" style="cursor:pointer;"><ellipse rx="58" ry="42" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/><text text-anchor="middle" y="5" font-size="12" font-weight="600" fill="#713f12">Regulation</text></g>
+          <g class="gnode" data-diag="gm" data-node="section"     transform="translate(800,216)" style="cursor:pointer;"><ellipse rx="60" ry="44" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/><text text-anchor="middle" y="6" font-size="14" font-weight="700" fill="#713f12">Section</text></g>
+          <g class="gnode" data-diag="gm" data-node="chunk"       transform="translate(800,338)" style="cursor:pointer;"><ellipse rx="56" ry="38" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/><text text-anchor="middle" y="5" font-size="12" font-weight="600" fill="#4c1d95">Chunk</text></g>
+
+          <!-- L2 ARROWS -->
+          <line x1="696" y1="90"  x2="784" y2="90"  stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="638" y1="174" x2="638" y2="130" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <line x1="652" y1="216" x2="740" y2="216" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <path d="M 860,196 Q 916,196 916,216 Q 916,236 860,236" stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arr-sm)"/>
+          <path d="M 860,206 Q 930,206 930,216 Q 930,226 860,226" stroke="#94a3b8" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#arr-ds)"/>
+          <line x1="800" y1="260" x2="800" y2="300" stroke="#64748b" stroke-width="1.3" marker-end="url(#arr-sm)"/>
+          <path d="M 856,318 Q 916,314 916,338 Q 916,362 856,358" stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arr-sm)"/>
+          <path d="M 856,328 Q 932,324 932,338 Q 932,352 856,348" stroke="#94a3b8" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#arr-ds)"/>
+
+          <!-- L2 LABELS -->
+          <g class="grel" data-diag="gm" data-node="rel-defines-threshold" style="cursor:pointer;"><text x="704" y="82"  font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">DEFINES_THRESHOLD</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-has-requirement"   style="cursor:pointer;"><text x="641" y="155" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">HAS_REQUIREMENT</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-has-section"       style="cursor:pointer;"><text x="661" y="208" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">HAS_SECTION</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-next-section"      style="cursor:pointer;"><text x="918" y="213" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">NEXT_SECTION</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-cross-references"  style="cursor:pointer;"><text x="918" y="230" font-size="7.5" fill="#94a3b8" font-family="'JetBrains Mono',monospace">CROSS_REFERENCES</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-has-chunk"         style="cursor:pointer;"><text x="804" y="284" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">HAS_CHUNK</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-next-chunk"        style="cursor:pointer;"><text x="918" y="336" font-size="7.5" fill="#64748b" font-family="'JetBrains Mono',monospace">NEXT_CHUNK</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-sem-similar"       style="cursor:pointer;"><text x="918" y="354" font-size="7.5" fill="#94a3b8" font-family="'JetBrains Mono',monospace">SEMANTICALLY_SIMILAR</text></g>
+
+          <!-- BRIDGE -->
+          <line x1="450" y1="210" x2="536" y2="210" stroke="#1e40af" stroke-width="2" marker-end="url(#arr)"/>
+          <g class="grel" data-diag="gm" data-node="rel-applies-to-jur" style="cursor:pointer;"><text x="452" y="202" font-size="7.5" fill="#1e40af" font-family="'JetBrains Mono',monospace" font-weight="700">APPLIES_TO_JURISDICTION</text></g>
+
+          <!-- L3 NODES -->
+          <g class="gnode" data-diag="gm" data-node="assessment"    transform="translate(230,540)" style="cursor:pointer;"><ellipse rx="64" ry="50" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/><text text-anchor="middle" y="-5" font-size="12" font-weight="700" fill="#1e3a8a">ASSESSM-</text><text text-anchor="middle" y="12" font-size="12" font-weight="700" fill="#1e3a8a">ENT</text></g>
+          <g class="gnode" data-diag="gm" data-node="reasoningstep" transform="translate(510,540)" style="cursor:pointer;"><ellipse rx="68" ry="50" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/><text text-anchor="middle" y="-5" font-size="12" font-weight="600" fill="#1e293b">Reasoning</text><text text-anchor="middle" y="12" font-size="12" font-weight="600" fill="#1e293b">Step</text></g>
+          <g class="gnode" data-diag="gm" data-node="finding"       transform="translate(780,540)" style="cursor:pointer;"><ellipse rx="56" ry="46" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text text-anchor="middle" y="5" font-size="13" font-weight="700" fill="#7f1d1d">Finding</text></g>
+
+          <!-- L3 ARROWS -->
+          <path d="M 248,360 L 230,490"                                                  stroke="#475569" stroke-width="1.8" fill="none" marker-end="url(#arr)"/>
+          <line x1="294" y1="540" x2="442" y2="540"                                     stroke="#475569" stroke-width="1.8" marker-end="url(#arr)"/>
+          <path d="M 230,590 Q 230,628 780,628 Q 780,628 780,586"                        stroke="#475569" stroke-width="1.8" fill="none" marker-end="url(#arr)"/>
+          <path d="M 278,500 Q 400,400 546,258"                                           stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+          <path d="M 556,500 Q 664,412 752,264"                                           stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+          <path d="M 576,514 Q 702,436 762,376"                                           stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+          <!-- L3 LABELS -->
+          <g class="grel" data-diag="gm" data-node="rel-has-assessment" style="cursor:pointer;"><text x="148" y="432" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace">HAS_ASSESSMENT</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-has-step"       style="cursor:pointer;"><text x="330" y="533" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace">HAS_STEP</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-has-finding"    style="cursor:pointer;"><text x="438" y="641" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace">HAS_FINDING</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-assessed-under" style="cursor:pointer;"><text x="358" y="376" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace">ASSESSED_UNDER</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-cites-section"  style="cursor:pointer;"><text x="624" y="382" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace">CITES_SECTION</text></g>
+          <g class="grel" data-diag="gm" data-node="rel-cites-chunk"    style="cursor:pointer;"><text x="678" y="442" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace">CITES_CHUNK</text></g>
+
+          <text x="460" y="660" text-anchor="middle" font-size="9.5" fill="#94a3b8" font-style="italic" font-family="'Plus Jakarta Sans',sans-serif">Every node a question. Every relationship a step in the reasoning chain.</text>
+        </svg>
+      </div>
+
+      <!-- DETAIL SIDE PANEL -->
+      <div id="gm-detail-panel" style="width:280px;min-width:240px;flex-shrink:0;border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;">
+        <div id="gm-idle" style="padding:24px 16px;color:var(--ink-4);font-size:12.5px;line-height:1.8;display:flex;align-items:center;justify-content:center;text-align:center;height:100%;">
+          ↗ Click any node or<br>relationship label<br>to see details
+        </div>
+        <div id="gm-content" style="display:none;flex:1;overflow-y:auto;padding:16px 14px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL 5 — COMPLIANCE ENGINE
+================================================================ -->
+<div class="panel" id="panel-compliance">
+  <div class="diag-page">
+    <div class="diag-header">
+      <div class="diag-eyebrow">Compliance Engine</div>
+      <div class="diag-title">Threshold Types · Verdict Logic · Anomaly Patterns</div>
+      <div class="diag-hint">↗ Click any threshold or pattern to see evaluation rules</div>
+    </div>
+    <div class="diag-layout">
+      <div class="diag-canvas">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-5);">
+
+          <!-- Threshold types -->
+          <div>
+            <div style="font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-3);">Threshold Type System</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
+              <div class="inode" data-diag="comp" data-node="th-minimum" style="background:#fff;border:1.5px solid rgba(0,200,160,.4);border-top:3px solid var(--go);border-radius:var(--r-md);padding:var(--sp-3);">
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--go);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">minimum</div>
+                <div style="font-size:12px;font-weight:700;color:var(--ink);">Floor</div>
+                <div style="font-size:11px;color:var(--ink-3);margin-top:4px;">Entity must meet or exceed. BREACH when condition is False.</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="th-maximum" style="background:#fff;border:1.5px solid rgba(0,151,228,.4);border-top:3px solid var(--accent);border-radius:var(--r-md);padding:var(--sp-3);">
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">maximum</div>
+                <div style="font-size:12px;font-weight:700;color:var(--ink);">Ceiling</div>
+                <div style="font-size:11px;color:var(--ink-3);margin-top:4px;">Entity must not exceed. BREACH when condition is False.</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="th-trigger" style="background:#fff;border:1.5px solid rgba(224,122,32,.4);border-top:3px solid var(--warn);border-radius:var(--r-md);padding:var(--sp-3);">
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--warn);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">trigger</div>
+                <div style="font-size:12px;font-weight:700;color:var(--ink);">Monitor</div>
+                <div style="font-size:11px;color:var(--ink-3);margin-top:4px;">Fires concern when met. REQUIRES_REVIEW — not a hard breach.</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="th-informational" style="background:#fff;border:1.5px solid var(--border);border-top:3px solid var(--ink-4);border-radius:var(--r-md);padding:var(--sp-3);">
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">informational</div>
+                <div style="font-size:12px;font-weight:700;color:var(--ink);">Reference</div>
+                <div style="font-size:11px;color:var(--ink-3);margin-top:4px;">ADI-level reference value. Always N/A — excluded from verdict.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- APG-223 Thresholds -->
+          <div>
+            <div style="font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-3);">APG-223 Thresholds Evaluated Per Loan</div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);">
+              <div class="inode" data-diag="comp" data-node="thr001" style="background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:var(--sp-3);display:grid;grid-template-columns:90px 1fr auto;">
+                <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-4);">THR-001</div>
+                <div style="font-size:12px;color:var(--ink);">serviceability_interest_rate_buffer <strong>≥ 3.0%</strong></div>
+                <div style="font-family:var(--f-mono);font-size:9px;background:rgba(0,200,160,.1);color:#006a52;padding:2px 6px;border-radius:3px;">minimum</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="thr002" style="background:var(--surf-2);border:1px dashed var(--border);border-radius:var(--r-sm);padding:var(--sp-3);display:grid;grid-template-columns:90px 1fr auto;">
+                <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-4);">THR-002</div>
+                <div style="font-size:12px;color:var(--ink-3);">credit_card_revolving_debt_repayment_rate == 3.0%</div>
+                <div style="font-family:var(--f-mono);font-size:9px;background:var(--surf-3);color:var(--ink-4);padding:2px 6px;border-radius:3px;">informational</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="thr003" style="background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:var(--sp-3);display:grid;grid-template-columns:90px 1fr auto;">
+                <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-4);">THR-003</div>
+                <div style="font-size:12px;color:var(--ink);">non_salary_income_haircut <strong>≥ 20%</strong> <span style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);">(if income_type ≠ salary)</span></div>
+                <div style="font-family:var(--f-mono);font-size:9px;background:rgba(0,200,160,.1);color:#006a52;padding:2px 6px;border-radius:3px;">minimum</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="thr004" style="background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:var(--sp-3);display:grid;grid-template-columns:90px 1fr auto;">
+                <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-4);">THR-004</div>
+                <div style="font-size:12px;color:var(--ink);">rental_income_haircut <strong>≥ 20%</strong> <span style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);">(if rental_income_gross present)</span></div>
+                <div style="font-family:var(--f-mono);font-size:9px;background:rgba(0,200,160,.1);color:#006a52;padding:2px 6px;border-radius:3px;">minimum</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="thr005" style="background:#fff4ee;border:1px solid rgba(224,122,32,.3);border-radius:var(--r-sm);padding:var(--sp-3);display:grid;grid-template-columns:90px 1fr auto;">
+                <div style="font-family:var(--f-mono);font-size:10px;color:var(--ink-4);">THR-005</div>
+                <div style="font-size:12px;color:var(--ink);">LVR <strong>≥ 90%</strong> → senior management review required</div>
+                <div style="font-family:var(--f-mono);font-size:9px;background:rgba(224,122,32,.1);color:var(--warn);padding:2px 6px;border-radius:3px;">trigger</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verdict logic -->
+          <div>
+            <div style="font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-3);">Verdict Priority (worst-case wins)</div>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:var(--sp-2);">
+              <div class="inode" data-diag="comp" data-node="v-noncompliant" style="background:rgba(200,64,64,.08);border:1.5px solid rgba(200,64,64,.4);border-radius:var(--r-sm);padding:var(--sp-3);text-align:center;">
+                <div style="font-size:16px;">✗</div>
+                <div style="font-size:11px;font-weight:700;color:var(--danger);margin-top:4px;">NON_COMPLIANT</div>
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:2px;">priority 4</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="v-review" style="background:rgba(224,122,32,.08);border:1.5px solid rgba(224,122,32,.4);border-radius:var(--r-sm);padding:var(--sp-3);text-align:center;">
+                <div style="font-size:16px;">⚠</div>
+                <div style="font-size:11px;font-weight:700;color:var(--warn);margin-top:4px;">REQUIRES_REVIEW</div>
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:2px;">priority 3</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="v-anomaly" style="background:rgba(200,64,64,.06);border:1.5px solid rgba(200,64,64,.3);border-radius:var(--r-sm);padding:var(--sp-3);text-align:center;">
+                <div style="font-size:16px;">⚑</div>
+                <div style="font-size:11px;font-weight:700;color:var(--danger);margin-top:4px;">ANOMALY_DETECTED</div>
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:2px;">priority 2</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="v-compliant" style="background:rgba(0,200,160,.08);border:1.5px solid rgba(0,200,160,.4);border-radius:var(--r-sm);padding:var(--sp-3);text-align:center;">
+                <div style="font-size:16px;">✓</div>
+                <div style="font-size:11px;font-weight:700;color:var(--go);margin-top:4px;">COMPLIANT</div>
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:2px;">priority 1</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="v-info" style="background:var(--surf-2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:var(--sp-3);text-align:center;">
+                <div style="font-size:16px;">ℹ</div>
+                <div style="font-size:11px;font-weight:700;color:var(--ink-3);margin-top:4px;">INFORMATIONAL</div>
+                <div style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:2px;">priority 0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Anomaly Patterns -->
+          <div>
+            <div style="font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-3);">Anomaly Detection Patterns (ANOMALY_REGISTRY)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);">
+              <div class="inode" data-diag="comp" data-node="anom-struct" style="background:#fff;border:1px solid rgba(200,64,64,.3);border-left:3px solid var(--danger);border-radius:var(--r-sm);padding:var(--sp-3);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--ink);">transaction_structuring</div>
+                  <span style="font-family:var(--f-mono);font-size:9px;background:rgba(200,64,64,.1);color:var(--danger);padding:1px 5px;border-radius:3px;">HIGH</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-3);">Sub-$10k suspicious transfers to same account. AUSTRAC threshold evasion signal.</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="anom-lvr" style="background:#fff;border:1px solid rgba(200,64,64,.3);border-left:3px solid var(--danger);border-radius:var(--r-sm);padding:var(--sp-3);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--ink);">high_lvr_loans</div>
+                  <span style="font-family:var(--f-mono);font-size:9px;background:rgba(200,64,64,.1);color:var(--danger);padding:1px 5px;border-radius:3px;">HIGH</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-3);">LVR ≥ 90% — linked to APG-223-THR-005. 63 loans in dataset.</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="anom-jur" style="background:#fff;border:1px solid rgba(200,64,64,.3);border-left:3px solid var(--danger);border-radius:var(--r-sm);padding:var(--sp-3);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--ink);">high_risk_jurisdiction</div>
+                  <span style="font-family:var(--f-mono);font-size:9px;background:rgba(200,64,64,.1);color:var(--danger);padding:1px 5px;border-radius:3px;">HIGH</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-3);">Borrowers in JUR-VU / JUR-MM / JUR-KH (aml_risk_rating = high).</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="anom-ind" style="background:#fff;border:1px solid rgba(224,122,32,.3);border-left:3px solid var(--warn);border-radius:var(--r-sm);padding:var(--sp-3);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--ink);">high_risk_industry</div>
+                  <span style="font-family:var(--f-mono);font-size:9px;background:rgba(224,122,32,.1);color:var(--warn);padding:1px 5px;border-radius:3px;">MEDIUM</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-3);">Gambling, Financial Asset Investing, Liquor & Tobacco — high AML sensitivity.</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="anom-own" style="background:#fff;border:1px solid rgba(224,122,32,.3);border-left:3px solid var(--warn);border-radius:var(--r-sm);padding:var(--sp-3);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--ink);">layered_ownership</div>
+                  <span style="font-family:var(--f-mono);font-size:9px;background:rgba(224,122,32,.1);color:var(--warn);padding:1px 5px;border-radius:3px;">MEDIUM</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-3);">OWNS chains depth ≥ 2. Obscures beneficial ownership. BRW-0582 → 3-hop chain.</div>
+              </div>
+              <div class="inode" data-diag="comp" data-node="anom-guar" style="background:#fff;border:1px solid rgba(224,122,32,.3);border-left:3px solid var(--warn);border-radius:var(--r-sm);padding:var(--sp-3);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--ink);">guarantor_concentration</div>
+                  <span style="font-family:var(--f-mono);font-size:9px;background:rgba(224,122,32,.1);color:var(--warn);padding:1px 5px;border-radius:3px;">MEDIUM</span>
+                </div>
+                <div style="font-size:11px;color:var(--ink-3);">Borrower guaranteeing 2+ loans — undisclosed contingent liability exposure.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="detail-panel" id="comp-detail">
+        <div class="dp-idle" id="comp-idle">← Click a threshold, verdict, or anomaly pattern</div>
+        <div id="comp-content" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL 6 — CONTROL FLOW
+================================================================ -->
+<div class="panel" id="panel-sequence">
+  <div class="diag-page">
+    <div class="diag-header">
+      <div class="diag-eyebrow">System System Control Flow</div>
+      <div class="diag-title">Orchestrator Sequence for a Compliance Question</div>
+      <div class="diag-hint">↗ Click any row to see what happens at that step</div>
+    </div>
+    <div class="diag-layout">
+      <div class="diag-canvas">
+
+        <!-- Participants header -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;margin-bottom:var(--sp-3);padding:0 var(--sp-2);">
+          <div style="text-align:center;"><div style="font-family:var(--f-mono);font-size:9.5px;font-weight:700;color:var(--ink);background:var(--surf-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:4px 6px;display:inline-block;">👤 User / UI</div></div>
+          <div style="text-align:center;"><div style="font-family:var(--f-mono);font-size:9.5px;font-weight:700;color:var(--kong);background:rgba(0,51,90,.08);border:1px solid rgba(0,51,90,.2);border-radius:var(--r-sm);padding:4px 6px;display:inline-block;">🎯 Orchestrator</div></div>
+          <div style="text-align:center;"><div style="font-family:var(--f-mono);font-size:9.5px;font-weight:700;color:#006a52;background:rgba(0,200,160,.1);border:1px solid rgba(0,200,160,.3);border-radius:var(--r-sm);padding:4px 6px;display:inline-block;">⚖️ ComplianceAgent</div></div>
+          <div style="text-align:center;"><div style="font-family:var(--f-mono);font-size:9.5px;font-weight:700;color:var(--kong-2);background:rgba(0,84,144,.08);border:1px solid rgba(0,84,144,.2);border-radius:var(--r-sm);padding:4px 6px;display:inline-block;">🕸️ Neo4j + APIs</div></div>
+        </div>
+
+        <div style="padding:0 var(--sp-2);">
+          <div class="seq-sep">Init Phase</div>
+
+          <!-- Row 1 -->
+          <div class="seq-row" data-diag="seq" data-node="s-question">
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--ink-3);width:10px;height:10px;"></div></div>
+            <div></div><div></div><div></div>
+            <div class="seq-arrow-overlay" style="left:12.5%;right:62.5%;">
+              <div class="arr-line solid"></div>
+              <div class="arr-tip right"></div>
+            </div>
+            <div style="position:absolute;left:50%;transform:translateX(-80%);top:50%;transform:translateY(-50%) translateX(-80%);"><span class="seq-chip sc-normal">Question submitted</span></div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="seq-row" data-diag="seq" data-node="s-route">
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong);"></div></div>
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot"></div></div>
+            <div class="seq-arrow-overlay" style="left:37.5%;right:12.5%;">
+              <div class="arr-line" style="background:var(--accent);"></div>
+              <div class="arr-tip right" style="border-left-color:var(--accent);"></div>
+            </div>
+            <div style="position:absolute;left:62%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-ai">Haiku routing call</span></div>
+          </div>
+
+          <!-- Row 3 — routing returns -->
+          <div class="seq-row" data-diag="seq" data-node="s-route-ret">
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong);"></div></div>
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot"></div></div>
+            <div class="seq-arrow-overlay" style="left:37.5%;right:12.5%;">
+              <div class="arr-spacer"></div>
+              <div class="arr-tip left" style="border-right-color:var(--ink-3);"></div>
+              <div class="arr-line dashed"></div>
+            </div>
+            <div style="position:absolute;left:50%;transform:translateX(-80%);top:50%;transform:translateY(-50%) translateX(-60%);"><span class="seq-chip sc-resp">JSON routing plan</span></div>
+          </div>
+
+          <div class="seq-sep">Parallel Agent Dispatch</div>
+
+          <!-- Row 4 — pre-run traverse -->
+          <div class="seq-row" data-diag="seq" data-node="s-traverse">
+            <div></div><div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:#006a52;"></div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong-2);"></div></div>
+            <div class="seq-arrow-overlay" style="left:62.5%;right:12.5%;">
+              <div class="arr-line" style="background:var(--kong);"></div>
+              <div class="arr-tip right" style="border-left-color:var(--kong);"></div>
+            </div>
+            <div style="position:absolute;left:75%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-graph">traverse_compliance_path × 3 regs</span></div>
+          </div>
+
+          <!-- Row 5 — traverse returns -->
+          <div class="seq-row" data-diag="seq" data-node="s-traverse-ret">
+            <div></div><div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:#006a52;"></div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong-2);"></div></div>
+            <div class="seq-arrow-overlay" style="left:62.5%;right:12.5%;">
+              <div class="arr-spacer"></div>
+              <div class="arr-tip left" style="border-right-color:var(--ink-3);"></div>
+              <div class="arr-line dashed"></div>
+            </div>
+            <div style="position:absolute;right:14%;top:50%;transform:translateY(-50%) translateX(100%);"><span class="seq-chip sc-resp">L2 subgraph + thresholds</span></div>
+          </div>
+
+          <!-- Row 6 — evaluate thresholds -->
+          <div class="seq-row" data-diag="seq" data-node="s-evaluate">
+            <div></div><div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:#006a52;"></div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong-2);"></div></div>
+            <div class="seq-arrow-overlay" style="left:62.5%;right:12.5%;">
+              <div class="arr-line" style="background:var(--kong);"></div>
+              <div class="arr-tip right" style="border-left-color:var(--kong);"></div>
+            </div>
+            <div style="position:absolute;left:75%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-graph">evaluate_thresholds</span></div>
+          </div>
+
+          <!-- Row 7 — persist assessment -->
+          <div class="seq-row" data-diag="seq" data-node="s-persist">
+            <div></div><div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:#006a52;"></div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong-2);"></div></div>
+            <div class="seq-arrow-overlay" style="left:62.5%;right:12.5%;">
+              <div class="arr-line teal"></div>
+              <div class="arr-tip right teal"></div>
+            </div>
+            <div style="position:absolute;left:75%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-trace">persist_assessment → Layer 3</span></div>
+          </div>
+
+          <div class="seq-sep">Investigation Phase (parallel)</div>
+
+          <!-- Row 8 — anomaly pre-run -->
+          <div class="seq-row" data-diag="seq" data-node="s-anomaly">
+            <div></div><div></div><div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--warn);"></div></div>
+            <div style="position:absolute;left:75%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-warn">detect_graph_anomalies (scoped)</span></div>
+          </div>
+
+          <!-- Row 9 — graph traversal -->
+          <div class="seq-row" data-diag="seq" data-node="s-cypher">
+            <div></div><div></div><div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong-2);"></div></div>
+            <div style="position:absolute;left:75%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-graph">read-neo4j-cypher × N</span></div>
+          </div>
+
+          <div class="seq-sep">Synthesis Phase</div>
+
+          <!-- Row 10 — fetch findings -->
+          <div class="seq-row" data-diag="seq" data-node="s-fetch">
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong);"></div></div>
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong-2);"></div></div>
+            <div class="seq-arrow-overlay" style="left:37.5%;right:12.5%;">
+              <div class="arr-line" style="background:var(--kong);"></div>
+              <div class="arr-tip right" style="border-left-color:var(--kong);"></div>
+            </div>
+            <div style="position:absolute;left:62%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-graph">fetch findings + trace_evidence</span></div>
+          </div>
+
+          <!-- Row 11 — synthesis Haiku -->
+          <div class="seq-row" data-diag="seq" data-node="s-synthesis">
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong);"></div></div>
+            <div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot"></div></div>
+            <div class="seq-arrow-overlay" style="left:37.5%;right:12.5%;">
+              <div class="arr-line" style="background:var(--accent);"></div>
+              <div class="arr-tip right" style="border-left-color:var(--accent);"></div>
+            </div>
+            <div style="position:absolute;left:62%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-ai">Haiku synthesis (streaming)</span></div>
+          </div>
+
+          <!-- Row 12 — final response -->
+          <div class="seq-row" data-diag="seq" data-node="s-response">
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--ink-3);width:10px;height:10px;"></div></div>
+            <div class="lf" style="justify-self:center;"><div class="lf-dot" style="background:var(--kong);"></div></div>
+            <div></div><div></div>
+            <div class="seq-arrow-overlay" style="left:12.5%;right:62.5%;">
+              <div class="arr-spacer"></div>
+              <div class="arr-tip left" style="border-right-color:var(--go);"></div>
+              <div class="arr-line teal"></div>
+            </div>
+            <div style="position:absolute;left:16%;top:50%;transform:translateY(-50%);"><span class="seq-chip sc-trace">InvestigationResponse → UI</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="detail-panel" id="seq-detail">
+        <div class="dp-idle" id="seq-idle">← Click a flow step</div>
+        <div id="seq-content" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <span>LoanGuard AI · Graph-Based Agentic Compliance · Apache 2.0</span>
+  <div class="footer-links">
+    <a href="https://github.com/emillaurence/loanguard-ai" target="_blank">GitHub</a>
+    <a href="https://medium.com/@emilpastor/architecting-graph-based-agentic-system-when-a-regulator-asks-why-was-this-loan-approved-aeeb37aa313a" target="_blank">Part 1 — Medium</a>
+    <a href="https://medium.com/@emilpastor/building-graph-based-agentic-systems-failures-fixes-and-how-the-answer-gets-there-be2c1dd082e4" target="_blank">Part 2 — Medium</a>
+    <a href="https://substack.com/@emilpastor" target="_blank">Substack</a>
+  </div>
+</footer>
+
+<script>
+/* ================================================================
+   ARCHITECTURE DATA
+================================================================ */
+const ARCH_DATA = {
+  streamlit: { title:'Streamlit Dashboard', color:'#e07a20', badge:'UI Layer', body:'<p>The primary user interface. Renders the full chat history with compliance verdict banners, routing expanders, findings severity charts (clickable Plotly bars), entity profile cards, evidence panels, and recommended next steps.</p><p>Connects to Neo4j and the Orchestrator via <code>@st.cache_resource</code> — single persistent driver across Streamlit reruns.</p>', props:[{k:'Entry point',v:'app.py'},{k:'Streamlit',v:'≥ 1.35.0'},{k:'State',v:'st.session_state.history — chat pairs'},{k:'Streaming',v:'Orchestrator stream_callback for synthesis'}] },
+  notebooks: { title:'Jupyter Notebooks', color:'#0075c2', badge:'Development', body:'<p>15 notebooks across three series. The 1xx series loads Layer 1 entity data. The 2xx series builds the Layer 2 regulatory pipeline from APRA PDFs. The 3xx series is the interactive development environment for agents.</p><p>All 3xx notebooks share a common bootstrap via <code>%run 311_agent_setup.ipynb</code>.</p>', props:[{k:'1xx',v:'Entity data loading (111)'},{k:'2xx',v:'Regulatory pipeline (211–216)'},{k:'3xx',v:'Agent development (311–317)'}] },
+  orchestrator: { title:'Orchestrator', color:'#00335a', badge:'Agent Layer', body:'<p>The top-level coordinator. Classifies user intent via a Haiku routing call, dispatches to specialist agents (in parallel when both are needed), fetches findings from Neo4j, calls trace_evidence, and synthesises the final InvestigationResponse.</p><p>Worst-case verdict aggregation uses VERDICT_PRIORITY: NON_COMPLIANT (4) > REQUIRES_REVIEW (3) > ANOMALY_DETECTED (2) > COMPLIANT (1).</p>', props:[{k:'Routing model',v:'claude-haiku-4-5 (MODEL_FAST)'},{k:'Synthesis model',v:'claude-haiku-4-5 (MODEL_FAST)'},{k:'Max synthesis tokens',v:'2048'},{k:'Parallel dispatch',v:'ThreadPoolExecutor(max_workers=2)'}] },
+  compliance: { title:'ComplianceAgent', color:'#00c8a0', badge:'Agent Layer', body:'<p>The specialist agent for APRA threshold evaluation. Pre-runs traverse_compliance_path in parallel for all applicable regulations before the first Claude call. The agentic loop evaluates thresholds, optionally retrieves regulatory chunks, then persists an Assessment per regulation.</p>', props:[{k:'Model',v:'claude-sonnet-4-6 (MODEL_MAIN)'},{k:'Max iterations',v:'14'},{k:'History pairs',v:'4 (sliding window)'},{k:'Short circuit',v:'Breaks after all persist_assessment calls complete'}] },
+  investigation: { title:'InvestigationAgent', color:'#e07a20', badge:'Agent Layer', body:'<p>The specialist agent for graph traversal and AML risk signal detection. Pre-runs detect_graph_anomalies with entity-scoped patterns before the first Claude call. Recommended workflow: one comprehensive first-degree query + one anomaly call = 2 of the 7-tool budget.</p>', props:[{k:'Model',v:'claude-sonnet-4-6 (MODEL_MAIN)'},{k:'Max iterations',v:'14'},{k:'Tool call budget',v:'7 (enforced by system prompt)'},{k:'History pairs',v:'6 (sliding window)'}] },
+  traverse: { title:'traverse_compliance_path', color:'#00335a', badge:'FastMCP Tool', body:'<p>Cross-layer compliance traversal via the Jurisdiction bridge. Walks from a LoanApplication or Borrower through RESIDES_IN/REGISTERED_IN to the Jurisdiction node, then through APPLIES_TO_JURISDICTION to all applicable Regulations, Sections, Requirements, and Thresholds.</p>', props:[{k:'Layer bridge',v:'Jurisdiction node (JUR-AU-FED)'},{k:'Returns',v:'Full regulatory subgraph with threshold_type on each Threshold'},{k:'Cached',v:'Yes — in-session via dispatcher cache'}] },
+  retrieve: { title:'retrieve_regulatory_chunks', color:'#00335a', badge:'FastMCP Tool', body:'<p>Semantic similarity search over Chunk nodes using the chunk_embeddings Neo4j vector index. Embeds the query text with OpenAI text-embedding-3-small, runs cosine similarity search, and returns top-k chunks with their similarity scores.</p>', props:[{k:'Model',v:'text-embedding-3-small (1536-d)'},{k:'Index',v:'chunk_embeddings (cosine)'},{k:'Scores',v:'Stored on CITES_CHUNK relationship for trace_evidence'}] },
+  anomalies: { title:'detect_graph_anomalies', color:'#00335a', badge:'FastMCP Tool', body:'<p>Runs one or more named Cypher patterns from ANOMALY_REGISTRY in a single call. Supports entity scoping — when entity_id is provided, the pattern Cypher is modified to filter to that entity. Always batch all relevant patterns in one call to preserve the 7-tool budget.</p>', props:[{k:'Patterns',v:'6 registered (+ 2 more: director_concentration, cross_border_opacity)'},{k:'Scoping',v:'Modifies MATCH clause to inject entity_id filter'},{k:'Returns',v:'patterns_run, total_findings, results[]'}] },
+  evaluate: { title:'evaluate_thresholds', color:'#00335a', badge:'FastMCP Tool', body:'<p>Evaluates a list of Threshold dicts against the entity\'s actual stored values. Returns PASS, BREACH, TRIGGER, or N/A per threshold — deterministic Python arithmetic, not LLM calculation. The ComplianceAgent uses these results as the authoritative basis for its verdict.</p>', props:[{k:'Inputs',v:'thresholds[] from traverse_compliance_path result'},{k:'Fetches',v:'get_entity_compliance_values() from Neo4j'},{k:'Derived field',v:'serviceability_buffer = assessment_rate − indicative_rate'}] },
+  persist: { title:'persist_assessment', color:'#00335a', badge:'FastMCP Tool', body:'<p>Writes Assessment, Finding, and ReasoningStep nodes to Layer 3 via idempotent MERGE. The ComplianceAgent deep-copies the reasoning step dicts and injects chunk_scores before calling — so similarity scores are stored on CITES_CHUNK relationships.</p>', props:[{k:'ID format',v:'ASSESS-{entity_id}-{reg_id}-{YYYY-MM-DD-HHMMSS}'},{k:'Idempotent',v:'MERGE on assessment_id'},{k:'Batch writes',v:'batch_merge_findings + batch_merge_reasoning_steps'}] },
+  trace: { title:'trace_evidence', color:'#00335a', badge:'FastMCP Tool', body:'<p>Walks a stored Assessment back through its ReasoningStep nodes to all cited Section and Chunk nodes. Recovers similarity scores from the similarity_score property on CITES_CHUNK relationships. Called by the Orchestrator after agents complete to populate the Evidence panel.</p>', props:[{k:'Returns',v:'cited_sections[], cited_chunks[], reasoning_steps[]'},{k:'Score recovery',v:'similarity_score on CITES_CHUNK relationship'},{k:'Used by',v:'Orchestrator synthesis + Streamlit evidence panel'}] },
+  'cypher-read': { title:'read-neo4j-cypher', color:'#005490', badge:'Neo4j MCP Tool', body:'<p>Executes a read-only Cypher query via the shared Neo4jConnection. Write keywords (MERGE, CREATE, DELETE, SET, DETACH, REMOVE, DROP) are blocked at the dispatcher level using whole-word regex matching — preventing false positives like ASSESSMENT containing SET.</p>', props:[{k:'Write guard',v:'re.findall whole-word uppercase match'},{k:'Port',v:'Same schema as mcp-neo4j-cypher for portability'},{k:'Max rows',v:'LIMIT enforced by system prompt (100 rows)'}] },
+  'cypher-write': { title:'write-neo4j-cypher', color:'#005490', badge:'Neo4j MCP Tool', body:'<p>Executes write Cypher queries against Neo4j. Restricted to Layer 3 Assessment/Finding/ReasoningStep writes. In practice, agents prefer persist_assessment for structured writes — this tool is available for ad-hoc or cleanup operations.</p>', props:[{k:'Intended use',v:'Layer 3 Assessment/Finding/ReasoningStep only'},{k:'Prefer',v:'persist_assessment for structured writes'}] },
+  neo4j: { title:'Neo4j AuraDB', color:'#00335a', badge:'Data Layer', body:'<p>The knowledge graph database hosting all three layers. The vector index chunk_embeddings (1536 dims, cosine similarity) powers semantic regulatory chunk retrieval. APOC is available for meta.stats(). AuraDB Free supports the full dataset (466 loans, 628 borrowers, 189 chunks).</p>', props:[{k:'Driver',v:'neo4j ≥ 5.18.0'},{k:'Vector index',v:'chunk_embeddings (1536-d cosine)'},{k:'Layer 1',v:'466 loans · 628 borrowers · 791 accounts'},{k:'Layer 2',v:'101 sections · 133 thresholds · 189 chunks'}] },
+  'claude-api': { title:'Anthropic API', color:'#0097e4', badge:'AI Layer', body:'<p>Two models in use. claude-haiku-4-5 handles fast, structured-output tasks: routing classification (512 tokens), synthesis (2048 tokens). claude-sonnet-4-6 handles the agentic loops in ComplianceAgent and InvestigationAgent where tool-use accuracy is critical.</p><p>Prompt caching (cache_control: ephemeral) on system prompts and the last pre-run traverse result reduces latency and cost on repeated calls.</p>', props:[{k:'Routing / Synthesis',v:'claude-haiku-4-5 (MODEL_FAST)'},{k:'Agent loops',v:'claude-sonnet-4-6 (MODEL_MAIN)'},{k:'Temperature',v:'0 for all calls'},{k:'Prompt cache',v:'System prompts + last pre-run result'}] },
+  'openai-api': { title:'OpenAI Embeddings', color:'#00c8a0', badge:'AI Layer', body:'<p>text-embedding-3-small generates 1536-dimensional embeddings for two purposes: (1) the Layer 2 pipeline (notebook 215) embeds all 189 regulatory chunks into Neo4j, (2) retrieve_regulatory_chunks embeds the query text at runtime for vector similarity search.</p>', props:[{k:'Model',v:'text-embedding-3-small'},{k:'Dimensions',v:'1536'},{k:'Pipeline use',v:'Notebook 215: all 189 chunks'},{k:'Runtime use',v:'retrieve_regulatory_chunks: per-query'}] },
+};
+
+/* ================================================================
+   PIPELINE DATA
+================================================================ */
+const PIPE_DATA = {
+  question: { title:'User Question', color:'#636b7a', badge:'Input', body:'<p>A natural language question from the compliance officer or investigator. Can reference specific entity IDs (LOAN-xxxx, BRW-xxxx) or ask general questions about the portfolio.</p><p>Examples: "Is LOAN-0002 compliant with APG-223?" / "Show suspicious connections around BRW-0001." / "Find all transaction structuring patterns."</p>', props:[{k:'Entity IDs',v:'Extracted by ENTITY_ID_RE regex in utils.py'},{k:'Modes',v:'Compliance · Investigation · Anomaly · Exploration · Evidence'}] },
+  routing: { title:'Orchestrator: Routing', color:'#00335a', badge:'Haiku Call', body:'<p>A single Claude Haiku call classifies the question into a structured routing plan. Uses cache_control: ephemeral on the ROUTING_SYSTEM prompt. Falls back to running both agents if the response is not valid JSON.</p>', props:[{k:'Model',v:'claude-haiku-4-5 (MODEL_FAST)'},{k:'Max tokens',v:'512 (ROUTING_MAX_TOKENS)'},{k:'Output',v:'JSON: entity_ids, entity_types, regulations, needs_* flags'},{k:'Fallback',v:'Both agents run if JSON parse fails'}] },
+  'comp-agent': { title:'ComplianceAgent Loop', color:'#00c8a0', badge:'Sonnet Agent', body:'<p>The ComplianceAgent pre-runs traverse_compliance_path in parallel for each regulation (ThreadPoolExecutor). Results are injected as tool_use/tool_result pairs before the first Claude call — eliminating one full API round-trip per regulation.</p><p>Required sequence: traverse (pre-run) → evaluate_thresholds → persist_assessment. retrieve_regulatory_chunks is optional for supporting regulatory text.</p>', props:[{k:'Pre-run',v:'traverse × N regs in parallel'},{k:'Max iterations',v:'14'},{k:'Short circuit',v:'Breaks when all assessments persisted'},{k:'Cache',v:'System prompt + last traverse result'}] },
+  'inv-agent': { title:'InvestigationAgent Loop', color:'#e07a20', badge:'Sonnet Agent', body:'<p>Pre-runs detect_graph_anomalies with entity-scoped patterns before the first Claude call. Tool call budget of 7 is enforced by the system prompt. Step 1: one comprehensive OPTIONAL MATCH chain. Step 2: anomaly pre-run results already in context. Steps 3–5: targeted follow-ups for confirmed risk signals.</p>', props:[{k:'Pre-run',v:'detect_graph_anomalies (entity-scoped patterns)'},{k:'Tool budget',v:'7 calls (system prompt enforced)'},{k:'History',v:'6 message pairs retained'},{k:'Output',v:'risk_signals[], connections[], cypher_used[]'}] },
+  synthesis: { title:'Orchestrator: Synthesis', color:'#636b7a', badge:'Haiku Call', body:'<p>After both agents complete, the Orchestrator fetches all Finding nodes from Neo4j using the persisted assessment_ids, calls trace_evidence for each assessment to populate cited_sections and cited_chunks, then makes a final Haiku synthesis call that produces the answer and recommended next steps.</p>', props:[{k:'Model',v:'claude-haiku-4-5 (MODEL_FAST)'},{k:'Max tokens',v:'2048 (SYNTHESIS_MAX_TOKENS)'},{k:'Verdict',v:'Worst-case across assessments using VERDICT_PRIORITY'},{k:'Streaming',v:'stream_callback for real-time UI updates'}] },
+  response: { title:'InvestigationResponse → Streamlit', color:'#0097e4', badge:'UI Render', body:'<p>The InvestigationResponse dataclass is stored in st.session_state.history and rendered by render_response(). Includes: verdict banner with confidence bar, routing expander with Plotly pipeline graph, analysis text, entity profile cards (fetched from Neo4j), evidence panel (cited sections + chunks), findings severity chart, recommended next steps.</p>', props:[{k:'Verdict banner',v:'COMPLIANT / NON_COMPLIANT / REQUIRES_REVIEW / ANOMALY_DETECTED'},{k:'Findings chart',v:'Clickable Plotly bar → cross-layer evidence graph'},{k:'Evidence',v:'Cited sections + chunks with similarity scores'},{k:'Entity profile',v:'L1 data fetched from Neo4j on render'}] },
+};
+
+/* ================================================================
+   GRAPH MODEL DATA
+================================================================ */
+const GM_DATA = {
+  borrower: { title:'Borrower', color:'#00335a', badge:'Layer 1 · Entity', body:'<p>Represents an individual (natural_person) or corporate (proprietary_company) borrower. Secondary labels :Individual and :Corporate are applied at load time from the type field.</p>', props:[{k:'borrower_id',v:'Primary key (BRW-xxxx)'},{k:'type',v:'individual | corporate'},{k:'credit_score',v:'Integer'},{k:'risk_rating',v:'high | medium | low'},{k:'annual_revenue',v:'Float (AUD) — 0 for individuals'},{k:'Secondary',v:':Individual or :Corporate'}] },
+  loanapp: { title:'LoanApplication', color:'#005490', badge:'Layer 1 · Entity', body:'<p>A residential secured loan application. Holds all the numeric fields that evaluate_thresholds reads — LVR, interest_rate_indicative, serviceability_assessment_rate, income_type, haircut fields.</p>', props:[{k:'loan_id',v:'Primary key (LOAN-xxxx)'},{k:'lvr',v:'Loan-to-value ratio (%) — key for THR-005'},{k:'serviceability_assessment_rate',v:'Used to compute buffer (assess_rate − indicative_rate)'},{k:'income_type',v:'salary | self_employed | mixed | rental'},{k:'Secondary',v:':ResidentialSecured'}] },
+  bankaccount: { title:'BankAccount', color:'#006a52', badge:'Layer 1 · Entity', body:'<p>A bank account belonging to a Borrower. Transactions flow through BankAccount nodes via FROM_ACCOUNT and TO_ACCOUNT relationships. The transaction_structuring anomaly pattern targets accounts receiving multiple sub-$10k suspicious transfers.</p>', props:[{k:'account_id',v:'Primary key (ACC-xxxx)'},{k:'average_monthly_balance',v:'Float (AUD)'},{k:'flagged_suspicious',v:'On Transaction nodes, not BankAccount'},{k:'Secondary',v:':PersonalTransaction | :BusinessTransaction | :CorporateCurrent'}] },
+  transaction: { title:'Transaction', color:'#c84040', badge:'Layer 1 · Entity', body:'<p>An individual debit/credit transaction. The key field for AML analysis is flagged_suspicious (bool). The transaction_structuring anomaly pattern finds accounts with ≥3 flagged_suspicious transactions each below $10,000 from distinct sources.</p>', props:[{k:'transaction_id',v:'Primary key (TXN-xxxx)'},{k:'flagged_suspicious',v:'Boolean — AML review flag'},{k:'amount',v:'Float (AUD)'},{k:'from_account_id / to_account_id',v:'Linked via FROM_ACCOUNT / TO_ACCOUNT rels'}] },
+  collateral: { title:'Collateral', color:'#e07a20', badge:'Layer 1 · Entity', body:'<p>Property securing a loan application. Linked via BACKED_BY from LoanApplication. The estimated_value and valuation_date are displayed in the Entity Profile panel. encumbered=true indicates the collateral is already pledged elsewhere.</p>', props:[{k:'collateral_id',v:'Primary key (COL-xxxx)'},{k:'estimated_value',v:'Float (AUD)'},{k:'valuation_source',v:'e.g. bank_panel_valuer'},{k:'encumbered',v:'Boolean — already pledged elsewhere'}] },
+  officer: { title:'Officer', color:'#553c9a', badge:'Layer 1 · Entity', body:'<p>A director or officer of a corporate Borrower. The two critical boolean flags — is_pep and sanctions_match — are surfaced as red badges in the Entity Profile panel. A single officer linked to multiple borrowers triggers the director_concentration anomaly pattern.</p>', props:[{k:'officer_id',v:'Primary key (OFF-xxxx)'},{k:'is_pep',v:'Boolean — Politically Exposed Person'},{k:'sanctions_match',v:'Boolean — matched on sanctions list'},{k:'Anomaly',v:'director_concentration: officer → 2+ borrowers'}] },
+  jurisdiction: { title:'Jurisdiction', color:'#00335a', badge:'Layer 1 · Bridge', body:'<p>The structural bridge between Layers 1 and 2. Borrowers link to Jurisdictions via RESIDES_IN (individuals) or REGISTERED_IN (corporates). Regulations link to Jurisdictions via APPLIES_TO_JURISDICTION. All APRA regulations point to JUR-AU-FED.</p><p>Adding compliance coverage for a new jurisdiction requires only new Jurisdiction nodes and APPLIES_TO_JURISDICTION edges — no code or schema changes.</p>', props:[{k:'jurisdiction_id',v:'Primary key (JUR-AU-FED, JUR-VU etc.)'},{k:'aml_risk_rating',v:'low | medium | high'},{k:'High-risk values',v:'JUR-VU (Vanuatu) · JUR-MM (Myanmar) · JUR-KH (Cambodia)'},{k:'Bridge',v:'All 3 APRA regs → APPLIES_TO_JURISDICTION → JUR-AU-FED'}] },
+  industry: { title:'Industry', color:'#005490', badge:'Layer 1 · Entity', body:'<p>ANZSIC industry classification for a Borrower. The high_risk_industry anomaly pattern flags borrowers in industries with aml_sensitivity=high — Gambling (IND-9530), Financial Asset Investing (IND-6240), Liquor & Tobacco Wholesaling (IND-5120).</p>', props:[{k:'industry_id',v:'Primary key (IND-xxxx)'},{k:'aml_sensitivity',v:'low | medium | high'},{k:'risk_category',v:'low | medium | high'},{k:'Notable',v:'IND-9530 Gambling · IND-6240 Financial Assets · IND-5120 Liquor'}] },
+  regulation: { title:'Regulation', color:'#006a52', badge:'Layer 2 · Regulatory', body:'<p>Represents an APRA prudential standard or practice guide. Three regulations are loaded: APS-112 (Capital Adequacy), APG-223 (Residential Mortgage Lending), APS-220 (Credit Risk Management). is_enforceable=true for APS documents, false for APG.</p>', props:[{k:'regulation_id',v:'APS-112 · APG-223 · APS-220'},{k:'is_enforceable',v:'true for APS, false for APG'},{k:'APPLIES_TO_JURISDICTION',v:'→ JUR-AU-FED (all three regulations)'}] },
+  section: { title:'Section', color:'#005490', badge:'Layer 2 · Regulatory', body:'<p>A section of an APRA document, extracted by Claude in notebook 211. Includes both a content_summary (paraphrased) and the full verbatim text field used for chunking. 101 sections loaded across 3 regulations.</p>', props:[{k:'section_id',v:'e.g. APG-223-S3'},{k:'text',v:'Full verbatim text (used for chunking)'},{k:'content_summary',v:'Claude-generated paraphrase'},{k:'section_type',v:'core | attachment | table | division | chapter'}] },
+  requirement: { title:'Requirement', color:'#00335a', badge:'Layer 2 · Regulatory', body:'<p>An obligation or expectation within a section. 219 requirement nodes loaded. is_quantitative=true indicates a numeric threshold is involved. severity=mandatory for APS requirements, expected or recommended for APG guidance.</p>', props:[{k:'requirement_id',v:'e.g. APG-223-REQ-015'},{k:'is_quantitative',v:'Boolean — whether a threshold exists'},{k:'applies_to_loan_type',v:'residential_secured | all'},{k:'severity',v:'mandatory | expected | recommended'}] },
+  threshold: { title:'Threshold', color:'#c84040', badge:'Layer 2 · Regulatory', body:'<p>A specific numeric compliance limit. threshold_type is the most important field — it determines whether evaluate_thresholds returns PASS/BREACH (minimum/maximum), TRIGGER (trigger), or N/A (informational). Compliance semantics live in data, not code.</p>', props:[{k:'threshold_id',v:'e.g. APG-223-THR-001'},{k:'threshold_type',v:'minimum | maximum | trigger | informational'},{k:'metric',v:'What is measured (e.g. serviceability_interest_rate_buffer)'},{k:'operator',v:'>= | <= | =='},{k:'value',v:'The numeric limit'}] },
+  chunk: { title:'Chunk', color:'#e07a20', badge:'Layer 2 · RAG', body:'<p>A ~300-token segment of section text, with a 1536-dimensional OpenAI embedding for semantic similarity search. SEMANTICALLY_SIMILAR edges connect cross-document chunk pairs with cosine similarity > 0.85. Preamble sections (cover pages, ToC) get their own PREAMBLE chunk nodes.</p>', props:[{k:'chunk_id',v:'e.g. APG-223-CHUNK-0007'},{k:'embedding',v:'1536-d float array (text-embedding-3-small)'},{k:'SEMANTICALLY_SIMILAR',v:'cosine > 0.85, cross-document only'},{k:'token_count',v:'~300 tokens per chunk'}] },
+  assessment: { title:'Assessment', color:'#006a52', badge:'Layer 3 · Audit', body:'<p>The root node of a compliance assessment in Layer 3. Created by persist_assessment via idempotent MERGE. One Assessment per (entity_id × regulation_id × timestamp) — the Orchestrator aggregates across all assessments for the worst-case verdict.</p>', props:[{k:'assessment_id',v:'ASSESS-{entity_id}-{reg_id}-{YYYY-MM-DD-HHMMSS}'},{k:'verdict',v:'COMPLIANT | NON_COMPLIANT | REQUIRES_REVIEW | ANOMALY_DETECTED | INFORMATIONAL'},{k:'confidence',v:'Float 0–1 (clamped)'},{k:'agent',v:'compliance_agent | investigation_agent'}] },
+  finding: { title:'Finding', color:'#c84040', badge:'Layer 3 · Audit', body:'<p>A specific compliance breach, risk signal, or anomaly detected during an assessment. Linked to Assessment via HAS_FINDING. Displayed in the Streamlit findings panel, sorted HIGH → MEDIUM → LOW → INFO. The findings severity chart is a clickable Plotly bar chart — clicking reveals the cross-layer evidence graph.</p>', props:[{k:'finding_id',v:'FIND-{assessment_id}-{NNN}'},{k:'finding_type',v:'compliance_breach | risk_signal | anomaly_pattern | information'},{k:'severity',v:'HIGH | MEDIUM | LOW | INFO'},{k:'pattern_name',v:'Linked to ANOMALY_REGISTRY key (nullable)'}] },
+  reasoningstep: { title:'ReasoningStep', color:'#00335a', badge:'Layer 3 · Audit', body:'<p>Records what the agent did in each reasoning step: what Cypher was run, which sections and chunks were cited. The CITES_CHUNK relationship carries a similarity_score property — written by persist_assessment, recovered by trace_evidence — so the Evidence panel shows scores without re-running vector search.</p>', props:[{k:'step_id',v:'STEP-{assessment_id}-{NNN}'},{k:'cypher_used',v:'The actual Cypher query executed in this step'},{k:'CITES_SECTION',v:'→ Section nodes referenced'},{k:'CITES_CHUNK {similarity_score}',v:'→ Chunk nodes with their original vector similarity score'}] },
+  /* ── Relationship entries ── */
+  'rel-from-account':     { title:'FROM_ACCOUNT / TO_ACCOUNT', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links a Transaction to the BankAccount it debited (FROM_ACCOUNT) or credited (TO_ACCOUNT). Both directions are stored, enabling full tracing of fund flows across the borrower network.</p>', props:[{k:'From',v:'Transaction'},{k:'To',v:'BankAccount'},{k:'AML use',v:'transaction_structuring: ≥3 suspicious sub-$10k transfers per account'}] },
+  'rel-director-of':      { title:'DIRECTOR_OF', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links an Officer node to the corporate Borrower they direct. Critical for UBO identification and the director_concentration anomaly pattern, which fires when one officer directs ≥2 borrowers.</p>', props:[{k:'From',v:'Officer'},{k:'To',v:'Borrower (Corporate)'},{k:'Flags',v:'is_pep · sanctions_match on Officer node'}] },
+  'rel-located-at':       { title:'LOCATED_AT', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links a Borrower to their registered Address node. Used for geolocation clustering and high-risk address pattern detection.</p>', props:[{k:'From',v:'Borrower'},{k:'To',v:'Address'}] },
+  'rel-has-account':      { title:'HAS_ACCOUNT', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links a Borrower to their BankAccount nodes. A Borrower may have multiple accounts across different account types (PersonalTransaction, BusinessTransaction, CorporateCurrent).</p>', props:[{k:'From',v:'Borrower'},{k:'To',v:'BankAccount'},{k:'Note',v:'791 BankAccount nodes across 628 Borrowers'}] },
+  'rel-registered-in':    { title:'REGISTERED_IN / RESIDES_IN', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links a Borrower to their Jurisdiction. REGISTERED_IN is used for corporate borrowers; RESIDES_IN for individuals. This traversal hop connects Layer 1 to Layer 2 via the Jurisdiction bridge node.</p>', props:[{k:'From',v:'Borrower'},{k:'To',v:'Jurisdiction'},{k:'Bridge',v:'Jurisdiction → APPLIES_TO_JURISDICTION → Regulation'}] },
+  'rel-guaranteed-by':    { title:'GUARANTEED_BY', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links a LoanApplication back to the Borrower acting as guarantor. The guarantor_concentration anomaly pattern fires when one borrower guarantees ≥2 loans.</p>', props:[{k:'From',v:'LoanApplication'},{k:'To',v:'Borrower'},{k:'Properties',v:'guarantee_amount · guarantee_type'}] },
+  'rel-submitted-by':     { title:'SUBMITTED_BY', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>The primary traversal entry point. Compliance checks begin with a LoanApplication and traverse SUBMITTED_BY to reach the Borrower, then REGISTERED_IN to reach the Jurisdiction.</p>', props:[{k:'From',v:'LoanApplication'},{k:'To',v:'Borrower'},{k:'Traversal',v:'LoanApp → SUBMITTED_BY → Borrower → REGISTERED_IN → Jurisdiction → Regulation'}] },
+  'rel-backed-by':        { title:'BACKED_BY', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links a LoanApplication to its Collateral node. Collateral holds estimated_value, valuation_date, and encumbered flag. Encumbered=true signals the asset is already pledged against another obligation.</p>', props:[{k:'From',v:'LoanApplication'},{k:'To',v:'Collateral'},{k:'Key fields',v:'estimated_value · valuation_source · encumbered'}] },
+  'rel-belongs-industry': { title:'BELONGS_TO_INDUSTRY', color:'#6b7280', badge:'Relationship · Layer 1', body:'<p>Links a Borrower to their Industry node. The high_risk_industry anomaly pattern fires when aml_sensitivity = "high" — e.g. Gambling (IND-9530), Financial Asset Investing (IND-6240).</p>', props:[{k:'From',v:'Borrower'},{k:'To',v:'Industry'},{k:'AML flag',v:'aml_sensitivity: high | medium | low'}] },
+  'rel-defines-threshold':{ title:'DEFINES_THRESHOLD / DEFINES_LIMIT', color:'#b45309', badge:'Relationship · Layer 2', body:'<p>Links a Requirement to its enforceable Threshold. The threshold_type field (minimum / maximum / trigger / informational) determines how evaluate_thresholds scores the entity.</p>', props:[{k:'From',v:'Requirement'},{k:'To',v:'Threshold'},{k:'threshold_type',v:'minimum · maximum · trigger · informational'}] },
+  'rel-has-requirement':  { title:'HAS_REQUIREMENT', color:'#b45309', badge:'Relationship · Layer 2', body:'<p>Links a Regulation to its Requirement nodes. 219 Requirement nodes exist across the 3 APRA regulations. Requirements with is_quantitative=true carry a Threshold.</p>', props:[{k:'From',v:'Regulation'},{k:'To',v:'Requirement'},{k:'Count',v:'219 across APS-112 · APG-223 · APS-220'}] },
+  'rel-has-section':      { title:'HAS_SECTION', color:'#b45309', badge:'Relationship · Layer 2', body:'<p>Links a Regulation to its Section nodes. 101 Sections exist. Sections carry verbatim regulatory text and a summary field used in the evidence panel UI.</p>', props:[{k:'From',v:'Regulation'},{k:'To',v:'Section'},{k:'Count',v:'101 Sections: 39 APS-112 · 37 APG-223 · 25 APS-220'}] },
+  'rel-next-section':     { title:'NEXT_SECTION', color:'#b45309', badge:'Relationship · Layer 2', body:'<p>Chains Section nodes in document order, enabling agents to navigate forward through a regulation and display sections in context order in the evidence panel.</p>', props:[{k:'From',v:'Section'},{k:'To',v:'Section (next in document)'}] },
+  'rel-cross-references': { title:'CROSS_REFERENCES', color:'#6b7280', badge:'Relationship · Layer 2 (dashed)', body:'<p>Links a Section to another Section it explicitly references. 30 CROSS_REFERENCES relationships exist, enabling inter-document dependency discovery without a separate lookup.</p>', props:[{k:'From',v:'Section'},{k:'To',v:'Section (referenced)'},{k:'Count',v:'30 across the full APRA dataset'}] },
+  'rel-has-chunk':        { title:'HAS_CHUNK', color:'#6d28d9', badge:'Relationship · Layer 2', body:'<p>Links a Section to its vector-embedded Chunk nodes. Each Chunk is ~300 tokens with a 1536-dimensional OpenAI embedding. retrieve_regulatory_chunks uses cosine similarity over the chunk_embeddings index.</p>', props:[{k:'From',v:'Section'},{k:'To',v:'Chunk'},{k:'Embedding',v:'text-embedding-3-small · 1536 dims · cosine'},{k:'Count',v:'189 Chunks total'}] },
+  'rel-next-chunk':       { title:'NEXT_CHUNK', color:'#6d28d9', badge:'Relationship · Layer 2', body:'<p>Chains Chunk nodes in document order within a Section. Allows context expansion — if a retrieved Chunk is relevant, the agent can navigate NEXT_CHUNK to fetch adjacent context.</p>', props:[{k:'From',v:'Chunk'},{k:'To',v:'Chunk (next in section)'}] },
+  'rel-sem-similar':      { title:'SEMANTICALLY_SIMILAR', color:'#6b7280', badge:'Relationship · Layer 2 (dashed)', body:'<p>Connects Chunks whose embeddings exceed a similarity threshold. Pre-computed at ingestion. Enables graph-native semantic expansion without re-running vector search.</p>', props:[{k:'From',v:'Chunk'},{k:'To',v:'Chunk'},{k:'Property',v:'similarity_score on relationship'}] },
+  'rel-applies-to-jur':   { title:'APPLIES_TO_JURISDICTION', color:'#1d4ed8', badge:'Relationship · Bridge L1↔L2', body:'<p>The structural bridge between Layers 1 and 2. All 3 APRA regulations point to JUR-AU-FED. Adding RBNZ or MAS coverage requires only new Jurisdiction nodes and APPLIES_TO_JURISDICTION edges — no schema or agent code changes.</p>', props:[{k:'From',v:'Regulation'},{k:'To',v:'Jurisdiction'},{k:'Currently',v:'All 3 regulations → JUR-AU-FED'},{k:'Extensibility',v:'New jurisdiction = new node + edge only'}] },
+  'rel-has-assessment':   { title:'HAS_ASSESSMENT', color:'#1d4ed8', badge:'Relationship · Layer 3', body:'<p>Links a LoanApplication (L1) to its Assessment node (L3). Written by persist_assessment at the end of each ComplianceAgent loop. MERGE on assessment_id makes this idempotent.</p>', props:[{k:'From',v:'LoanApplication (L1)'},{k:'To',v:'Assessment (L3)'},{k:'Write',v:'persist_assessment · MERGE on assessment_id'}] },
+  'rel-has-step':         { title:'HAS_STEP', color:'#1d4ed8', badge:'Relationship · Layer 3', body:'<p>Links an Assessment to each ReasoningStep the agent produced. One ReasoningStep is created per threshold group. If the agent ran Cypher during reasoning, it is stored in cypher_used on the ReasoningStep node.</p>', props:[{k:'From',v:'Assessment'},{k:'To',v:'ReasoningStep'},{k:'cypher_used',v:'Stored on ReasoningStep if agent ran a Cypher call'}] },
+  'rel-has-finding':      { title:'HAS_FINDING', color:'#e11d48', badge:'Relationship · Layer 3', body:'<p>Links an Assessment to each Finding produced. Findings carry severity (HIGH/MEDIUM/LOW/INFO), finding_type, and a natural language description rendered in the Streamlit key findings panel.</p>', props:[{k:'From',v:'Assessment'},{k:'To',v:'Finding'},{k:'severity',v:'HIGH · MEDIUM · LOW · INFO'},{k:'finding_type',v:'compliance_breach · risk_signal · anomaly_flag'}] },
+  'rel-assessed-under':   { title:'ASSESSED_UNDER', color:'#1d4ed8', badge:'Relationship · Layer 3', body:'<p>Links an Assessment to the Regulation it evaluated. One Assessment per (entity_id × regulation_id × timestamp). The Orchestrator aggregates across all Assessments for the worst-case verdict.</p>', props:[{k:'From',v:'Assessment'},{k:'To',v:'Regulation (L2)'},{k:'Pattern',v:'One Assessment per LoanApplication × Regulation pair'}] },
+  'rel-cites-section':    { title:'CITES_SECTION', color:'#0d9488', badge:'Relationship · Layer 3', body:'<p>Links a ReasoningStep to the Section it drew evidence from. Written by persist_assessment when section_ids are populated. Enables trace_evidence to reconstruct the full evidence chain without agent memory.</p>', props:[{k:'From',v:'ReasoningStep (L3)'},{k:'To',v:'Section (L2)'},{k:'Use',v:'trace_evidence · Streamlit evidence panel'}] },
+  'rel-cites-chunk':      { title:'CITES_CHUNK', color:'#0d9488', badge:'Relationship · Layer 3', body:'<p>Links a ReasoningStep to the vector-retrieved Chunk it cited. The cosine similarity_score from the original retrieve_regulatory_chunks call is stored on this relationship — recoverable by trace_evidence without re-running vector search.</p>', props:[{k:'From',v:'ReasoningStep (L3)'},{k:'To',v:'Chunk (L2)'},{k:'similarity_score',v:'Cosine similarity stored on relationship'}] },
+};
+
+
+/* ================================================================
+   COMPLIANCE DATA
+================================================================ */
+const COMP_DATA = {
+  'th-minimum': { title:'minimum threshold_type', color:'#00c8a0', badge:'Threshold Type', body:'<p>The entity must meet or equal the threshold value. evaluate_thresholds returns PASS when condition is True, BREACH when False. A BREACH from any minimum threshold drives the verdict to NON_COMPLIANT.</p>', props:[{k:'Condition',v:'actual >= limit (or <= for certain maximums)'},{k:'Passes',v:'PASS when True'},{k:'Fails',v:'BREACH when False → NON_COMPLIANT verdict'},{k:'Example',v:'serviceability_buffer >= 3.0 percentage points (THR-001)'}] },
+  'th-maximum': { title:'maximum threshold_type', color:'#0097e4', badge:'Threshold Type', body:'<p>The entity must not exceed the threshold value. BREACH when the condition is False (i.e. actual exceeds the limit). Used for ceiling constraints like concentration limits in APS-112.</p>', props:[{k:'Condition',v:'actual <= limit'},{k:'Passes',v:'PASS when actual ≤ limit'},{k:'Fails',v:'BREACH when actual > limit → NON_COMPLIANT'},{k:'Example',v:'APS-112 single asset concentration <= 25%'}] },
+  'th-trigger': { title:'trigger threshold_type', color:'#e07a20', badge:'Threshold Type', body:'<p>Fires a monitoring concern when the condition is met. Does not constitute a hard breach on its own — escalates the verdict to REQUIRES_REVIEW. Used for thresholds that require senior management review rather than automatic rejection.</p>', props:[{k:'Condition',v:'actual >= limit (or other operator)'},{k:'Fires',v:'TRIGGER when condition is True → REQUIRES_REVIEW'},{k:'Safe',v:'PASS when condition is False'},{k:'Example',v:'LVR >= 90.0% triggers senior management review (THR-005)'}] },
+  'th-informational': { title:'informational threshold_type', color:'#9ba3b0', badge:'Threshold Type', body:'<p>An ADI-level reference value used in calculations, not a per-entity pass/fail gate. Always returns N/A from evaluate_thresholds and is excluded from verdict logic. Examples: risk weight lookup tables, LMI loss coverage reference rates.</p>', props:[{k:'Always',v:'N/A — excluded from verdict aggregation'},{k:'Example',v:'THR-002: credit_card_revolving_debt_repayment_rate == 3%'},{k:'Purpose',v:'Used by ADIs for internal calculations, not loan-level gates'},{k:'Count',v:'Majority of thresholds in dataset (reference tables)'}] },
+  thr001: { title:'APG-223-THR-001', color:'#00c8a0', badge:'APG-223 · minimum', body:'<p>The most commonly breached threshold in the dataset. The serviceability buffer is computed as serviceability_assessment_rate − interest_rate_indicative. If the buffer is below 3.0 percentage points, the loan is NON_COMPLIANT.</p>', props:[{k:'Metric',v:'serviceability_interest_rate_buffer'},{k:'Condition',v:'>= 3.0 percent'},{k:'Type',v:'minimum'},{k:'Derived',v:'assessment_rate − indicative_rate (calculated in evaluate_thresholds)'}] },
+  thr002: { title:'APG-223-THR-002', color:'#9ba3b0', badge:'APG-223 · informational', body:'<p>A reference value only. APRA guidance that a 3% per month repayment rate is an example of a suitably prudent approach for credit card revolving debt — not a binding per-loan threshold. Always returns N/A from evaluate_thresholds.</p>', props:[{k:'Metric',v:'credit_card_revolving_debt_repayment_rate'},{k:'Condition',v:'== 3.0 percent per month'},{k:'Type',v:'informational — always N/A'},{k:'Impact',v:'Zero — excluded from verdict logic'}] },
+  thr003: { title:'APG-223-THR-003', color:'#00c8a0', badge:'APG-223 · minimum', body:'<p>Applies only when income_type is not salary. The ComplianceAgent conditionally excludes this threshold from the evaluate_thresholds call for pure salary borrowers. If non_salary_income_haircut_pct is null for a non-salary loan, status=unknown is returned, driving REQUIRES_REVIEW.</p>', props:[{k:'Metric',v:'non_salary_income_haircut'},{k:'Condition',v:'>= 20.0 percent'},{k:'Type',v:'minimum'},{k:'Conditional',v:'Skipped if income_type == "salary"'}] },
+  thr004: { title:'APG-223-THR-004', color:'#00c8a0', badge:'APG-223 · minimum', body:'<p>Applies only when rental_income_gross is present on the LoanApplication. If rental_income_gross is null, this threshold is N/A for that loan. Prevents false positives for loans with no rental income component.</p>', props:[{k:'Metric',v:'rental_income_haircut'},{k:'Condition',v:'>= 20.0 percent'},{k:'Type',v:'minimum'},{k:'Conditional',v:'Skipped if rental_income_gross is absent'}] },
+  thr005: { title:'APG-223-THR-005', color:'#e07a20', badge:'APG-223 · trigger', body:'<p>Fires a REQUIRES_REVIEW concern when LVR (including capitalised LMI) is at or above 90%. Per APG-223, this requires senior management review with Board oversight — but the loan is not automatically rejected. 63 loans in the dataset trigger this.</p>', props:[{k:'Metric',v:'LVR'},{k:'Condition',v:'>= 90.0 percent'},{k:'Type',v:'trigger'},{k:'Dataset',v:'63 of 466 loans (13.5%) trigger this'},{k:'Verdict',v:'REQUIRES_REVIEW (unless BREACH also present → NON_COMPLIANT)'}] },
+  'v-noncompliant': { title:'NON_COMPLIANT', color:'#c84040', badge:'Verdict · Priority 4', body:'<p>The worst verdict. Any threshold returning BREACH drives the verdict to NON_COMPLIANT, regardless of other results. BREACH takes priority over TRIGGER — a loan with both a serviceability buffer breach and LVR ≥ 90% is NON_COMPLIANT, not REQUIRES_REVIEW.</p>', props:[{k:'Trigger',v:'Any threshold status == BREACH'},{k:'Priority',v:'4 (highest — wins over all other verdicts)'},{k:'Dataset',v:'39 loans (8%) NON_COMPLIANT under APG-223'},{k:'Colour',v:'#dc3545 (red) in Streamlit verdict banner'}] },
+  'v-review': { title:'REQUIRES_REVIEW', color:'#e07a20', badge:'Verdict · Priority 3', body:'<p>Manual review is recommended. Triggered when any threshold returns TRIGGER (and no BREACH), or when a material entity-level threshold has status=unknown due to missing data.</p>', props:[{k:'Trigger',v:'Any TRIGGER status, no BREACH; or status=unknown on material threshold'},{k:'Priority',v:'3'},{k:'Dataset',v:'61 loans (13%) REQUIRES_REVIEW under APG-223'},{k:'Colour',v:'#fd7e14 (orange) in Streamlit verdict banner'}] },
+  'v-anomaly': { title:'ANOMALY_DETECTED', color:'#c84040', badge:'Verdict · Priority 2', body:'<p>Graph-level anomaly detected. Used by the InvestigationAgent when anomaly patterns fire. Priority 2 means it is overridden by compliance-driven verdicts but surfaced when no threshold evaluation has occurred.</p>', props:[{k:'Trigger',v:'Anomaly patterns fire, no threshold BREACH/TRIGGER'},{k:'Priority',v:'2'},{k:'Source',v:'InvestigationAgent (via persist_assessment with verdict=ANOMALY_DETECTED)'}] },
+  'v-compliant': { title:'COMPLIANT', color:'#00c8a0', badge:'Verdict · Priority 1', body:'<p>All applicable thresholds evaluated and passed. No BREACH, no TRIGGER, no unknown status on material thresholds. The Orchestrator reports COMPLIANT only when this is the worst-case verdict across all regulations assessed.</p>', props:[{k:'Trigger',v:'All thresholds PASS, no TRIGGER, no unknown'},{k:'Priority',v:'1'},{k:'Dataset',v:'366 loans (79%) COMPLIANT under APG-223'},{k:'Colour',v:'#28a745 (green) in Streamlit verdict banner'}] },
+  'v-info': { title:'INFORMATIONAL', color:'#9ba3b0', badge:'Verdict · Priority 0', body:'<p>No compliance issues found, or the query was informational in nature. The default verdict when no compliance or investigation verdict has been established. Used for portfolio-level questions not tied to a specific entity threshold check.</p>', props:[{k:'Trigger',v:'No assessment, or all thresholds N/A'},{k:'Priority',v:'0 (lowest)'},{k:'Colour',v:'#6c757d (grey) in Streamlit verdict banner'}] },
+  'anom-struct': { title:'transaction_structuring', color:'#c84040', badge:'Anomaly · HIGH', body:'<p>Multiple sub-$10,000 suspicious transactions flowing into the same bank account from distinct sources. Consistent with structuring to avoid AUSTRAC Threshold Transaction Reporting obligations. Three clusters detected in the dataset (ACC-0596, ACC-0603, ACC-0610).</p>', props:[{k:'Cypher',v:'flagged_suspicious=true AND amount < 10000 grouped by target account'},{k:'Threshold',v:'≥ 3 qualifying transactions per account'},{k:'id_key',v:'target_account'},{k:'Dataset',v:'3 findings: ACC-0610 (7 tx), ACC-0596 (6 tx), ACC-0603 (6 tx)'}] },
+  'anom-lvr': { title:'high_lvr_loans', color:'#c84040', badge:'Anomaly · HIGH', body:'<p>Loan applications with LVR ≥ 90% — linked to APG-223-THR-005 in the registry. 63 loans in the dataset trigger this pattern. The threshold_id field on AnomalyPattern allows the Orchestrator to enrich findings with the regulatory link automatically.</p>', props:[{k:'Cypher',v:'MATCH (l:LoanApplication) WHERE l.lvr >= 90'},{k:'threshold_id',v:'APG-223-THR-005'},{k:'id_key',v:'loan_id'},{k:'Dataset',v:'63 findings (13.5% of 466 loans)'}] },
+  'anom-jur': { title:'high_risk_jurisdiction', color:'#c84040', badge:'Anomaly · HIGH', body:'<p>Borrowers residing in or registered in jurisdictions with aml_risk_rating = "high". The three high-risk jurisdictions in the dataset are Vanuatu (JUR-VU), Myanmar (JUR-MM), and Cambodia (JUR-KH).</p>', props:[{k:'Cypher',v:'MATCH (b:Borrower)-[:RESIDES_IN|REGISTERED_IN]->(j) WHERE j.aml_risk_rating = "high"'},{k:'id_key',v:'borrower_id'},{k:'Dataset',v:'2 findings: BRW-0624 and BRW-0627 (both registered in JUR-KH Cambodia)'}] },
+  'anom-ind': { title:'high_risk_industry', color:'#e07a20', badge:'Anomaly · MEDIUM', body:'<p>Borrowers operating in industries with high AML sensitivity — Gambling (IND-9530), Financial Asset Investing (IND-6240), Liquor & Tobacco Wholesaling (IND-5120). Requires enhanced due diligence under AUSTRAC guidance.</p>', props:[{k:'Cypher',v:'MATCH (b:Borrower)-[:BELONGS_TO_INDUSTRY]->(i) WHERE i.aml_sensitivity = "high"'},{k:'id_key',v:'borrower_id'},{k:'Dataset',v:'2 findings: BRW-0624 and BRW-0627 (Gambling Activities)'}] },
+  'anom-own': { title:'layered_ownership', color:'#e07a20', badge:'Anomaly · MEDIUM', body:'<p>Multi-hop OWNS chains of depth ≥ 2. The OWNS relationship carries ownership_percentage. Layered structures may obscure beneficial ownership or aggregate credit exposure across related entities. The BRW-0582 chain is 3 hops deep: BRW-0582 → BRW-0581 → BRW-0580 → BRW-0579, routing through a Hong Kong entity.</p>', props:[{k:'Cypher',v:'MATCH path = (owner:Borrower)-[:OWNS*2..]->(sub:Borrower)'},{k:'id_key',v:'ultimate_owner_id'},{k:'Dataset',v:'6 findings: two 3-hop chains detected'},{k:'Example',v:'BRW-0582 (Sakura Campbell, Myanmar) → HK entity → AU holding → AU operating'}] },
+  'anom-guar': { title:'guarantor_concentration', color:'#e07a20', badge:'Anomaly · MEDIUM', body:'<p>Borrowers acting as guarantor on 2 or more loan applications, creating contingent liability exposure not visible from single-loan review. The guarantee amount and type are stored on the GUARANTEED_BY relationship.</p>', props:[{k:'Cypher',v:'MATCH (b:Borrower)<-[:GUARANTEED_BY]-(l:LoanApplication) WITH b, count(l) AS degree WHERE degree >= 2'},{k:'id_key',v:'borrower_id'},{k:'Dataset',v:'0 findings in current dataset (pattern available for real portfolios)'}] },
+};
+
+/* ================================================================
+   SEQUENCE DATA
+================================================================ */
+const SEQ_DATA = {
+  's-question': { title:'User Question Submitted', color:'#636b7a', badge:'Input', body:'<p>The compliance officer types a question into the Streamlit chat input. The question is stored in st.session_state.history as a user message. The Orchestrator.run() method is called in a spinner block.</p>', props:[{k:'Input',v:'Natural language question string'},{k:'Entity IDs',v:'Extracted by ENTITY_ID_RE regex in utils.py'},{k:'History',v:'Appended to st.session_state.history'}] },
+  's-route': { title:'Haiku Routing Call', color:'#0097e4', badge:'AI · claude-haiku-4-5', body:'<p>A single Claude Haiku call with the ROUTING_SYSTEM prompt (cache_control: ephemeral). Returns a JSON routing plan in under 1 second. Falls back to running both agents if JSON parsing fails.</p>', props:[{k:'Model',v:'claude-haiku-4-5'},{k:'Max tokens',v:'512'},{k:'Output',v:'JSON: entity_ids, entity_types, regulations, needs_* flags'},{k:'Cache',v:'ROUTING_SYSTEM marked ephemeral'}] },
+  's-route-ret': { title:'JSON Routing Plan Returned', color:'#636b7a', badge:'Response', body:'<p>The routing plan is parsed and stored. The Orchestrator resolves which regulations to check (caller-supplied > known graph regulations > empty fallback). Parallel dispatch is triggered when both needs_compliance_agent and needs_investigation_agent are true.</p>', props:[{k:'Content',v:'intents, entity_ids, entity_types, regulations, needs_* flags'},{k:'Fallback',v:'Both agents run if JSON parse fails'},{k:'Next',v:'ThreadPoolExecutor(max_workers=2) if both agents needed'}] },
+  's-traverse': { title:'Pre-Run: traverse_compliance_path', color:'#00335a', badge:'ComplianceAgent · Pre-Run', body:'<p>Before the first Claude call, the ComplianceAgent pre-runs traverse_compliance_path for each regulation in parallel (ThreadPoolExecutor). Results are injected as tool_use/tool_result pairs at the top of the message history — eliminating one full Sonnet API round-trip per regulation.</p>', props:[{k:'Parallelism',v:'ThreadPoolExecutor — all regs fetched simultaneously'},{k:'Injected as',v:'Synthetic tool_use + tool_result pairs in messages[]'},{k:'Cache',v:'Last traverse result marked cache_control: ephemeral'},{k:'Saves',v:'~4–6s per regulation traversal avoided'}] },
+  's-traverse-ret': { title:'Layer 2 Subgraph Returned', color:'#636b7a', badge:'Response', body:'<p>The full regulatory subgraph for each regulation is now in the agent context: Regulation → Section → Requirement → Threshold nodes with all threshold_type fields. The ComplianceAgent system prompt instructs Claude not to call traverse again unless a missing regulation is needed.</p>', props:[{k:'Content',v:'Entity profile + jurisdiction + regulations + sections + requirements + thresholds'},{k:'threshold_type',v:'minimum | maximum | trigger | informational on each threshold'},{k:'Injected',v:'Pre-run messages + cache_control marker'}] },
+  's-evaluate': { title:'evaluate_thresholds Tool Call', color:'#00335a', badge:'ComplianceAgent · Tool', body:'<p>The ComplianceAgent calls evaluate_thresholds with the non-informational thresholds for each regulation. The tool fetches actual entity values from Neo4j (via get_entity_compliance_values) and runs deterministic Python comparisons — no LLM arithmetic.</p>', props:[{k:'Inputs',v:'Threshold[] from traverse result (informational excluded)'},{k:'Fetches',v:'get_entity_compliance_values → LoanApplication properties'},{k:'Returns',v:'PASS / BREACH / TRIGGER / N/A per threshold + margins'},{k:'Verdict basis',v:'Authoritative — Claude uses these results, not its own calculation'}] },
+  's-persist': { title:'persist_assessment → Layer 3', color:'#00c8a0', badge:'ComplianceAgent · Layer 3 Write', body:'<p>After evaluating thresholds and optionally retrieving supporting chunks, the ComplianceAgent calls persist_assessment. The tool deep-copies the reasoning step dicts and injects chunk_scores (similarity scores from vector search) before executing batch MERGE operations in Neo4j.</p>', props:[{k:'Writes',v:'Assessment + Finding[] + ReasoningStep[] nodes'},{k:'Score injection',v:'chunk_scores injected into reasoning_steps before persist'},{k:'Idempotent',v:'MERGE on assessment_id — safe to re-run'},{k:'Short circuit',v:'Agent loop breaks after all regulations persisted'}] },
+  's-anomaly': { title:'Pre-Run: detect_graph_anomalies', color:'#e07a20', badge:'InvestigationAgent · Pre-Run', body:'<p>Before the first Claude call, the InvestigationAgent pre-runs detect_graph_anomalies with entity-scoped patterns. The result is injected into the message context with cache_control: ephemeral — saving one tool call from the 7-call budget.</p>', props:[{k:'Patterns',v:'Entity-type scoped: LOAN → high_lvr only; BRW → all borrower patterns'},{k:'Scoping',v:'entity_id passed → MATCH clause modified to filter'},{k:'Injected',v:'Pre-run anomaly result in initial messages[]'},{k:'Budget',v:'Pre-run does not count toward 7-tool budget'}] },
+  's-cypher': { title:'Graph Traversal (read-neo4j-cypher)', color:'#005490', badge:'InvestigationAgent · Tool', body:'<p>The InvestigationAgent runs Claude-generated Cypher queries against Neo4j. The recommended workflow is one comprehensive OPTIONAL MATCH chain as the first query — fetching the entity plus all first-degree relationships in a single round-trip.</p>', props:[{k:'First query',v:'One comprehensive OPTIONAL MATCH across all relationship types'},{k:'Guard',v:'guard_tool_result() wraps every result in [TOOL DATA] framing'},{k:'Injection defence',v:'9 regex patterns checked; logged if matched'},{k:'Cypher tracked',v:'Stored in cypher_used[] for Streamlit expander'}] },
+  's-fetch': { title:'Fetch Findings + trace_evidence', color:'#00335a', badge:'Orchestrator · Post-Agent', body:'<p>After both agents complete, the Orchestrator fetches all Finding nodes from Neo4j using the persisted assessment_ids (single _FINDINGS_QUERY). Then calls trace_evidence for each assessment ID to populate cited_sections and cited_chunks with similarity scores.</p>', props:[{k:'Findings query',v:'MATCH (a:Assessment)-[:HAS_FINDING]->(f) WHERE a.assessment_id IN $ids'},{k:'trace_evidence',v:'Walks Assessment → ReasoningStep → Section/Chunk'},{k:'Score recovery',v:'similarity_score from CITES_CHUNK relationship property'},{k:'Aggregation',v:'VERDICT_PRIORITY worst-case across all assessments'}] },
+  's-synthesis': { title:'Haiku Synthesis Call', color:'#0097e4', badge:'AI · claude-haiku-4-5 · Streaming', body:'<p>The Orchestrator builds a context string from agent outputs and calls Haiku for the final synthesis. When a stream_callback is provided (Streamlit mode), synthesis streams in real-time. The SYNTHESIS_SYSTEM prompt carries cache_control: ephemeral.</p>', props:[{k:'Model',v:'claude-haiku-4-5 (MODEL_FAST)'},{k:'Max tokens',v:'2048'},{k:'Streaming',v:'stream_callback chunks appear in Streamlit in real-time'},{k:'Output',v:'Answer text + "RECOMMENDED NEXT STEPS:" section (split at delimiter)'}] },
+  's-response': { title:'InvestigationResponse Returned', color:'#00c8a0', badge:'Complete', body:'<p>The InvestigationResponse is stored in st.session_state.history and rendered by render_response(). Includes the full structured result: answer, verdict, confidence, findings, Cypher used, cited sections/chunks, and recommended next steps.</p>', props:[{k:'Fields',v:'answer, verdict, confidence, findings[], cypher_used[], cited_sections[], cited_chunks[], recommended_next_steps[]'},{k:'UI',v:'Verdict banner → Routing → Analysis → Entity Profile → Evidence → Findings → Next Steps'},{k:'Timing',v:'elapsed_s displayed in assessment footer'}] },
+};
+
+/* ================================================================
+   GENERIC RENDERER
+================================================================ */
+function renderDetail(panelId, idleId, contentId, data) {
+  const idle    = document.getElementById(idleId);
+  const content = document.getElementById(contentId);
+  if (!data) return;
+  idle.style.display = 'none';
+  content.style.display = 'block';
+  const propsHtml = data.props ? data.props.map(p =>
+    `<div class="dp-prop"><span class="dp-prop-key">${p.k}</span><span class="dp-prop-val">${p.v}</span></div>`
+  ).join('') : '';
+  content.innerHTML = `
+    <div class="dp-badge" style="background:${data.color}18;color:${data.color};">${data.badge}</div>
+    <div class="dp-title">${data.title}</div>
+    <div class="dp-body">${data.body}</div>
+    ${propsHtml ? `<div class="dp-props">${propsHtml}</div>` : ''}
+  `;
+}
+
+function clearSel(diag) {
+  document.querySelectorAll(`[data-diag="${diag}"]`).forEach(el => el.classList.remove('selected','active-row'));
+}
+
+/* Architecture */
+document.querySelectorAll('[data-diag="arch"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    clearSel('arch');
+    this.classList.add('selected');
+    renderDetail('arch-detail', 'arch-idle', 'arch-content', ARCH_DATA[this.dataset.node]);
+  });
+});
+
+/* Pipeline */
+document.querySelectorAll('[data-diag="pipe"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    clearSel('pipe');
+    this.classList.add('selected');
+    renderDetail('pipe-detail', 'pipe-idle', 'pipe-content', PIPE_DATA[this.dataset.node]);
+  });
+});
+
+/* Graph Model — nodes and relationship labels */
+function gmClick(e) {
+  e.stopPropagation();
+  clearSel('gm');
+  this.classList.add('selected');
+  const data = GM_DATA[this.dataset.node];
+  const idle    = document.getElementById('gm-idle');
+  const content = document.getElementById('gm-content');
+  if (!data) return;
+  idle.style.display = 'none';
+  content.style.display = 'block';
+  const propsHtml = data.props ? data.props.map(p =>
+    `<div class="dp-prop"><span class="dp-prop-key">${p.k}</span><span class="dp-prop-val">${p.v}</span></div>`
+  ).join('') : '';
+  content.innerHTML = `
+    <div class="dp-badge" style="background:${data.color}22;color:${data.color};border:1px solid ${data.color}44;">${data.badge}</div>
+    <div class="dp-title" style="color:${data.color};">${data.title}</div>
+    <div class="dp-body">${data.body}</div>
+    ${propsHtml ? `<div class="dp-props">${propsHtml}</div>` : ''}
+  `;
+}
+document.querySelectorAll('.gnode, .grel').forEach(el => {
+  el.addEventListener('click', gmClick);
+});
+
+/* Compliance */
+document.querySelectorAll('[data-diag="comp"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    clearSel('comp');
+    this.classList.add('selected');
+    renderDetail('comp-detail', 'comp-idle', 'comp-content', COMP_DATA[this.dataset.node]);
+  });
+});
+
+/* Sequence */
+document.querySelectorAll('[data-diag="seq"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    clearSel('seq');
+    this.classList.add('active-row');
+    renderDetail('seq-detail', 'seq-idle', 'seq-content', SEQ_DATA[this.dataset.node]);
+  });
+});
+
+/* TAB SWITCHING */
+const tabBtns = document.querySelectorAll('.tab-btn');
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => { b.classList.toggle('active', b === btn); });
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === btn.dataset.target));
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

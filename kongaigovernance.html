@@ -1,0 +1,2443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Entity Risk AI — Governed Agentic AI with Kong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ================================================================
+   TOKENS
+================================================================ */
+:root{
+  --ink:#111318;--ink-2:#313640;--ink-3:#636b7a;--ink-4:#9ba3b0;
+  --surface:#f8f8f6;--surf-2:#f0efe9;--surf-3:#e8e6de;
+  --border:#e2e0d8;--border-2:#cac8be;
+  --kong:#00335a;--kong-2:#005490;--kong-3:#0075c2;
+  --accent:#0097e4;--go:#00c8a0;--warn:#e07a20;--danger:#c84040;
+  --f-display:'Fraunces',Georgia,serif;
+  --f-body:'Plus Jakarta Sans',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono','Courier New',monospace;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;
+  --sp-6:32px;--sp-7:48px;--sp-8:64px;--sp-9:96px;
+  --max-w:1180px;--header-h:60px;--tab-h:44px;--chrome-h:104px;
+  --r-sm:5px;--r-md:10px;--r-lg:16px;
+  --sh-sm:0 1px 4px rgba(0,0,0,.06),0 2px 12px rgba(0,0,0,.04);
+  --sh-md:0 4px 20px rgba(0,0,0,.09),0 1px 4px rgba(0,0,0,.04);
+  --sh-lg:0 12px 48px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.06);
+  --ease:cubic-bezier(.4,0,.2,1);--dur:200ms;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--f-body);background:var(--surface);color:var(--ink);line-height:1.6;}
+img{display:block;max-width:100%;}
+button{cursor:pointer;}
+a{color:inherit;text-decoration:none;}
+
+/* ================================================================
+   HEADER
+================================================================ */
+.site-header{
+  position:fixed;top:0;left:0;right:0;height:var(--header-h);z-index:200;
+  background:rgba(248,248,246,.96);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 var(--sp-7);
+}
+.header-inner{width:100%;max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;gap:var(--sp-5);}
+.header-logo{display:flex;align-items:center;gap:var(--sp-3);flex-shrink:0;}
+.logo-box{width:30px;height:30px;background:var(--kong);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;}
+.logo-box svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.header-wordmark{font-weight:700;font-size:13.5px;color:var(--ink);letter-spacing:-.01em;}
+.header-sep{width:1px;height:18px;background:var(--border-2);flex-shrink:0;}
+.header-sub{font-family:var(--f-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em;flex:1;}
+.presenter-corner{display:flex;align-items:center;gap:var(--sp-3);flex-shrink:0;margin-left:auto;}
+.presenter-text{text-align:right;}
+.presenter-name{font-size:12px;font-weight:600;color:var(--ink);line-height:1.2;}
+.presenter-role{font-family:var(--f-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.03em;margin-top:2px;}
+.presenter-photo{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);overflow:hidden;background:var(--surf-2);flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.photo-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--kong);background:linear-gradient(135deg,#d8eaf5,#bfd7ee);}
+
+/* ================================================================
+   TABS
+================================================================ */
+.tab-nav{
+  position:fixed;top:var(--header-h);left:0;right:0;height:var(--tab-h);z-index:190;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:stretch;padding:0 var(--sp-7);
+  overflow-x:auto;scrollbar-width:none;
+}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-nav-inner{display:flex;align-items:stretch;max-width:var(--max-w);width:100%;margin:0 auto;}
+.tab-btn{
+  display:inline-flex;align-items:center;gap:var(--sp-2);padding:0 var(--sp-5);
+  background:none;border:none;font-family:var(--f-body);
+  font-size:12.5px;font-weight:500;color:var(--ink-3);white-space:nowrap;
+  position:relative;transition:color var(--dur) var(--ease);
+}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:var(--sp-5);right:var(--sp-5);height:2px;background:var(--kong);border-radius:2px 2px 0 0;transform:scaleX(0);transition:transform var(--dur) var(--ease);}
+.tab-btn:hover{color:var(--ink-2);}
+.tab-btn.active{color:var(--ink);font-weight:600;}
+.tab-btn.active::after{transform:scaleX(1);}
+.tab-num{width:17px;height:17px;border-radius:50%;background:var(--surf-3);font-family:var(--f-mono);font-size:9px;color:var(--ink-3);display:inline-flex;align-items:center;justify-content:center;transition:background var(--dur) var(--ease),color var(--dur) var(--ease);}
+.tab-btn.active .tab-num{background:var(--kong);color:#fff;}
+
+/* ================================================================
+   MAIN / PANELS
+================================================================ */
+main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
+.panel{display:none;}
+.panel.active{display:block;animation:fade-in var(--dur) var(--ease) both;}
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+
+/* ================================================================
+   SUMMARY PANEL — reused styles
+================================================================ */
+.hero{background:var(--kong);color:#fff;padding:var(--sp-9) var(--sp-7) var(--sp-8);}
+.hero-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1fr 295px;gap:var(--sp-8);align-items:center;}
+@media(max-width:860px){.hero-inner{grid-template-columns:1fr;}.hero-aside{display:none;}}
+.hero-kicker{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:var(--sp-4);display:flex;align-items:center;gap:var(--sp-2);}
+.kicker-dot{width:5px;height:5px;border-radius:50%;background:var(--go);flex-shrink:0;}
+.hero-headline{font-family:var(--f-display);font-size:clamp(24px,3.2vw,42px);font-weight:700;line-height:1.14;color:#fff;letter-spacing:-.02em;margin-bottom:var(--sp-5);}
+.hero-headline em{font-style:italic;color:rgba(255,255,255,.7);}
+.hero-body{font-size:15px;color:rgba(255,255,255,.62);line-height:1.75;max-width:540px;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-6);}
+.tag{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-sm);padding:3px 8px;}
+.hero-aside{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:var(--r-lg);padding:var(--sp-5);}
+.aside-label{font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.30);margin-bottom:var(--sp-4);}
+.aside-stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+.aside-stat{background:rgba(255,255,255,.06);border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);}
+.aside-stat-value{font-family:var(--f-display);font-size:26px;font-weight:700;color:#fff;line-height:1;}
+.aside-stat-label{font-size:10px;color:rgba(255,255,255,.38);margin-top:3px;font-family:var(--f-mono);}
+.summary-body{max-width:var(--max-w);margin:0 auto;padding:var(--sp-8) var(--sp-7);}
+.section-eyebrow{font-family:var(--f-mono);font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-3);}
+.section-title{font-family:var(--f-display);font-size:clamp(18px,2vw,24px);font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:var(--sp-5);}
+.exec-pullout{background:#fff;border:1px solid var(--border);border-left:3px solid var(--kong);border-radius:0 var(--r-md) var(--r-md) 0;padding:var(--sp-5) var(--sp-6);margin-bottom:var(--sp-8);box-shadow:var(--sh-sm);}
+.exec-pullout p{font-size:15px;color:var(--ink-2);line-height:1.8;}
+.exec-pullout strong{color:var(--ink);font-weight:600;}
+.prose-cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-7);margin-bottom:var(--sp-8);}
+@media(max-width:720px){.prose-cols{grid-template-columns:1fr;}}
+.prose-block h3{font-family:var(--f-display);font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.015em;margin-bottom:var(--sp-3);}
+.prose-block p{font-size:13.5px;color:var(--ink-2);line-height:1.78;}
+.prose-block p+p{margin-top:var(--sp-3);}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--sp-4);margin-bottom:var(--sp-8);}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:var(--sp-5);transition:box-shadow var(--dur) var(--ease);}
+.card:hover{box-shadow:var(--sh-md);}
+.card-icon{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:var(--sp-4);}
+.ci-navy{background:rgba(0,51,90,.08);}.ci-blue{background:rgba(0,151,228,.10);}.ci-teal{background:rgba(0,200,160,.10);}.ci-amber{background:rgba(224,122,32,.10);}.ci-danger{background:rgba(200,64,64,.08);}
+.card-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:var(--sp-2);}
+.card-desc{font-size:12.5px;color:var(--ink-3);line-height:1.65;}
+.mono{font-family:var(--f-mono);font-size:11px;background:var(--surf-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:1px 5px;color:var(--ink-2);}
+.layers-band{background:var(--kong);border-radius:var(--r-lg);padding:var(--sp-6);margin-bottom:var(--sp-8);position:relative;overflow:hidden;}
+.layers-band-label{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.30);margin-bottom:var(--sp-4);}
+.layers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3);}
+@media(max-width:680px){.layers-grid{grid-template-columns:repeat(2,1fr);}}
+.layer-cell{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-sm);padding:var(--sp-4);}
+.layer-num{font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.28);margin-bottom:4px;}
+.layer-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:4px;}
+.layer-detail{font-size:11px;color:rgba(255,255,255,.40);line-height:1.5;}
+.kong-role{margin-bottom:var(--sp-8);}
+.kong-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);}
+@media(max-width:680px){.kong-role-grid{grid-template-columns:1fr;}}
+.kong-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:var(--sp-5);}
+.kong-card-header{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-4);padding-bottom:var(--sp-4);border-bottom:1px solid var(--border);}
+.kong-badge{font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:var(--r-sm);}
+.kb-mcp{background:rgba(0,51,90,.10);color:var(--kong);}
+.kb-ai{background:rgba(0,151,228,.12);color:var(--kong-2);}
+.kong-card-title{font-size:13px;font-weight:600;color:var(--ink);}
+.kong-card-body{font-size:13px;color:var(--ink-3);line-height:1.7;}
+.why-section{border-top:1px solid var(--border);padding-top:var(--sp-7);}
+.why-list{list-style:none;display:flex;flex-direction:column;gap:var(--sp-4);}
+.why-item{display:flex;align-items:flex-start;gap:var(--sp-4);padding:var(--sp-4);background:#fff;border:1px solid var(--border);border-radius:var(--r-md);}
+.why-num{width:22px;height:22px;border-radius:50%;background:var(--kong);color:#fff;font-family:var(--f-mono);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.why-text{font-size:13.5px;color:var(--ink-2);line-height:1.7;}
+.why-text strong{color:var(--ink);font-weight:600;}
+.mt-6{margin-top:var(--sp-6);}.mt-8{margin-top:var(--sp-8);}.mb-6{margin-bottom:var(--sp-6);}.mb-8{margin-bottom:var(--sp-8);}
+
+/* ================================================================
+   INTERACTIVE DIAGRAM PANELS — shared scaffold
+================================================================ */
+.diag-page{max-width:var(--max-w);margin:0 auto;padding:var(--sp-6) var(--sp-7) var(--sp-9);}
+.diag-header{margin-bottom:var(--sp-5);padding-bottom:var(--sp-4);border-bottom:1px solid var(--border);}
+.diag-eyebrow{font-family:var(--f-mono);font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-2);}
+.diag-title{font-family:var(--f-display);font-size:clamp(20px,2.5vw,30px);font-weight:700;color:var(--ink);letter-spacing:-.02em;}
+.diag-hint{font-size:11.5px;color:var(--ink-4);font-family:var(--f-mono);margin-top:var(--sp-2);letter-spacing:.02em;}
+
+/* Two-col: diagram canvas | detail panel */
+.diag-layout{display:grid;grid-template-columns:1fr 340px;gap:var(--sp-5);align-items:start;}
+@media(max-width:980px){.diag-layout{grid-template-columns:1fr;}}
+
+/* The interactive diagram canvas */
+.diag-canvas{
+  background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:var(--sp-5);box-shadow:var(--sh-sm);
+  min-height:460px;position:relative;overflow:hidden;
+}
+
+/* Detail / tooltip panel */
+.detail-panel{
+  background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:var(--sp-5);box-shadow:var(--sh-sm);
+  position:sticky;top:calc(var(--chrome-h) + var(--sp-4));
+  min-height:200px;
+}
+.dp-idle{color:var(--ink-4);font-size:13px;font-family:var(--f-mono);text-align:center;padding:var(--sp-7) 0;letter-spacing:.03em;}
+.dp-title{font-family:var(--f-display);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:var(--sp-3);letter-spacing:-.015em;}
+.dp-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:var(--r-sm);margin-bottom:var(--sp-3);}
+.dp-body{font-size:13px;color:var(--ink-3);line-height:1.72;}
+.dp-body p+p{margin-top:var(--sp-3);}
+.dp-props{margin-top:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-2);}
+.dp-prop{display:flex;align-items:flex-start;gap:var(--sp-3);font-size:12px;}
+.dp-prop-key{font-family:var(--f-mono);font-size:10px;color:var(--ink-4);letter-spacing:.04em;flex-shrink:0;padding-top:1px;min-width:60px;}
+.dp-prop-val{color:var(--ink-2);line-height:1.55;word-break:break-all;}
+
+/* ================================================================
+   INTERACTIVE NODE / BOX base styles
+================================================================ */
+.inode{
+  cursor:pointer;border-radius:var(--r-md);border:1.5px solid transparent;
+  transition:box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+  user-select:none;
+}
+.inode:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.inode.selected{border-color:var(--kong)!important;box-shadow:0 0 0 3px rgba(0,51,90,.14),var(--sh-md);}
+
+/* ================================================================
+   DIAGRAM 2 — ENFORCEMENT ARCHITECTURE
+================================================================ */
+.ea-wrap{display:flex;flex-direction:column;gap:var(--sp-3);}
+
+/* Layer labels */
+.ea-layer-label{font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-2);}
+
+/* Application layer row */
+.ea-app-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);}
+.ea-app-node{background:var(--surf-2);border:1.5px solid var(--border);padding:var(--sp-3) var(--sp-3);border-radius:var(--r-md);text-align:center;}
+.ea-app-node .n-icon{font-size:18px;margin-bottom:4px;}
+.ea-app-node .n-label{font-size:11.5px;font-weight:600;color:var(--ink-2);}
+.ea-app-node .n-sub{font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-top:2px;}
+
+/* Arrow between layers */
+.ea-arrow{display:flex;align-items:center;justify-content:center;padding:var(--sp-1) 0;gap:var(--sp-3);}
+.ea-arrow-line{flex:1;height:1px;background:var(--border-2);}
+.ea-arrow-label{font-family:var(--f-mono);font-size:9.5px;color:var(--ink-4);letter-spacing:.04em;padding:2px var(--sp-3);background:var(--surf-2);border-radius:20px;border:1px solid var(--border);white-space:nowrap;}
+
+/* Control plane — dark band */
+.ea-control{
+  background:var(--kong);border-radius:var(--r-lg);padding:var(--sp-4);
+  border:none!important;
+}
+.ea-control-label{font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.40);margin-bottom:var(--sp-3);}
+.ea-control-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);}
+.ea-ctrl-node{
+  background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.13);
+  border-radius:var(--r-md);padding:var(--sp-3);text-align:center;
+  cursor:pointer;
+  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+  user-select:none;
+}
+.ea-ctrl-node:hover{background:rgba(255,255,255,.16);transform:translateY(-1px);}
+.ea-ctrl-node.selected{border-color:#fff!important;background:rgba(255,255,255,.22)!important;}
+.ea-ctrl-node .n-icon{font-size:18px;margin-bottom:4px;}
+.ea-ctrl-node .n-label{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.92);}
+.ea-ctrl-node .n-sub{font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;}
+
+/* PEP banner */
+.ea-pep{background:rgba(0,200,160,.15);border:1px solid rgba(0,200,160,.3);border-radius:var(--r-sm);padding:5px var(--sp-3);margin-top:var(--sp-3);display:flex;align-items:center;justify-content:center;gap:var(--sp-2);}
+.ea-pep-dot{width:6px;height:6px;border-radius:50%;background:var(--go);}
+.ea-pep-text{font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--go);}
+
+/* Execution layer */
+.ea-exec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);}
+.ea-exec-node{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);padding:var(--sp-3);text-align:center;}
+.ea-exec-node .n-icon{font-size:16px;margin-bottom:4px;}
+.ea-exec-node .n-label{font-size:11px;font-weight:600;color:var(--ink-3);}
+.ea-exec-node .n-sub{font-family:var(--f-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;}
+
+/* Runtime flow steps (right sidebar numbers) */
+.ea-steps{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-3);}
+.ea-step{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-sm);cursor:pointer;transition:background var(--dur) var(--ease);user-select:none;}
+.ea-step:hover{background:var(--surf-2);}
+.ea-step.active-step{background:rgba(0,51,90,.07);}
+.ea-step-num{width:20px;height:20px;border-radius:50%;background:var(--surf-3);font-family:var(--f-mono);font-size:10px;color:var(--ink-3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ea-step.active-step .ea-step-num{background:var(--kong);color:#fff;}
+.ea-step-text{font-size:12px;color:var(--ink-3);line-height:1.5;}
+.ea-step.active-step .ea-step-text{color:var(--ink-2);font-weight:500;}
+
+/* ================================================================
+   DIAGRAM 3 — SOLUTION ARCHITECTURE
+================================================================ */
+.sa-wrap{display:flex;flex-direction:column;gap:var(--sp-3);}
+
+.sa-layer{border-radius:var(--r-lg);padding:var(--sp-4);border:1.5px solid transparent;}
+.sa-layer-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3);}
+.sa-layer-name{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.10em;text-transform:uppercase;font-weight:600;}
+.sa-layer-badge{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:3px;}
+
+/* Application layer */
+.sa-app{background:var(--surf-2);border-color:var(--border);}
+.sa-app .sa-layer-name{color:var(--ink-3);}
+.sa-app .sa-layer-badge{background:var(--surf-3);color:var(--ink-3);}
+.sa-app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);}
+.sa-agents-row{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-top:var(--sp-2);}
+.sa-agents-label{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-top:var(--sp-2);margin-bottom:var(--sp-1);}
+
+/* Gateway layer — dark */
+.sa-gw{background:var(--kong);border-color:var(--kong);}
+.sa-gw .sa-layer-name{color:rgba(255,255,255,.6);}
+.sa-gw .sa-layer-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);}
+.sa-gw-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-2);align-items:stretch;}
+
+/* Execution layer */
+.sa-exec{background:var(--surf-2);border-color:var(--border);}
+.sa-exec .sa-layer-name{color:var(--ink-3);}
+.sa-exec .sa-layer-badge{background:var(--surf-3);color:var(--ink-3);}
+.sa-exec-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);}
+
+/* Storage layer */
+.sa-store{background:#fff;border-color:var(--border);}
+.sa-store .sa-layer-name{color:var(--ink-3);}
+.sa-store .sa-layer-badge{background:var(--surf-2);color:var(--ink-4);}
+.sa-store-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);}
+
+/* Generic node card inside solution arch */
+.sa-node{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);
+  padding:var(--sp-3);cursor:pointer;
+  transition:box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+  user-select:none;
+}
+.sa-node:hover{box-shadow:var(--sh-md);transform:translateY(-1px);}
+.sa-node.selected{border-color:var(--accent)!important;box-shadow:0 0 0 3px rgba(0,151,228,.15)!important;}
+.sa-node .n-icon{font-size:16px;margin-bottom:4px;}
+.sa-node .n-label{font-size:11.5px;font-weight:600;color:var(--ink-2);}
+.sa-node .n-sub{font-family:var(--f-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;line-height:1.4;}
+.sa-node .n-badge{font-family:var(--f-mono);font-size:8px;letter-spacing:.04em;text-transform:uppercase;padding:1px 5px;border-radius:3px;display:inline-block;margin-top:4px;}
+
+/* dark gateway nodes */
+.sa-gw-node{
+  background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.15);border-radius:var(--r-md);
+  padding:var(--sp-3);cursor:pointer;
+  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+  user-select:none;
+}
+.sa-gw-node:hover{background:rgba(255,255,255,.17);transform:translateY(-1px);}
+.sa-gw-node.selected{border-color:#fff!important;background:rgba(255,255,255,.24)!important;}
+.sa-gw-node .n-icon{font-size:16px;margin-bottom:4px;}
+.sa-gw-node .n-label{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.92);}
+.sa-gw-node .n-sub{font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.48);margin-top:2px;line-height:1.4;}
+
+/* Fail closed centre box */
+.sa-fail{background:rgba(200,64,64,.20);border:1.5px solid rgba(200,64,64,.45)!important;cursor:pointer;user-select:none;}
+.sa-fail:hover{background:rgba(200,64,64,.28)!important;}
+.sa-fail.selected{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(200,64,64,.15)!important;}
+.sa-fail .n-label{color:rgba(255,255,255,.95)!important;}
+.sa-fail .n-sub{color:rgba(255,100,100,.7)!important;}
+
+/* Flow arrows between layers */
+.sa-flow{display:flex;align-items:center;justify-content:center;padding:2px 0;gap:var(--sp-3);}
+.sa-flow-line{flex:1;height:1px;background:var(--border-2);}
+.sa-flow-pill{font-family:var(--f-mono);font-size:9px;color:var(--ink-4);letter-spacing:.04em;padding:2px var(--sp-3);background:var(--surf-2);border-radius:20px;border:1px solid var(--border);white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.sa-flow-pill span{width:5px;height:5px;border-radius:50%;display:inline-block;}
+
+/* ================================================================
+   DIAGRAM 4 — ENFORCEMENT SEQUENCE
+================================================================ */
+.seq-wrap{display:flex;flex-direction:column;gap:0;}
+
+/* Participants header */
+.seq-participants{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:0;padding:0 var(--sp-2);}
+.seq-part{text-align:center;padding:var(--sp-3) var(--sp-2);border-radius:var(--r-md);cursor:pointer;border:1.5px solid transparent;transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);}
+.seq-part:hover{box-shadow:var(--sh-sm);}
+.seq-part.selected{border-color:var(--kong)!important;box-shadow:0 0 0 3px rgba(0,51,90,.12);}
+.seq-part-icon{font-size:22px;margin-bottom:4px;}
+.seq-part-label{font-size:12px;font-weight:600;color:var(--ink-2);}
+.seq-part-sub{font-family:var(--f-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;line-height:1.4;}
+
+.sp-app  {background:var(--surf-2);border-color:var(--border);}
+.sp-mcp  {background:var(--kong);}.sp-mcp .seq-part-label{color:rgba(255,255,255,.95);}.sp-mcp .seq-part-sub{color:rgba(255,255,255,.45);}
+.sp-ai   {background:var(--kong);}.sp-ai  .seq-part-label{color:rgba(255,255,255,.95);}.sp-ai  .seq-part-sub{color:rgba(255,255,255,.45);}
+.sp-up   {background:var(--surf-2);border-color:var(--border);}
+
+/* Lifelines */
+.seq-body{position:relative;padding:var(--sp-2) var(--sp-2);}
+
+/* Phase bands */
+.seq-phase{margin-bottom:var(--sp-2);}
+.seq-phase-label{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-2);padding-left:2px;}
+
+/* Individual sequence message rows */
+.seq-msg{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:var(--sp-2);align-items:center;
+  margin-bottom:var(--sp-1);padding:var(--sp-2) var(--sp-2);
+  border-radius:var(--r-sm);cursor:pointer;
+  transition:background var(--dur) var(--ease);
+  user-select:none;
+}
+.seq-msg:hover{background:var(--surf-2);}
+.seq-msg.active-msg{background:rgba(0,51,90,.06);}
+.seq-msg.denied-msg{background:rgba(200,64,64,.05);}
+.seq-msg.denied-msg:hover{background:rgba(200,64,64,.09);}
+.seq-msg.denied-msg.active-msg{background:rgba(200,64,64,.10);}
+
+/* Cell inside each column of a message row */
+.seq-cell{display:flex;align-items:center;justify-content:center;position:relative;}
+.seq-cell-inner{display:flex;flex-direction:column;align-items:center;gap:2px;}
+
+/* Arrow spanning columns */
+.seq-arrow{
+  grid-column:1/-1;display:flex;align-items:center;
+  position:relative;padding:0 var(--sp-2);
+}
+/* We override the per-cell approach: each msg row has arrow info */
+/* Simpler: use position labels and CSS to draw */
+
+/* Message label chip */
+.seq-chip{
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.02em;
+  padding:3px 9px;border-radius:20px;white-space:nowrap;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;
+}
+.sc-normal{background:var(--surf-3);color:var(--ink-2);}
+.sc-ai    {background:rgba(0,119,194,.12);color:var(--kong-2);}
+.sc-mcp   {background:rgba(0,51,90,.10);color:var(--kong);}
+.sc-trace {background:rgba(0,200,160,.12);color:#006a52;}
+.sc-deny  {background:rgba(200,64,64,.12);color:var(--danger);}
+.sc-resp  {background:rgba(240,240,235,.8);color:var(--ink-3);border:1px solid var(--border);}
+
+/* Arrow graphic */
+.arrow-row{
+  display:flex;align-items:center;
+  width:100%;position:relative;
+}
+.arr-line{height:1.5px;flex:1;background:var(--border-2);}
+.arr-line.solid{background:var(--ink-3);}
+.arr-line.dashed{background:repeating-linear-gradient(to right,var(--ink-4) 0,var(--ink-4) 4px,transparent 4px,transparent 8px);}
+.arr-line.deny{background:var(--danger);}
+.arr-line.trace{background:var(--go);}
+.arr-tip{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;}
+.arr-tip.right{border-left:7px solid var(--ink-3);}
+.arr-tip.left {border-right:7px solid var(--ink-3);}
+.arr-tip.right.deny{border-left-color:var(--danger);}
+.arr-tip.left.deny{border-right-color:var(--danger);}
+.arr-tip.right.trace{border-left-color:var(--go);}
+.arr-tip.left.trace{border-right-color:var(--go);}
+.arr-spacer{flex:1;}/* used to offset for column alignment */
+
+/* Sequence layout: 4 columns matching participants */
+.seq-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:0;
+  margin-bottom:6px;
+  padding:3px var(--sp-2);
+  border-radius:var(--r-sm);
+  cursor:pointer;
+  transition:background var(--dur) var(--ease);
+  position:relative;
+  align-items:center;
+  min-height:40px;
+  user-select:none;
+}
+.seq-row:hover{background:var(--surf-2);}
+.seq-row.active-row{background:rgba(0,51,90,.06);}
+.seq-row.deny-row{background:rgba(200,64,64,.04);}
+.seq-row.deny-row:hover{background:rgba(200,64,64,.08);}
+.seq-row.deny-row.active-row{background:rgba(200,64,64,.10);}
+.seq-row.trace-row{background:rgba(0,200,160,.04);}
+.seq-row.trace-row:hover{background:rgba(0,200,160,.08);}
+
+/* Vertical lifeline dots */
+.lf{display:flex;flex-direction:column;align-items:center;}
+.lf-dot{width:8px;height:8px;border-radius:50%;background:var(--border-2);}
+
+/* Arrow spanning specific columns: use absolute overlays */
+.seq-arrow-overlay{
+  position:absolute;
+  top:50%;transform:translateY(-50%);
+  height:2px;
+  display:flex;align-items:center;
+  pointer-events:none;
+}
+
+/* Phase separator */
+.seq-sep{
+  font-family:var(--f-mono);font-size:8.5px;letter-spacing:.10em;
+  text-transform:uppercase;color:var(--ink-4);
+  padding:var(--sp-2) var(--sp-2) var(--sp-1);
+  border-top:1px dashed var(--border);
+  margin-top:var(--sp-2);
+}
+
+/* ================================================================
+   FOOTER
+================================================================ */
+.site-footer{border-top:1px solid var(--border);padding:var(--sp-5) var(--sp-7);display:flex;align-items:center;justify-content:space-between;font-size:11px;font-family:var(--f-mono);color:var(--ink-4);}
+.footer-links{display:flex;gap:var(--sp-5);}
+.footer-links a{color:var(--ink-4);transition:color var(--dur) var(--ease);}
+.footer-links a:hover{color:var(--kong-3);}
+
+/* ================================================================
+   TOOLTIP (global hover)
+================================================================ */
+#tooltip{
+  position:fixed;z-index:9999;pointer-events:none;
+  background:var(--ink);color:#fff;
+  font-family:var(--f-mono);font-size:11px;
+  padding:5px 10px;border-radius:6px;
+  white-space:nowrap;
+  opacity:0;transition:opacity .15s var(--ease);
+  max-width:220px;white-space:normal;line-height:1.4;
+}
+#tooltip.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- GLOBAL TOOLTIP -->
+<div id="tooltip"></div>
+
+<!-- ================================================================
+     HEADER
+================================================================ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logo">
+      <div class="logo-box">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Neural network: 3 layers (2-3-2 nodes) with connections -->
+          <!-- Layer 1: input (x=2) -->
+          <circle cx="2" cy="5"  r="1.3" fill="white"/>
+          <circle cx="2" cy="11" r="1.3" fill="white"/>
+          <!-- Layer 2: hidden (x=8) -->
+          <circle cx="8" cy="3"  r="1.3" fill="white"/>
+          <circle cx="8" cy="8"  r="1.3" fill="white"/>
+          <circle cx="8" cy="13" r="1.3" fill="white"/>
+          <!-- Layer 3: output (x=14) -->
+          <circle cx="14" cy="5"  r="1.3" fill="white"/>
+          <circle cx="14" cy="11" r="1.3" fill="white"/>
+          <!-- Connections layer1→layer2 -->
+          <line x1="3.3" y1="5"  x2="6.7" y2="3"  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="3.3" y1="5"  x2="6.7" y2="8"  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="3.3" y1="5"  x2="6.7" y2="13" stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="3.3" y1="11" x2="6.7" y2="3"  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="3.3" y1="11" x2="6.7" y2="8"  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="3.3" y1="11" x2="6.7" y2="13" stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <!-- Connections layer2→layer3 -->
+          <line x1="9.3" y1="3"  x2="12.7" y2="5"  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="9.3" y1="3"  x2="12.7" y2="11" stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="9.3" y1="8"  x2="12.7" y2="5"  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="9.3" y1="8"  x2="12.7" y2="11" stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="9.3" y1="13" x2="12.7" y2="5"  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <line x1="9.3" y1="13" x2="12.7" y2="11" stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+        </svg>
+      </div>
+      <span class="header-wordmark">Entity Risk AI</span>
+    </div>
+    <div class="header-sep"></div>
+    <span class="header-sub">AI Governance · AI + MCP Gateway · 2026</span>
+    <div class="presenter-corner">
+      <div class="presenter-text">
+        <div class="presenter-name">Emil Pastor</div>
+        <div class="presenter-role">Applied AI and Data</div>
+      </div>
+      <div class="presenter-photo"><div class="photo-fallback">EP</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================================================================
+     TABS
+================================================================ -->
+<nav class="tab-nav" role="tablist">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" data-target="panel-summary">Summary</button>
+    <button class="tab-btn" data-target="panel-enforce">Reference Architecture</button>
+    <button class="tab-btn" data-target="panel-solution">Solution Architecture</button>
+    <button class="tab-btn" data-target="panel-sequence">System Control Flow</button>
+    <button class="tab-btn" data-target="panel-graph">Graph Data Model</button>
+    <button class="tab-btn" data-target="panel-kong">Control Plane Configuration</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ================================================================
+     PANEL 1 — SUMMARY (unchanged)
+================================================================ -->
+<div class="panel active" id="panel-summary">
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-kicker"><span class="kicker-dot"></span>Governed Agentic AI · Reference Architecture</p>
+        <h1 class="hero-headline">Governance was always<br>an enforcement problem.<br><em>AI just removed the friction that hid it.</em></h1>
+        <p class="hero-body">A multi-agent financial crime investigation system built on Neo4j, Anthropic Claude, and Kong — demonstrating that a gateway control plane is the only way to make AI governance real at execution.</p>
+        <div class="hero-tags">
+          <span class="tag">Neo4j AuraDB</span><span class="tag">Claude Haiku + Sonnet</span>
+          <span class="tag">Kong MCP Gateway</span><span class="tag">Kong AI Gateway</span>
+          <span class="tag">FastMCP · Railway</span><span class="tag">Role-Based ACL</span>
+          <span class="tag">Graph-Native Audit</span><span class="tag">Apache 2.0</span>
+        </div>
+      </div>
+      <div class="hero-aside">
+        <div class="aside-label">System at a Glance</div>
+        <div class="aside-stats">
+          <div class="aside-stat"><div class="aside-stat-value">15</div><div class="aside-stat-label">MCP Tools</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">3</div><div class="aside-stat-label">AI Agents</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">2</div><div class="aside-stat-label">Kong Gates</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">4</div><div class="aside-stat-label">System Layers</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">7</div><div class="aside-stat-label">Orch. Stages</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">0</div><div class="aside-stat-label">Bypass Paths</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="summary-body">
+    <div class="exec-pullout">
+      <div class="section-eyebrow">Executive Summary</div>
+      <p>Most AI governance frameworks describe what <em>should</em> happen. This system enforces what <em>can</em> happen. <strong>Entity Risk AI</strong> is a fully governed multi-agent investigation platform. Every tool call and every LLM invocation routes through <strong>Kong's dual gateway layer</strong> before reaching any upstream service. Denied actions are blocked, logged, and traceable. No agent — and no human — bypasses the control plane. The audit trail lives in Neo4j as a queryable subgraph, not a flat log file.</p>
+    </div>
+    <div class="section-eyebrow mt-6">The Problem</div>
+    <div class="section-title">Why Governance Fails at Execution</div>
+    <div class="prose-cols">
+      <div class="prose-block">
+        <h3>Governance Lives Outside the System</h3>
+        <p>Organisations have policies, roles, and approval workflows. What most don't have is a single point where those policies are <em>enforced</em> at the moment a decision is made. Governance describes intent. Execution determines reality.</p>
+        <p>AI agents make this gap impossible to ignore. They don't hesitate. They don't ask for exceptions. They execute every permitted path, consistently, at machine speed. What was occasional becomes guaranteed.</p>
+      </div>
+      <div class="prose-block">
+        <h3>The Fix Is Architectural, Not Cultural</h3>
+        <p>The answer is not more policy documentation. It is a <em>control plane</em> — a single enforcement layer that sits between intent and execution for every action, human or agent, before it happens.</p>
+        <p>That layer must be centralised (no bypass paths), fail-closed (denied actions blocked and logged), fully traceable, and role-consistent — the same gate applies to humans and agents equally.</p>
+      </div>
+    </div>
+    <div class="section-eyebrow">Architectural Highlights</div>
+    <div class="section-title">What Makes This System Different</div>
+    <div class="cards mb-8">
+      <div class="card"><div class="card-icon ci-navy">🔐</div><div class="card-title">Dual Kong Gateway</div><div class="card-desc">Kong MCP Gateway enforces tool-level access via key-auth and consumer-group ACL. Kong AI Gateway routes and rate-limits all LLM traffic. No agent holds upstream credentials.</div></div>
+      <div class="card"><div class="card-icon ci-blue">🤖</div><div class="card-title">Multi-Agent Orchestration</div><div class="card-desc">Graph, Risk, and Trace agents orchestrated by Claude Sonnet. Each dispatches only through MCP — never touching the database directly. A 7-stage workflow controls the full lifecycle.</div></div>
+      <div class="card"><div class="card-icon ci-teal">🕸️</div><div class="card-title">Graph-Native Audit Trail</div><div class="card-desc">Every action persisted as a TraceEvent in Neo4j, linked to the business nodes it touched. A queryable subgraph — independent, replayable, and deletable without side effects.</div></div>
+      <div class="card"><div class="card-icon ci-amber">🛡️</div><div class="card-title">Fail-Closed by Default</div><div class="card-desc">Kong denials (HTTP 403) propagate as <span class="mono">StepStatus.SKIPPED</span> in the trace. Never silent. Permitted and denied outcomes are both recorded.</div></div>
+      <div class="card"><div class="card-icon ci-danger">👤</div><div class="card-title">Same Rules, Every Actor</div><div class="card-desc">Junior and Senior analysts have structurally different tool access enforced at the Kong gateway via consumer groups — not in application code. Same gate for humans and agents. Every time.</div></div>
+    </div>
+    <div class="layers-band">
+      <div class="layers-band-label">System Architecture · Four Layers · Two Gateways · One Principle</div>
+      <div class="layers-grid">
+        <div class="layer-cell"><div class="layer-num">Layer 01</div><div class="layer-name">Application</div><div class="layer-detail">Streamlit UI · LLM Planner · Specialist Agents · Orchestrator</div></div>
+        <div class="layer-cell"><div class="layer-num">Layer 02</div><div class="layer-name">Gateway</div><div class="layer-detail">Kong MCP Gate · Kong AI Gate · key-auth · ACL · rate-limit</div></div>
+        <div class="layer-cell"><div class="layer-num">Layer 03</div><div class="layer-name">Execution</div><div class="layer-detail">FastMCP Server · Anthropic Claude API · Railway hosting</div></div>
+        <div class="layer-cell"><div class="layer-num">Layer 04</div><div class="layer-name">Storage</div><div class="layer-detail">Neo4j AuraDB · Business Graph · Trace Subgraph</div></div>
+      </div>
+    </div>
+    <div class="kong-role">
+      <div class="section-eyebrow">Kong's Role</div>
+      <div class="section-title">Two Gateways. One Enforcement Principle.</div>
+      <div class="kong-role-grid">
+        <div class="kong-card"><div class="kong-card-header"><span class="kong-badge kb-mcp">MCP Gateway</span><span class="kong-card-title">Tool Access Control</span></div><p class="kong-card-body">Routes all 15 investigation tools through Kong's <span class="mono">/mcp</span> route with key-auth validation. Consumer groups enforce per-role restrictions. Denials return HTTP 403 and are traced.</p></div>
+        <div class="kong-card"><div class="kong-card-header"><span class="kong-badge kb-ai">AI Gateway</span><span class="kong-card-title">LLM Traffic Control</span></div><p class="kong-card-body">All Anthropic calls route through Kong's AI Gateway. The planner uses <span class="mono">/ai/sonnet</span>; agents use <span class="mono">/ai</span>. The app never holds the Anthropic API key in Kong mode.</p></div>
+      </div>
+    </div>
+    <div class="why-section">
+      <div class="section-eyebrow">Why This Matters</div>
+      <div class="section-title">Five Reasons This Architecture Is Significant</div>
+      <ul class="why-list">
+        <li class="why-item"><span class="why-num">1</span><span class="why-text"><strong>Agents don't introduce new risk.</strong> They make existing system permissiveness executable at scale. This addresses the root cause — the absence of an enforcement layer.</span></li>
+        <li class="why-item"><span class="why-num">2</span><span class="why-text"><strong>Kong becomes the control plane for agentic AI.</strong> The single enforcement point between intent and execution — for both tool calls and model invocations.</span></li>
+        <li class="why-item"><span class="why-num">3</span><span class="why-text"><strong>The audit trail is proof, not documentation.</strong> Every action captured at execution time in a queryable graph. Retroactively demonstrable and reliable.</span></li>
+        <li class="why-item"><span class="why-num">4</span><span class="why-text"><strong>The same rules apply to everyone.</strong> Humans and agents governed identically. Same gate. Same policy. Every time. No carve-outs.</span></li>
+        <li class="why-item"><span class="why-num">5</span><span class="why-text"><strong>Production-deployable, not a proof of concept.</strong> Open-sourced Apache 2.0, hosted on Railway + Neo4j AuraDB, built on public Companies House UBO data.</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL 2 — ENFORCEMENT ARCHITECTURE (interactive)
+================================================================ -->
+<div class="panel" id="panel-enforce">
+  <div class="diag-page">
+
+    <div class="diag-header">
+      <div class="diag-eyebrow">Reference Architecture</div>
+      <h2 class="diag-title">What Enforcement Actually Requires</h2>
+      <p class="diag-hint" style="margin-top:6px;">A single control plane, enforced across multiple execution points. Every action, human or agent, evaluated before it reaches any system. &nbsp;·&nbsp; Click any component to explore it.</p>
+    </div>
+
+    <!-- Two-column layout: main diagram + runtime flow sidebar -->
+    <div style="display:grid;grid-template-columns:1fr 220px;gap:var(--sp-5);align-items:start;margin-top:var(--sp-5);">
+
+      <!-- LEFT: Main diagram -->
+      <div style="display:flex;flex-direction:column;gap:var(--sp-3);">
+
+        <!-- APPLICATION LAYER -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-4);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--sp-3);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <span style="width:8px;height:8px;border-radius:50%;background:#9ba3b0;display:inline-block;"></span>
+              <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);">Application Layer</span>
+            </div>
+            <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);">Intent + Orchestration</span>
+          </div>
+          <!-- Top row: UI Orchestrator Planner Human Users -->
+          <div style="display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+            <div class="inode ea-app-node" data-diag="ea" data-node="ui" style="flex:1;min-width:100px;"><div class="n-icon">🖥️</div><div class="n-label">UI</div></div>
+            <div class="inode ea-app-node" data-diag="ea" data-node="orchestrator" style="flex:1;min-width:100px;"><div class="n-icon">🎯</div><div class="n-label">Orchestrator</div></div>
+            <div class="inode ea-app-node" data-diag="ea" data-node="planner" style="flex:1;min-width:100px;"><div class="n-icon">🧠</div><div class="n-label">Planner</div></div>
+            <div class="inode ea-app-node" data-diag="ea" data-node="human" style="flex:1;min-width:100px;"><div class="n-icon">👤</div><div class="n-label">Human Users</div></div>
+          </div>
+          <!-- Specialist agents row -->
+          <div style="font-family:var(--f-mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-2);">Specialist Agents</div>
+          <div style="display:flex;gap:var(--sp-2);">
+            <div class="inode ea-app-node" data-diag="ea" data-node="graph-agent" style="flex:1;"><div class="n-icon">🔗</div><div class="n-label">Graph Agent</div></div>
+            <div class="inode ea-app-node" data-diag="ea" data-node="risk-agent" style="flex:1;"><div class="n-icon">⚠️</div><div class="n-label">Risk Agent</div></div>
+            <div class="inode ea-app-node" data-diag="ea" data-node="trace-agent" style="flex:1;"><div class="n-icon">🗂️</div><div class="n-label">Trace Agent</div></div>
+          </div>
+        </div>
+
+        <!-- Arrow + control plane label -->
+        <div style="text-align:center;">
+          <div style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-bottom:4px;">Every action routed through control plane before execution</div>
+          <div style="display:inline-block;background:rgba(0,51,90,.06);border:1px dashed var(--kong-2);border-radius:6px;padding:5px 20px;font-family:var(--f-mono);font-size:9px;font-weight:700;color:var(--kong);letter-spacing:.06em;">↓ CONTROL PLANE · WHAT MOST SYSTEMS DON'T HAVE ↓</div>
+        </div>
+
+        <!-- CONTROL PLANE (dark band) -->
+        <div style="background:var(--kong);border-radius:var(--r-lg);padding:var(--sp-4);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--sp-3);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <span style="width:8px;height:8px;border-radius:50%;background:#4a9eff;display:inline-block;"></span>
+              <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.5);">Control Plane</span>
+            </div>
+            <span style="font-family:var(--f-mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.35);">Single control plane, enforced across multiple execution points</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);margin-bottom:var(--sp-3);">
+            <div class="ea-ctrl-node" data-diag="ea" data-node="policy" style="border-left:3px solid #4a7eff;">
+              <div style="font-size:18px;margin-bottom:4px;">📋</div>
+              <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">Policy Engine</div>
+              <div style="font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);line-height:1.4;">Policies translated into executable rules. Evaluated at runtime, not design time.</div>
+            </div>
+            <div class="ea-ctrl-node" data-diag="ea" data-node="identity" style="border-left:3px solid #00d4aa;">
+              <div style="font-size:18px;margin-bottom:4px;">🪪</div>
+              <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">Identity, Role &amp; Context</div>
+              <div style="font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);line-height:1.4;">Session, request, and environmental context resolved. Same principal model for humans and agents.</div>
+            </div>
+            <div class="ea-ctrl-node" data-diag="ea" data-node="decision" style="border-left:3px solid #ff4444;">
+              <div style="font-size:18px;margin-bottom:4px;">🚦</div>
+              <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">Decision Engine <span style="font-size:9px;opacity:.6;">(PDP)</span></div>
+              <div style="font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);line-height:1.4;">Allow or deny at runtime. All decisions made before execution. Unpermitted actions are blocked and logged.</div>
+            </div>
+            <div class="ea-ctrl-node" data-diag="ea" data-node="trace" style="border-left:3px solid #00c8a0;">
+              <div style="font-size:18px;margin-bottom:4px;">📊</div>
+              <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">Trace Capture &amp; Audit</div>
+              <div style="font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);line-height:1.4;">Every action recorded at execution. Permitted and denied. The audit trail is proof enforcement occurred.</div>
+            </div>
+          </div>
+          <!-- PEP banner -->
+          <div style="display:flex;gap:var(--sp-2);align-items:center;justify-content:center;">
+            <div style="height:1px;flex:1;background:rgba(255,255,255,.12);"></div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="background:rgba(0,200,160,.15);border:1px solid rgba(0,200,160,.3);border-radius:4px;padding:3px 10px;font-family:var(--f-mono);font-size:8.5px;color:var(--go);">↓ Permitted actions only</span>
+              <span style="background:rgba(255,193,7,.15);border:1px solid rgba(255,193,7,.3);border-radius:4px;padding:3px 10px;font-family:var(--f-mono);font-size:8.5px;color:#ffc107;">PEP · Policy Enforcement Points at execution boundaries</span>
+              <span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:3px 10px;font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5);">Results + audit data</span>
+            </div>
+            <div style="height:1px;flex:1;background:rgba(255,255,255,.12);"></div>
+          </div>
+        </div>
+
+        <!-- EXECUTION / RESOURCE LAYER -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-4);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--sp-3);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <span style="width:8px;height:8px;border-radius:50%;background:#00c8a0;display:inline-block;"></span>
+              <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);">Execution / Resource Layer</span>
+            </div>
+            <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--kong-3);">Runtime Systems</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);margin-bottom:var(--sp-2);">
+            <div class="inode ea-exec-node" data-diag="ea" data-node="mcp-tools"><div class="n-icon">🔧</div><div class="n-label">MCP Tools</div><div class="n-sub">tool invocations</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="llm"><div class="n-icon">💬</div><div class="n-label">LLM Services</div><div class="n-sub">model inference</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="graph-db"><div class="n-icon">🕸️</div><div class="n-label">Graph Database</div><div class="n-sub">knowledge graph</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="rdbms"><div class="n-icon">🗄️</div><div class="n-label">RDBMS / Operational</div><div class="n-sub">relational stores</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
+            <div class="inode ea-exec-node" data-diag="ea" data-node="vector"><div class="n-icon">🔍</div><div class="n-label">Vector Index</div><div class="n-sub">retrieval / RAG</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="apis"><div class="n-icon">🌐</div><div class="n-label">Enterprise APIs</div><div class="n-sub">SaaS / internal</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="event-bus"><div class="n-icon">⚡</div><div class="n-label">Event Bus</div><div class="n-sub">async processing</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="audit"><div class="n-icon">🗂️</div><div class="n-label">Audit Storage</div><div class="n-sub">trace persistence</div></div>
+          </div>
+        </div>
+
+        <!-- 4 principle cards -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
+          <div style="border-top:3px solid var(--kong);background:#fff;border:1px solid var(--border);border-top:3px solid var(--kong);border-radius:var(--r-sm);padding:var(--sp-3);">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px;">Centralised Access</div>
+            <div style="font-size:11px;color:var(--ink-3);line-height:1.5;">All calls routed through the control layer. No execution path bypasses policy evaluation.</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--danger);border-radius:var(--r-sm);padding:var(--sp-3);">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px;">Fail Closed</div>
+            <div style="font-size:11px;color:var(--ink-3);line-height:1.5;">Unpermitted actions are blocked and logged for audit. No silent pass-through.</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--go);border-radius:var(--r-sm);padding:var(--sp-3);">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px;">Full Traceability</div>
+            <div style="font-size:11px;color:var(--ink-3);line-height:1.5;">Every action logged at execution time. The audit trail is proof enforcement existed.</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-top:3px solid #f59e0b;border-radius:var(--r-sm);padding:var(--sp-3);">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px;">Same Rules, Every Actor</div>
+            <div style="font-size:11px;color:var(--ink-3);line-height:1.5;">Humans and agents governed identically. Same gate. Same policy. Every time.</div>
+          </div>
+        </div>
+
+        <!-- Dark footer banner -->
+        <div style="background:var(--kong);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5);">
+          <div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:4px;">Applications generate intent. The control plane decides what is allowed. Execution systems only receive permitted actions.</div>
+          <div style="font-family:var(--f-mono);font-size:11px;color:var(--accent);letter-spacing:.02em;">Not the same job. Never the same layer.</div>
+        </div>
+
+      </div><!-- /left column -->
+
+      <!-- RIGHT: Runtime flow sidebar -->
+      <div style="position:sticky;top:calc(var(--chrome-h) + var(--sp-4));">
+        <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--sp-3);">Runtime Flow</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <!-- Step 1 -->
+          <div class="ea-step" data-diag="ea" data-node="ui" style="padding:var(--sp-3) var(--sp-3) var(--sp-3) 0;border-left:2px solid var(--border);margin-left:10px;padding-left:var(--sp-4);">
+            <div style="position:relative;">
+              <div style="position:absolute;left:calc(-1*var(--sp-4) - 11px);top:2px;width:20px;height:20px;border-radius:50%;background:var(--surf-3);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;color:var(--ink-3);">1</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ink);">Intent received</div>
+              <div style="font-size:11px;color:var(--ink-4);margin-top:2px;">Human or agent submits query</div>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="ea-step" data-diag="ea" data-node="planner" style="padding:var(--sp-3) var(--sp-3) var(--sp-3) 0;border-left:2px solid var(--border);margin-left:10px;padding-left:var(--sp-4);">
+            <div style="position:relative;">
+              <div style="position:absolute;left:calc(-1*var(--sp-4) - 11px);top:2px;width:20px;height:20px;border-radius:50%;background:var(--surf-3);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;color:var(--ink-3);">2</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ink);">Plan generated</div>
+              <div style="font-size:11px;color:var(--ink-4);margin-top:2px;">LLM produces execution steps</div>
+            </div>
+          </div>
+          <!-- Step 3 — active -->
+          <div class="ea-step" data-diag="ea" data-node="decision" style="padding:var(--sp-3) var(--sp-3) var(--sp-3) 0;border-left:2px solid var(--kong);margin-left:10px;padding-left:var(--sp-4);">
+            <div style="position:relative;">
+              <div style="position:absolute;left:calc(-1*var(--sp-4) - 11px);top:2px;width:20px;height:20px;border-radius:50%;background:var(--kong);border:2px solid var(--kong);display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;color:#fff;">3</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ink);">Control plane evaluates</div>
+              <div style="font-size:11px;color:var(--ink-4);margin-top:2px;">Every step checked against policy before dispatch</div>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="ea-step" data-diag="ea" data-node="mcp-tools" style="padding:var(--sp-3) var(--sp-3) var(--sp-3) 0;border-left:2px solid var(--border);margin-left:10px;padding-left:var(--sp-4);">
+            <div style="position:relative;">
+              <div style="position:absolute;left:calc(-1*var(--sp-4) - 11px);top:2px;width:20px;height:20px;border-radius:50%;background:var(--go);border:2px solid var(--go);display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;color:#fff;">4</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ink);">Execute</div>
+              <div style="font-size:11px;color:var(--ink-4);margin-top:2px;">Permitted action reaches execution system</div>
+            </div>
+          </div>
+          <!-- Step 5 -->
+          <div class="ea-step" data-diag="ea" data-node="decision" style="padding:var(--sp-3) var(--sp-3) var(--sp-3) 0;border-left:2px solid var(--border);margin-left:10px;padding-left:var(--sp-4);">
+            <div style="position:relative;">
+              <div style="position:absolute;left:calc(-1*var(--sp-4) - 11px);top:2px;width:20px;height:20px;border-radius:50%;background:var(--surf-3);border:2px solid var(--danger);display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;color:var(--danger);">5</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ink);">Denied → Blocked + Logged</div>
+              <div style="font-size:11px;color:var(--ink-4);margin-top:2px;">Fail closed. Decision recorded for audit.</div>
+            </div>
+          </div>
+          <!-- Step 6 -->
+          <div class="ea-step" data-diag="ea" data-node="trace" style="padding:var(--sp-3) var(--sp-3) 0 0;border-left:2px solid var(--border);margin-left:10px;padding-left:var(--sp-4);">
+            <div style="position:relative;">
+              <div style="position:absolute;left:calc(-1*var(--sp-4) - 11px);top:2px;width:20px;height:20px;border-radius:50%;background:var(--surf-3);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;color:var(--ink-3);">6</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ink);">Trace persisted</div>
+              <div style="font-size:11px;color:var(--ink-4);margin-top:2px;">All actions traced. Executed and denied.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail panel below runtime flow -->
+        <div class="detail-panel" id="ea-detail" style="margin-top:var(--sp-5);">
+          <div class="dp-idle" id="ea-idle">← Click a component<br>to explore it</div>
+          <div id="ea-content" style="display:none;"></div>
+        </div>
+
+      </div><!-- /right sidebar -->
+    </div><!-- /grid -->
+  </div>
+</div>
+
+<div class="panel" id="panel-solution">
+  <div class="diag-page">
+    <div class="diag-header">
+      <div class="diag-eyebrow">System Design · Entity Risk AI</div>
+      <h2 class="diag-title">Solution Architecture</h2>
+      <p class="diag-hint">↗ Click any component to explore its role</p>
+    </div>
+    <div class="diag-layout">
+
+      <div class="diag-canvas">
+        <div class="sa-wrap">
+
+          <!-- APPLICATION LAYER -->
+          <div class="sa-layer sa-app">
+            <div class="sa-layer-header">
+              <span class="sa-layer-name">Application Layer</span>
+              <span class="sa-layer-badge">UI + Orchestration + Agents</span>
+            </div>
+            <div class="sa-app-grid">
+              <div class="sa-node" data-diag="sa" data-node="streamlit">
+                <div class="n-icon">🖥️</div>
+                <div class="n-label">Streamlit UI</div>
+                <div class="n-sub">app.py · src/app/</div>
+                <div class="n-badge" style="background:rgba(0,51,90,.08);color:var(--kong);">UI</div>
+              </div>
+              <div class="sa-node" data-diag="sa" data-node="planner">
+                <div class="n-icon">🧠</div>
+                <div class="n-label">Investigation Planner</div>
+                <div class="n-sub">Claude Sonnet via /ai/sonnet</div>
+                <div class="n-badge" style="background:rgba(0,151,228,.10);color:var(--kong-2);">LLM</div>
+              </div>
+              <div class="sa-node" data-diag="sa" data-node="orchestrator">
+                <div class="n-icon">🎯</div>
+                <div class="n-label">Orchestrator</div>
+                <div class="n-sub">src/orchestration/</div>
+                <div class="n-badge" style="background:rgba(0,51,90,.08);color:var(--kong);">CORE</div>
+              </div>
+            </div>
+            <div class="sa-agents-label">Specialist Agents</div>
+            <div class="sa-agents-row">
+              <div class="sa-node" data-diag="sa" data-node="graph-agent">
+                <div class="n-icon">🔗</div>
+                <div class="n-label">Graph Agent</div>
+                <div class="n-sub">entity_lookup · expand_ownership</div>
+                <div class="n-badge" style="background:rgba(0,200,160,.10);color:#006a52;">AGENT</div>
+              </div>
+              <div class="sa-node" data-diag="sa" data-node="risk-agent">
+                <div class="n-icon">⚠️</div>
+                <div class="n-label">Risk Agent</div>
+                <div class="n-sub">4 deterministic risk checks</div>
+                <div class="n-badge" style="background:rgba(0,200,160,.10);color:#006a52;">AGENT</div>
+              </div>
+              <div class="sa-node" data-diag="sa" data-node="trace-agent">
+                <div class="n-icon">🗂️</div>
+                <div class="n-label">Trace Agent</div>
+                <div class="n-sub">retrieve · summarise · replay</div>
+                <div class="n-badge" style="background:rgba(0,200,160,.10);color:#006a52;">AGENT</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FLOW -->
+          <div class="sa-flow">
+            <div class="sa-flow-line"></div>
+            <div class="sa-flow-pill"><span style="background:var(--kong-3);"></span>Tool calls via MCP</div>
+            <div class="sa-flow-pill"><span style="background:var(--accent);"></span>LLM calls via AI proxy</div>
+            <div class="sa-flow-pill"><span style="background:var(--go);"></span>Results + trace events</div>
+            <div class="sa-flow-line"></div>
+          </div>
+
+          <!-- GATEWAY LAYER -->
+          <div class="sa-layer sa-gw">
+            <div class="sa-layer-header">
+              <span class="sa-layer-name">Gateway Layer — Control Plane</span>
+              <span class="sa-layer-badge">Enforcement</span>
+            </div>
+            <div class="sa-gw-grid">
+              <div class="sa-gw-node" data-diag="sa" data-node="mcp-gate">
+                <div class="n-icon">🛡️</div>
+                <div class="n-label">Kong MCP Gateway</div>
+                <div class="n-sub">/mcp · key-auth · ACL · consumer groups</div>
+              </div>
+              <div class="sa-gw-node sa-fail" data-diag="sa" data-node="fail-closed">
+                <div class="n-icon">🚫</div>
+                <div class="n-label">FAIL CLOSED</div>
+                <div class="n-sub">HTTP 403 → SKIPPED · Not logged. Not warned. Blocked.</div>
+              </div>
+              <div class="sa-gw-node" data-diag="sa" data-node="ai-gate">
+                <div class="n-icon">🤖</div>
+                <div class="n-label">Kong AI Gateway</div>
+                <div class="n-sub">/ai · /ai/sonnet · ai-proxy · rate-limit</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FLOW -->
+          <div class="sa-flow">
+            <div class="sa-flow-line"></div>
+            <div class="sa-flow-pill"><span style="background:var(--kong-3);"></span>Permitted tool calls</div>
+            <div class="sa-flow-pill"><span style="background:var(--accent);"></span>Proxied LLM requests</div>
+            <div class="sa-flow-pill"><span style="background:var(--border-2);"></span>Responses</div>
+            <div class="sa-flow-line"></div>
+          </div>
+
+          <!-- EXECUTION LAYER -->
+          <div class="sa-layer sa-exec">
+            <div class="sa-layer-header">
+              <span class="sa-layer-name">Execution Layer</span>
+              <span class="sa-layer-badge">Runtime</span>
+            </div>
+            <div class="sa-exec-grid">
+              <div class="sa-node" data-diag="sa" data-node="mcp-server">
+                <div class="n-icon">🚀</div>
+                <div class="n-label">MCP Server</div>
+                <div class="n-sub">Railway · FastMCP · streamable-http · 15 tools</div>
+                <div class="n-badge" style="background:rgba(0,151,228,.10);color:var(--kong-2);">MCP</div>
+              </div>
+              <div class="sa-node" data-diag="sa" data-node="claude">
+                <div class="n-icon">💬</div>
+                <div class="n-label">Anthropic Claude</div>
+                <div class="n-sub">Haiku (agents) · Sonnet (planner)</div>
+                <div class="n-badge" style="background:rgba(224,122,32,.10);color:#8c4a0a;">LLM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FLOW -->
+          <div class="sa-flow">
+            <div class="sa-flow-line"></div>
+            <div class="sa-flow-pill"><span style="background:var(--kong-3);"></span>Cypher queries</div>
+            <div class="sa-flow-pill"><span style="background:var(--go);"></span>Trace events</div>
+            <div class="sa-flow-pill"><span style="background:var(--border-2);"></span>Graph data + audit records</div>
+            <div class="sa-flow-line"></div>
+          </div>
+
+          <!-- STORAGE LAYER -->
+          <div class="sa-layer sa-store">
+            <div class="sa-layer-header">
+              <span class="sa-layer-name">Storage Layer</span>
+              <span class="sa-layer-badge">Persistence</span>
+            </div>
+            <div class="sa-store-grid">
+              <div class="sa-node" data-diag="sa" data-node="neo4j">
+                <div class="n-icon">🕸️</div>
+                <div class="n-label">Neo4j Graph Database</div>
+                <div class="n-sub">AuraDB · Companies House UBO data</div>
+                <div class="n-badge" style="background:rgba(0,200,160,.10);color:#006a52;">GRAPH</div>
+              </div>
+              <div class="sa-node" data-diag="sa" data-node="trace-subgraph">
+                <div class="n-icon">📋</div>
+                <div class="n-label">Trace Subgraph</div>
+                <div class="n-sub">Same Neo4j instance · InvestigationTrace → TraceEvent → :ABOUT → business nodes</div>
+                <div class="n-badge" style="background:rgba(224,122,32,.10);color:#8c4a0a;">AUDIT</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /sa-wrap -->
+      </div><!-- /diag-canvas -->
+
+      <!-- Detail panel -->
+      <div class="detail-panel" id="sa-detail">
+        <div class="dp-idle" id="sa-idle">← Click a component<br>to explore it</div>
+        <div id="sa-content" style="display:none;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL 4 — ENFORCEMENT SEQUENCE (interactive)
+================================================================ -->
+<div class="panel" id="panel-sequence">
+  <div class="diag-page">
+    <div class="diag-header">
+      <div class="diag-eyebrow">Runtime Flow</div>
+      <h2 class="diag-title">System Control Flow</h2>
+      <p class="diag-hint">↗ Click any participant or message row to see what happens at that step</p>
+    </div>
+    <div class="diag-layout">
+
+      <div class="diag-canvas" style="padding-bottom:var(--sp-5);">
+
+        <!-- Participants -->
+        <div class="seq-participants">
+          <div class="seq-part sp-app inode" data-diag="seq" data-node="app">
+            <div class="seq-part-icon">🖥️</div>
+            <div class="seq-part-label">Application</div>
+            <div class="seq-part-sub">UI · Orchestrator · Agents</div>
+          </div>
+          <div class="seq-part sp-mcp inode" data-diag="seq" data-node="kong-mcp">
+            <div class="seq-part-icon">🛡️</div>
+            <div class="seq-part-label">Kong MCP Gateway</div>
+            <div class="seq-part-sub">/mcp · key-auth · ACL</div>
+          </div>
+          <div class="seq-part sp-ai inode" data-diag="seq" data-node="kong-ai">
+            <div class="seq-part-icon">🤖</div>
+            <div class="seq-part-label">Kong AI Gateway</div>
+            <div class="seq-part-sub">/ai · /ai/sonnet · ai-proxy</div>
+          </div>
+          <div class="seq-part sp-up inode" data-diag="seq" data-node="upstream">
+            <div class="seq-part-icon">☁️</div>
+            <div class="seq-part-label">Upstream Services</div>
+            <div class="seq-part-sub">MCP Server · Anthropic API</div>
+          </div>
+        </div>
+
+        <!-- ── PHASE: APP ── -->
+        <div style="margin-top:var(--sp-4);">
+          <div class="seq-sep">APP — Planning Phase</div>
+
+          <!-- Row 1: Planner → generate plan -->
+          <div class="seq-row" data-diag="seq" data-node="msg-plan">
+            <div style="display:flex;justify-content:flex-end;padding-right:4px;">
+              <span class="seq-chip sc-ai">Planner → generate plan</span>
+            </div>
+            <div></div>
+            <!-- Arrow col 1→3: spans app to kong-ai -->
+            <div style="grid-column:1/4;position:relative;display:flex;align-items:center;">
+            </div>
+            <div></div>
+          </div>
+
+          <!-- We render sequence as styled rows with visual arrows using flex -->
+          <!-- Row: Planner → /ai/sonnet (POST) -->
+          <div class="seq-row" data-diag="seq" data-node="msg-plan">
+            <div class="lf" style="justify-content:center;"></div>
+            <div class="lf" style="justify-content:center;"></div>
+            <div style="grid-column:1/4;display:flex;align-items:center;padding:0 8px;">
+              <div style="flex:1;border-bottom:2px solid var(--kong-3);"></div>
+              <span class="seq-chip sc-ai" style="flex-shrink:0;margin:0 6px;">POST /v1/messages · Sonnet · auth injected by ai-proxy</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--kong-3);"></div>
+            </div>
+            <div></div>
+          </div>
+
+          <!-- JSON plan returned -->
+          <div class="seq-row" data-diag="seq" data-node="msg-plan-return">
+            <div></div><div></div>
+            <div style="grid-column:1/4;display:flex;align-items:center;padding:0 8px;flex-direction:row-reverse;">
+              <div style="flex:1;border-bottom:1.5px dashed var(--ink-4);"></div>
+              <span class="seq-chip sc-resp" style="flex-shrink:0;margin:0 6px;">JSON plan returned</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--ink-4);"></div>
+            </div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- ── PHASE: GATEWAY ── -->
+        <div>
+          <div class="seq-sep">GATEWAY — Tool Enforcement Phase</div>
+
+          <!-- resolve_entity via MCP -->
+          <div class="seq-row" data-diag="seq" data-node="msg-resolve">
+            <div style="grid-column:1/3;display:flex;align-items:center;padding:0 8px;">
+              <div style="flex:1;border-bottom:2px solid var(--kong);"></div>
+              <span class="seq-chip sc-mcp" style="flex-shrink:0;margin:0 6px;">resolve_entity · X-Kong-API-Key</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--kong);"></div>
+            </div>
+            <div></div><div></div>
+          </div>
+
+          <!-- ACL check -->
+          <div class="seq-row" data-diag="seq" data-node="msg-acl">
+            <div></div>
+            <div style="display:flex;align-items:center;justify-content:center;padding:0 4px;">
+              <span class="seq-chip sc-mcp" style="font-size:8.5px;">ACL check: consumer group → tool allowlist</span>
+            </div>
+            <div></div><div></div>
+          </div>
+
+          <!-- MCP tools/call → upstream -->
+          <div class="seq-row" data-diag="seq" data-node="msg-forward">
+            <div></div>
+            <div style="grid-column:2/5;display:flex;align-items:center;padding:0 8px;">
+              <div style="flex:1;border-bottom:2px solid var(--kong-2);"></div>
+              <span class="seq-chip sc-mcp" style="flex-shrink:0;margin:0 6px;">MCP tools/call → upstream · Railway</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--kong-2);"></div>
+            </div>
+          </div>
+
+          <!-- Canonical name returned -->
+          <div class="seq-row" data-diag="seq" data-node="msg-canonical">
+            <div></div>
+            <div style="grid-column:2/5;display:flex;align-items:center;padding:0 8px;flex-direction:row-reverse;">
+              <div style="flex:1;border-bottom:1.5px dashed var(--ink-4);"></div>
+              <span class="seq-chip sc-resp" style="flex-shrink:0;margin:0 6px;">Canonical name returned</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--ink-4);"></div>
+            </div>
+          </div>
+
+          <!-- PERMITTED path -->
+          <div class="seq-row" data-diag="seq" data-node="msg-permitted" style="background:rgba(0,200,160,.04);">
+            <div style="grid-column:1/3;display:flex;align-items:center;padding:0 8px;">
+              <div style="flex:1;border-bottom:2px solid var(--go);"></div>
+              <span class="seq-chip sc-trace" style="flex-shrink:0;margin:0 6px;">Tool call Agent.run() · PERMITTED ✓</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--go);"></div>
+            </div>
+            <div></div><div></div>
+          </div>
+
+          <!-- Forward to MCP upstream -->
+          <div class="seq-row" data-diag="seq" data-node="msg-permitted" style="background:rgba(0,200,160,.04);">
+            <div></div>
+            <div style="grid-column:2/5;display:flex;align-items:center;padding:0 8px;">
+              <div style="flex:1;border-bottom:2px solid var(--go);"></div>
+              <span class="seq-chip sc-trace" style="flex-shrink:0;margin:0 6px;">Forward to MCP Server upstream</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--go);"></div>
+            </div>
+          </div>
+
+          <!-- DENIED path -->
+          <div class="seq-row deny-row" data-diag="seq" data-node="msg-denied">
+            <div style="grid-column:1/3;display:flex;align-items:center;padding:0 8px;">
+              <div style="flex:1;border-bottom:2px solid var(--danger);"></div>
+              <span class="seq-chip sc-deny" style="flex-shrink:0;margin:0 6px;">Tool call · DENIED 🚫</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--danger);"></div>
+            </div>
+            <div></div><div></div>
+          </div>
+
+          <!-- Kong 403 -->
+          <div class="seq-row deny-row" data-diag="seq" data-node="msg-denied">
+            <div></div>
+            <div style="display:flex;align-items:center;justify-content:center;padding:4px;">
+              <span class="seq-chip sc-deny" style="font-size:8.5px;">Kong returns HTTP 403 · ACL denial → StepStatus.SKIPPED</span>
+            </div>
+            <div></div><div></div>
+          </div>
+
+        </div>
+
+        <!-- ── PHASE: TRACE ── -->
+        <div>
+          <div class="seq-sep">TRACE — Persistence Phase</div>
+
+          <!-- TraceService → Neo4j -->
+          <div class="seq-row" data-diag="seq" data-node="msg-trace" style="background:rgba(0,200,160,.04);">
+            <div style="grid-column:1/5;display:flex;align-items:center;padding:0 8px;">
+              <div style="flex:1;border-bottom:2px solid var(--go);"></div>
+              <span class="seq-chip sc-trace" style="flex-shrink:0;margin:0 6px;">Persist TraceEvent · TraceService → Neo4j (both permitted + denied)</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--go);"></div>
+            </div>
+          </div>
+
+          <!-- Result back to app -->
+          <div class="seq-row" data-diag="seq" data-node="msg-result">
+            <div style="grid-column:1/5;display:flex;align-items:center;padding:0 8px;flex-direction:row-reverse;">
+              <div style="flex:1;border-bottom:1.5px dashed var(--ink-4);"></div>
+              <span class="seq-chip sc-resp" style="flex-shrink:0;margin:0 6px;">OrchestratorResult → Streamlit UI {steps, trace_id, final_answer}</span>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--ink-4);"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Legend -->
+        <div style="margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:center;">
+          <span style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);letter-spacing:.06em;text-transform:uppercase;">Legend</span>
+          <span class="seq-chip sc-mcp">MCP / tool call</span>
+          <span class="seq-chip sc-ai">AI / LLM call</span>
+          <span class="seq-chip sc-trace">Permitted / traced</span>
+          <span class="seq-chip sc-deny">Denied / blocked</span>
+          <span class="seq-chip sc-resp">Response</span>
+        </div>
+
+      </div><!-- /diag-canvas -->
+
+      <!-- Detail panel -->
+      <div class="detail-panel" id="seq-detail">
+        <div class="dp-idle" id="seq-idle">← Click a participant<br>or message row<br>to explore it</div>
+        <div id="seq-content" style="display:none;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ================================================================
+     PANEL 5 — NEO4J GRAPH DATA MODEL (combined, interactive SVG)
+================================================================ -->
+<style>
+#panel-graph .diag-page{max-width:var(--max-w);margin:0 auto;padding:var(--sp-6) var(--sp-7) var(--sp-9);}
+
+/* Layout */
+.gm-layout{display:grid;grid-template-columns:1fr 310px;gap:var(--sp-5);align-items:start;margin-top:var(--sp-5);}
+@media(max-width:960px){.gm-layout{grid-template-columns:1fr;}}
+
+/* Canvas */
+.gm-canvas-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;}
+#gm-svg{width:100%;display:block;cursor:default;}
+
+/* Legend */
+.gm-legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:10px 16px;border-top:1px solid var(--border);background:var(--surf-2);}
+.gm-li{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--ink-3);font-family:var(--f-mono);}
+.gm-li-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.gm-li-line{width:20px;height:2.5px;flex-shrink:0;border-radius:2px;}
+
+/* Section labels inside SVG rendered via foreignObject workaround — use text instead */
+
+/* Detail panel */
+#gm-detail{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-5);box-shadow:var(--sh-sm);position:sticky;top:calc(var(--chrome-h) + 12px);}
+.gm-idle{color:var(--ink-4);font-size:12px;font-family:var(--f-mono);text-align:center;padding:40px 0;line-height:1.9;letter-spacing:.03em;}
+.gm-badge{display:inline-flex;font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-bottom:10px;}
+.gm-dtitle{font-family:var(--f-display);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:10px;letter-spacing:-.015em;}
+.gm-dbody{font-size:12.5px;color:var(--ink-3);line-height:1.72;margin-bottom:12px;}
+.gm-plabel{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin:14px 0 6px;}
+.gm-prop{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11.5px;}
+.gm-prop:last-child{border-bottom:none;}
+.gm-pname{font-family:var(--f-mono);font-size:10px;color:var(--kong-2);flex-shrink:0;min-width:105px;}
+.gm-ptype{font-family:var(--f-mono);font-size:9.5px;color:var(--ink-4);flex-shrink:0;min-width:52px;}
+.gm-pdesc{color:var(--ink-3);line-height:1.45;}
+.gm-cypher{background:var(--ink);border-radius:6px;padding:10px 12px;margin-top:12px;font-family:var(--f-mono);font-size:10px;color:#a8d8a8;line-height:1.65;overflow-x:auto;white-space:pre;}
+.cy-kw{color:#88bbff;}.cy-lb{color:#ffcc88;}.cy-v{color:#ffaa88;}
+
+/* SVG hover/select */
+.gm-node-g{cursor:pointer;}
+.gm-node-g circle,.gm-node-g ellipse{transition:filter .15s ease;}
+.gm-node-g:hover circle,.gm-node-g:hover ellipse{filter:drop-shadow(0 4px 10px rgba(0,0,0,.25));}
+.gm-node-g.gm-sel circle,.gm-node-g.gm-sel ellipse{filter:drop-shadow(0 0 0 4px rgba(0,52,90,.28)) drop-shadow(0 4px 10px rgba(0,0,0,.2));}
+.gm-rel-g{cursor:pointer;}
+.gm-rel-g:hover .gm-rl{stroke-width:3!important;}
+.gm-rel-g.gm-sel .gm-rl{stroke-width:3!important;}
+</style>
+
+<div class="panel" id="panel-graph">
+  <div class="diag-page">
+    <div class="diag-header">
+      <div class="diag-eyebrow">Neo4j AuraDB · Property Graph · Two Subgraphs</div>
+      <h2 class="diag-title">Graph Data Model</h2>
+      <p class="diag-hint" style="margin-top:8px;">
+        ↗ Click any node or relationship to explore its full schema &nbsp;·&nbsp;
+        Business graph (left) and Trace subgraph (right) shown together
+      </p>
+    </div>
+
+    <div class="gm-layout">
+      <!-- SVG canvas -->
+      <div class="gm-canvas-wrap">
+        <svg id="gm-svg" viewBox="0 0 820 560" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="m-own"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#005490"/></marker>
+            <marker id="m-reg"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#e07a20"/></marker>
+            <marker id="m-sic"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#7c3aed"/></marker>
+            <marker id="m-off"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#c84040"/></marker>
+            <marker id="m-hev"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00c8a0"/></marker>
+            <marker id="m-abt"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#9ba3b0"/></marker>
+            <marker id="m-nxt"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#636b7a"/></marker>
+            <marker id="m-ret"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#005490"/></marker>
+          </defs>
+
+          <!-- ── Section background bands ── -->
+          <!-- Business graph zone -->
+          <rect x="8" y="8" width="390" height="544" rx="12" fill="#f8f9fc" stroke="#e2e0d8" stroke-width="1"/>
+          <text x="24" y="30" font-family="JetBrains Mono,monospace" font-size="9" fill="#9ba3b0" letter-spacing="2" text-transform="uppercase">BUSINESS GRAPH</text>
+
+          <!-- Trace subgraph zone -->
+          <rect x="420" y="8" width="392" height="544" rx="12" fill="#f0f9ff" stroke="#bfd7ee" stroke-width="1"/>
+          <text x="436" y="30" font-family="JetBrains Mono,monospace" font-size="9" fill="#7ab3d4" letter-spacing="2">TRACE SUBGRAPH</text>
+
+          <!-- Divider dashes -->
+          <line x1="409" y1="20" x2="409" y2="548" stroke="#e2e0d8" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- ════════════════════════════════════════════
+               RELATIONSHIP LINES (drawn first, behind nodes)
+               ════════════════════════════════════════════ -->
+
+          <!-- BUSINESS GRAPH RELS -->
+          <!-- Company2 OWNS Company1 -->
+          <g class="gm-rel-g" data-rid="owns-co">
+            <line class="gm-rl" x1="155" y1="168" x2="183" y2="238" stroke="#005490" stroke-width="2" marker-end="url(#m-own)"/>
+            <line x1="155" y1="168" x2="183" y2="238" stroke="transparent" stroke-width="12"/>
+            <rect x="125" y="193" width="42" height="15" rx="3" fill="#fff" opacity=".9"/>
+            <text x="146" y="204" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#005490">OWNS</text>
+          </g>
+
+          <!-- Person OWNS Company1 -->
+          <g class="gm-rel-g" data-rid="owns-per">
+            <line class="gm-rl" x1="155" y1="392" x2="183" y2="322" stroke="#005490" stroke-width="2" marker-end="url(#m-own)"/>
+            <line x1="155" y1="392" x2="183" y2="322" stroke="transparent" stroke-width="12"/>
+            <rect x="125" y="348" width="42" height="15" rx="3" fill="#fff" opacity=".9"/>
+            <text x="146" y="359" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#005490">OWNS</text>
+          </g>
+
+          <!-- Company1 REGISTERED_AT Address -->
+          <g class="gm-rel-g" data-rid="reg-at">
+            <line class="gm-rl" x1="270" y1="270" x2="330" y2="168" stroke="#e07a20" stroke-width="2" marker-end="url(#m-reg)"/>
+            <line x1="270" y1="270" x2="330" y2="168" stroke="transparent" stroke-width="12"/>
+            <rect x="268" y="205" width="82" height="15" rx="3" fill="#fff" opacity=".9"/>
+            <text x="309" y="216" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#e07a20">REGISTERED_AT</text>
+          </g>
+
+          <!-- Company1 HAS_SIC SIC -->
+          <g class="gm-rel-g" data-rid="has-sic">
+            <line class="gm-rl" x1="270" y1="300" x2="330" y2="400" stroke="#7c3aed" stroke-width="2" marker-end="url(#m-sic)"/>
+            <line x1="270" y1="300" x2="330" y2="400" stroke="transparent" stroke-width="12"/>
+            <rect x="265" y="344" width="54" height="15" rx="3" fill="#fff" opacity=".9"/>
+            <text x="292" y="355" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#7c3aed">HAS_SIC</text>
+          </g>
+
+          <!-- Person OFFICER_OF Company1 (curved below) -->
+          <g class="gm-rel-g" data-rid="officer">
+            <path class="gm-rl" d="M145,432 C145,490 260,490 230,320" fill="none" stroke="#c84040" stroke-width="2" marker-end="url(#m-off)"/>
+            <path d="M145,432 C145,490 260,490 230,320" fill="none" stroke="transparent" stroke-width="12"/>
+            <rect x="147" y="466" width="70" height="15" rx="3" fill="#fff" opacity=".9"/>
+            <text x="182" y="477" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#c84040">OFFICER_OF</text>
+          </g>
+
+          <!-- TRACE SUBGRAPH RELS -->
+          <!-- InvTrace HAS_EVENT TraceEvent -->
+          <g class="gm-rel-g" data-rid="has-event">
+            <line class="gm-rl" x1="600" y1="185" x2="600" y2="305" stroke="#00c8a0" stroke-width="2" marker-end="url(#m-hev)"/>
+            <line x1="600" y1="185" x2="600" y2="305" stroke="transparent" stroke-width="12"/>
+            <rect x="556" y="238" width="68" height="15" rx="3" fill="#f0f9ff" opacity=".95"/>
+            <text x="590" y="249" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#00c8a0">HAS_EVENT</text>
+          </g>
+
+          <!-- TraceEvent NEXT_EVENT self-loop -->
+          <g class="gm-rel-g" data-rid="next-event">
+            <path class="gm-rl" d="M650,340 C710,310 710,390 650,370" fill="none" stroke="#636b7a" stroke-width="2" marker-end="url(#m-nxt)"/>
+            <path d="M650,340 C710,310 710,390 650,370" fill="none" stroke="transparent" stroke-width="12"/>
+            <rect x="680" y="343" width="68" height="15" rx="3" fill="#f0f9ff" opacity=".95"/>
+            <text x="714" y="354" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#636b7a">NEXT_EVENT</text>
+          </g>
+
+          <!-- TraceEvent ABOUT Company1 (cross-subgraph dashed) -->
+          <g class="gm-rel-g" data-rid="about-co">
+            <line class="gm-rl" x1="550" y1="355" x2="280" y2="305" stroke="#9ba3b0" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#m-abt)"/>
+            <line x1="550" y1="355" x2="280" y2="305" stroke="transparent" stroke-width="12"/>
+            <rect x="385" y="317" width="42" height="15" rx="3" fill="#fff" opacity=".9"/>
+            <text x="406" y="328" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#9ba3b0">ABOUT</text>
+          </g>
+
+          <!-- InvTrace RETRIEVED InvTrace2 -->
+          <g class="gm-rel-g" data-rid="retrieved">
+            <line class="gm-rl" x1="552" y1="118" x2="498" y2="118" stroke="#005490" stroke-width="2" marker-end="url(#m-ret)"/>
+            <line x1="552" y1="118" x2="498" y2="118" stroke="transparent" stroke-width="12"/>
+            <rect x="502" y="105" width="60" height="15" rx="3" fill="#f0f9ff" opacity=".95"/>
+            <text x="532" y="116" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#005490">RETRIEVED</text>
+          </g>
+
+          <!-- ════════════════════════════════════════════
+               NODES
+               ════════════════════════════════════════════ -->
+
+          <!-- ── Business Graph Nodes ── -->
+
+          <!-- Company (focal) -->
+          <g class="gm-node-g" data-nid="company-focal">
+            <circle cx="228" cy="280" r="52" fill="#dbeafe" stroke="#005490" stroke-width="2.5"
+                    filter="drop-shadow(0 2px 6px rgba(0,0,0,.10))"/>
+            <text x="228" y="272" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="13" font-weight="700" fill="#003366">Company</text>
+            <text x="228" y="290" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="9" fill="#005490" opacity=".7">focal entity</text>
+          </g>
+
+          <!-- Company (parent/owner) -->
+          <g class="gm-node-g" data-nid="company-owner">
+            <circle cx="120" cy="140" r="44" fill="#dbeafe" stroke="#005490" stroke-width="2"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,.09))"/>
+            <text x="120" y="133" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="12" font-weight="700" fill="#003366">Company</text>
+            <text x="120" y="150" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="8.5" fill="#005490" opacity=".7">parent / owner</text>
+          </g>
+
+          <!-- Person -->
+          <g class="gm-node-g" data-nid="person">
+            <circle cx="120" cy="420" r="44" fill="#d1fae5" stroke="#006a52" stroke-width="2"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,.09))"/>
+            <text x="120" y="413" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="12" font-weight="700" fill="#004d3a">Person</text>
+            <text x="120" y="430" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="8.5" fill="#006a52" opacity=".7">UBO / officer</text>
+          </g>
+
+          <!-- Address -->
+          <g class="gm-node-g" data-nid="address">
+            <circle cx="362" cy="140" r="40" fill="#fef3c7" stroke="#e07a20" stroke-width="2"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,.09))"/>
+            <text x="362" y="133" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="12" font-weight="700" fill="#7c3400">Address</text>
+            <text x="362" y="150" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="8.5" fill="#e07a20" opacity=".7">registered office</text>
+          </g>
+
+          <!-- SIC -->
+          <g class="gm-node-g" data-nid="sic">
+            <circle cx="362" cy="430" r="40" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,.09))"/>
+            <text x="362" y="423" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="12" font-weight="700" fill="#4c1d95">SIC</text>
+            <text x="362" y="440" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="8.5" fill="#7c3aed" opacity=".7">industry code</text>
+          </g>
+
+          <!-- ── Trace Subgraph Nodes ── -->
+
+          <!-- InvestigationTrace (main) -->
+          <g class="gm-node-g" data-nid="inv-trace">
+            <circle cx="620" cy="128" r="56" fill="#00335a" stroke="#00335a" stroke-width="2.5"
+                    filter="drop-shadow(0 2px 8px rgba(0,0,0,.18))"/>
+            <text x="620" y="118" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="10.5" font-weight="700" fill="#fff">Investigation</text>
+            <text x="620" y="133" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="10.5" font-weight="700" fill="#fff">Trace</text>
+            <text x="620" y="149" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="8" fill="rgba(255,255,255,.55)">one per investigation</text>
+          </g>
+
+          <!-- InvestigationTrace2 (retrieved) -->
+          <g class="gm-node-g" data-nid="inv-trace2">
+            <circle cx="462" cy="118" r="36" fill="#00335a" stroke="#005490" stroke-width="2" opacity=".75"
+                    filter="drop-shadow(0 1px 4px rgba(0,0,0,.14))"/>
+            <text x="462" y="111" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="9.5" font-weight="700" fill="#fff">Investigation</text>
+            <text x="462" y="125" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="9.5" font-weight="700" fill="#fff">Trace</text>
+            <text x="462" y="139" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="7.5" fill="rgba(255,255,255,.5)">retrieved</text>
+          </g>
+
+          <!-- TraceEvent -->
+          <g class="gm-node-g" data-nid="trace-event">
+            <circle cx="600" cy="355" r="50" fill="#e0f2fe" stroke="#005490" stroke-width="2.5"
+                    filter="drop-shadow(0 2px 6px rgba(0,0,0,.10))"/>
+            <text x="600" y="347" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Plus Jakarta Sans,sans-serif" font-size="11.5" font-weight="700" fill="#003366">TraceEvent</text>
+            <text x="600" y="364" text-anchor="middle" dominant-baseline="middle"
+                  font-family="JetBrains Mono,monospace" font-size="8.5" fill="#005490" opacity=".7">one per step</text>
+          </g>
+
+        </svg>
+
+        <!-- Legend -->
+        <div class="gm-legend">
+          <span style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-right:4px;">Nodes</span>
+          <div class="gm-li"><div class="gm-li-dot" style="background:#dbeafe;border:1.5px solid #005490;"></div>Company</div>
+          <div class="gm-li"><div class="gm-li-dot" style="background:#d1fae5;border:1.5px solid #006a52;"></div>Person</div>
+          <div class="gm-li"><div class="gm-li-dot" style="background:#fef3c7;border:1.5px solid #e07a20;"></div>Address</div>
+          <div class="gm-li"><div class="gm-li-dot" style="background:#ede9fe;border:1.5px solid #7c3aed;"></div>SIC</div>
+          <div class="gm-li"><div class="gm-li-dot" style="background:#00335a;border:1.5px solid #00335a;"></div>InvestigationTrace</div>
+          <div class="gm-li"><div class="gm-li-dot" style="background:#e0f2fe;border:1.5px solid #005490;"></div>TraceEvent</div>
+          <span style="font-family:var(--f-mono);font-size:9px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-left:8px;margin-right:4px;">Relationships</span>
+          <div class="gm-li"><div class="gm-li-line" style="background:#005490;"></div>OWNS</div>
+          <div class="gm-li"><div class="gm-li-line" style="background:#e07a20;"></div>REGISTERED_AT</div>
+          <div class="gm-li"><div class="gm-li-line" style="background:#7c3aed;"></div>HAS_SIC</div>
+          <div class="gm-li"><div class="gm-li-line" style="background:#c84040;"></div>OFFICER_OF</div>
+          <div class="gm-li"><div class="gm-li-line" style="background:#00c8a0;"></div>HAS_EVENT</div>
+          <div class="gm-li"><div class="gm-li-line" style="background:#9ba3b0;border-top:2px dashed #9ba3b0;height:0;"></div>ABOUT</div>
+          <div class="gm-li"><div class="gm-li-line" style="background:#636b7a;"></div>NEXT_EVENT</div>
+          <div class="gm-li"><div class="gm-li-line" style="background:#005490;"></div>RETRIEVED</div>
+        </div>
+      </div>
+
+      <!-- Detail panel -->
+      <div id="gm-detail">
+        <div class="gm-idle" id="gm-idle">Click any node<br>or relationship<br>to explore its schema</div>
+        <div id="gm-content" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   TAB 5 — GRAPH DATA MODEL  interactive detail data + click handler
+================================================================ */
+const GM = {
+  nodes: {
+    'company-focal': {
+      label:'Company', badge:'Business Graph · Focal Node', color:'#005490',
+      body:'The central entity in the business graph. Populated from UK Companies House UBO data. A Company can be an owner (via OWNS) and an ownee simultaneously, enabling multi-hop traversal.',
+      props:[
+        {n:'name',              t:'String',   d:'Full registered company name — primary identifier, unique, full-text indexed'},
+        {n:'company_number',    t:'String',   d:'8-digit Companies House registration number'},
+        {n:'status',            t:'String',   d:'Active | Dissolved | Liquidation | Administration'},
+        {n:'country_of_origin', t:'String',   d:'Country of registration (typically England/Wales)'},
+      ],
+      cypher:'MATCH (c:Company {name: $name})\nRETURN c.name, c.company_number, c.status',
+    },
+    'company-owner': {
+      label:'Company (owner)', badge:'Business Graph · Parent', color:'#005490',
+      body:'A parent or intermediate company in the ownership chain. The OWNS relationship is traversed recursively up to max_depth hops to build the full chain and identify UBOs. Corporate-only chains (no Person leaf) are flagged as high-risk.',
+      props:[
+        {n:'name',           t:'String', d:'Registered name of the owning company'},
+        {n:'company_number', t:'String', d:'Companies House number'},
+        {n:'status',         t:'String', d:'Active | Dissolved | etc.'},
+      ],
+      cypher:'MATCH path = (owner)-[:OWNS*1..5]\n      ->(c:Company {name: $name})\nRETURN nodes(path), relationships(path)',
+    },
+    'person': {
+      label:'Person', badge:'Business Graph · UBO / Officer', color:'#006a52',
+      body:'A natural person who owns shares in, or holds an officer role at, a company. Persons are the leaf nodes of any ownership chain — a Person UBO means the ultimate beneficial owner has been identified. A corporate-only chain (no Person) is a high-risk signal.',
+      props:[
+        {n:'person_id',   t:'String', d:'Unique internal identifier (generated, not a Companies House ID)'},
+        {n:'name',        t:'String', d:'Full name of the individual'},
+        {n:'nationality', t:'String', d:'Nationality if recorded in PSC register data'},
+      ],
+      cypher:'MATCH (p:Person)-[:OWNS]->(c:Company {name: $name})\nRETURN p.name, p.person_id',
+    },
+    'address': {
+      label:'Address', badge:'Business Graph · Location', color:'#e07a20',
+      body:'The registered office address of a company. Shared Address nodes are the mechanism for co-location detection — if many Company nodes point to the same Address, the address_risk_check flags it. Dissolution rate among co-located companies is a further signal.',
+      props:[
+        {n:'address_line_1', t:'String', d:'First line of the address'},
+        {n:'address_line_2', t:'String', d:'Second line (optional)'},
+        {n:'post_town',      t:'String', d:'Town or city'},
+        {n:'post_code',      t:'String', d:'UK postcode — used as identifier for co-location queries'},
+        {n:'country',        t:'String', d:'Country of the address'},
+      ],
+      cypher:'MATCH (c:Company)-[:REGISTERED_AT]->(a:Address)\nWHERE a.post_code = $postcode\nRETURN c.name, c.status\nORDER BY c.status',
+    },
+    'sic': {
+      label:'SIC', badge:'Business Graph · Industry Classification', color:'#7c3aed',
+      body:'A Standard Industrial Classification code assigned to a company. Companies can have multiple SIC codes. The Risk Agent checks codes against a high-scrutiny set: 64205 (financial holding), 70100 (head offices), 74990 (non-trading), 99999 (dormant).',
+      props:[
+        {n:'code',        t:'String', d:'4 or 5-digit SIC code (e.g. 64205)'},
+        {n:'description', t:'String', d:'Human-readable industry description'},
+      ],
+      cypher:'MATCH (c:Company {name: $name})-[:HAS_SIC]->(s:SIC)\nWHERE s.code IN ["64205","70100","74990","99999"]\nRETURN s.code, s.description',
+    },
+    'inv-trace': {
+      label:'InvestigationTrace', badge:'Trace Subgraph · Root Node', color:'#00335a',
+      body:'The root node of every investigation. Created before any agent runs. Stores query, mode, full user identity, role, and session context. Linked to all TraceEvents via HAS_EVENT. Can be retrieved and replayed by Senior analysts.',
+      props:[
+        {n:'trace_id',       t:'String',   d:'UUID — primary identifier'},
+        {n:'query',          t:'String',   d:'Entity name being investigated'},
+        {n:'question',       t:'String',   d:'Original free-text question from the user'},
+        {n:'mode',           t:'String',   d:'investigate | trace'},
+        {n:'user_id',        t:'String',   d:'Authenticated user identifier'},
+        {n:'user_role',      t:'String',   d:'jr_risk_analyst | sr_risk_analyst'},
+        {n:'auth_provider',  t:'String',   d:'mock | dev_bypass | (future: kong)'},
+        {n:'session_id',     t:'String',   d:'UUID of the Streamlit session'},
+        {n:'gateway_mode',   t:'String',   d:'local | remote | kong'},
+        {n:'started_at',     t:'DateTime', d:'UTC timestamp of trace creation'},
+        {n:'ended_at',       t:'DateTime', d:'UTC timestamp of finalisation (null while running)'},
+        {n:'final_summary',  t:'String',   d:'AI-synthesised risk narrative written at finalise stage'},
+        {n:'graph_payload_json',        t:'String', d:'Serialised graph visualisation payload for Replay tab'},
+        {n:'investigation_artifact_json',t:'String', d:'Full step results artifact for audit replay'},
+      ],
+      cypher:'MATCH (t:InvestigationTrace {trace_id: $id})\nRETURN t.query, t.mode,\n       t.user_role, t.started_at,\n       t.final_summary',
+    },
+    'inv-trace2': {
+      label:'InvestigationTrace (retrieved)', badge:'Trace Subgraph · Retrieved Trace', color:'#00335a',
+      body:'A prior InvestigationTrace that was reviewed by a Trace-mode investigation. Linked from the operational trace via RETRIEVED. Enables audit chains so you can see which investigation reviewed which prior record.',
+      props:[
+        {n:'trace_id', t:'String', d:'UUID of the retrieved trace'},
+        {n:'query',    t:'String', d:'Entity that was originally investigated'},
+      ],
+      cypher:'MATCH (src:InvestigationTrace {trace_id: $op})\n      -[:RETRIEVED]->(tgt:InvestigationTrace)\nRETURN tgt.trace_id, tgt.query,\n       tgt.final_summary',
+    },
+    'trace-event': {
+      label:'TraceEvent', badge:'Trace Subgraph · Event Node', color:'#005490',
+      body:'Records a single moment in the investigation lifecycle. One TraceEvent per tool call, agent decision, or orchestrator action. Events are chained via NEXT_EVENT for ordered traversal. Linked to business graph nodes via ABOUT.',
+      props:[
+        {n:'event_id',       t:'String',  d:'UUID — primary identifier'},
+        {n:'event_number',   t:'Integer', d:'Ordinal position within the trace (1-based)'},
+        {n:'event_type',     t:'String',  d:'plan_created | tool_returned | agent_reasoning | step_failed | investigation_complete'},
+        {n:'agent_name',     t:'String',  d:'graph-agent | risk-agent | trace-agent | ""'},
+        {n:'tool_name',      t:'String',  d:'MCP tool name (e.g. address_risk_check)'},
+        {n:'input_summary',  t:'String',  d:'What was passed to the tool'},
+        {n:'output_summary', t:'String',  d:'What the tool returned'},
+        {n:'decision',       t:'String',  d:'What the agent decided to do next'},
+        {n:'why',            t:'String',  d:'Reasoning behind the decision'},
+        {n:'data_json',      t:'String',  d:'Full JSON findings payload (stringified) — powers the Replay tab'},
+        {n:'created_at',     t:'DateTime',d:'UTC timestamp of this event'},
+      ],
+      cypher:'MATCH (t:InvestigationTrace {trace_id: $id})\n      -[:HAS_EVENT]->(e:TraceEvent)\nRETURN e.event_number, e.event_type,\n       e.tool_name, e.output_summary\nORDER BY e.event_number',
+    },
+  },
+  rels: {
+    'owns-co': {
+      label:'OWNS (Company → Company)', badge:'Ownership Relationship', color:'#005490',
+      body:'Represents share ownership or PSC control from one entity to another. Traversed recursively to build the full chain. A corporate-only chain — no Person at the leaf — is flagged as a high-risk signal by the Risk Agent.',
+      props:[
+        {n:'ownership_pct_min',  t:'Float',    d:'Minimum ownership percentage (e.g. 25.0)'},
+        {n:'ownership_pct_max',  t:'Float',    d:'Maximum ownership percentage (e.g. 50.0)'},
+        {n:'ownership_controls', t:'String[]', d:'PSC nature-of-control strings — e.g. ownership-of-shares-75-to-100-percent, significant-influence-or-control'},
+      ],
+      cypher:'MATCH path = (owner)-[:OWNS*1..5]\n      ->(c:Company {name: $name})\nRETURN length(path) AS depth,\n       nodes(path) AS chain',
+    },
+    'owns-per': {
+      label:'OWNS (Person → Company)', badge:'UBO Ownership Relationship', color:'#005490',
+      body:'A Person owning a Company directly or via a chain. This is the most significant OWNS relationship — it identifies a natural-person UBO at the end of an ownership chain. The ownership_controls field records the PSC control type (shares, voting, influence).',
+      props:[
+        {n:'ownership_pct_min',  t:'Float',    d:'Minimum ownership %'},
+        {n:'ownership_pct_max',  t:'Float',    d:'Maximum ownership %'},
+        {n:'ownership_controls', t:'String[]', d:'PSC control type strings'},
+      ],
+      cypher:'MATCH (p:Person)-[r:OWNS]->(c:Company {name: $name})\nRETURN p.name, r.ownership_pct_min,\n       r.ownership_controls',
+    },
+    'reg-at': {
+      label:'REGISTERED_AT', badge:'Address Relationship', color:'#e07a20',
+      body:'Links a Company to its registered office Address node. The address co-location risk check counts how many other Company nodes share the same Address node. High counts combined with high dissolution rates trigger a HIGH address risk level.',
+      props:[],
+      cypher:'MATCH (c:Company)-[:REGISTERED_AT]->(a:Address)\nWHERE a.post_code = $postcode\nRETURN c.name, c.status,\n       count(*) OVER() AS total_at_address',
+    },
+    'has-sic': {
+      label:'HAS_SIC', badge:'Industry Classification', color:'#7c3aed',
+      body:'Links a Company to one or more SIC codes. The Risk Agent checks these against high-scrutiny codes. A company registered under 64205 (financial holding companies) with a high peer dissolution rate triggers a HIGH industry risk level.',
+      props:[],
+      cypher:'MATCH (c:Company {name: $name})-[:HAS_SIC]->(s:SIC)\nRETURN s.code, s.description',
+    },
+    'officer': {
+      label:'OFFICER_OF', badge:'Officer Relationship', color:'#c84040',
+      body:'Links a Person to a Company where they hold a director or officer role. Separate from OWNS — a person can be an officer without owning shares. Relevant for shadow director detection and control signal analysis.',
+      props:[
+        {n:'role',         t:'String', d:'Director | Secretary | LLP Designated Member | etc.'},
+        {n:'appointed_on', t:'Date',   d:'Date the officer was appointed'},
+        {n:'resigned_on',  t:'Date',   d:'Date of resignation — null if still active'},
+      ],
+      cypher:'MATCH (p:Person)-[r:OFFICER_OF]->(c:Company {name: $name})\nRETURN p.name, r.role,\n       r.appointed_on, r.resigned_on',
+    },
+    'has-event': {
+      label:'HAS_EVENT', badge:'Trace Relationship', color:'#00c8a0',
+      body:'Links an InvestigationTrace to each of its TraceEvent nodes. One HAS_EVENT edge per event. The count of HAS_EVENT edges equals the event_count shown in the list_recent_traces output.',
+      props:[],
+      cypher:'MATCH (t:InvestigationTrace {trace_id: $id})\n      -[:HAS_EVENT]->(e:TraceEvent)\nRETURN count(e) AS event_count',
+    },
+    'next-event': {
+      label:'NEXT_EVENT', badge:'Ordering Relationship', color:'#636b7a',
+      body:'Chains TraceEvent nodes in chronological sequence. NEXT_EVENT[i] points to TraceEvent[i+1]. Enables ordered traversal of the audit trail without relying solely on timestamps. Created automatically by TraceRepository.append_event().',
+      props:[],
+      cypher:'MATCH (e1:TraceEvent)-[:NEXT_EVENT*]->(eN:TraceEvent)\nWHERE NOT (eN)-[:NEXT_EVENT]->()\n  AND e1.event_number = 1\nRETURN eN.event_number AS total_events',
+    },
+    'about-co': {
+      label:'ABOUT', badge:'Cross-Graph Link', color:'#9ba3b0',
+      body:'Links a TraceEvent to the business graph nodes it touched — Company, Person, Address, or SIC. This is how the trace subgraph connects to business data without duplicating it. Enables queries like: "which investigations examined this company?" across both subgraphs.',
+      props:[],
+      cypher:'MATCH (e:TraceEvent)-[:ABOUT]->(n)\nWHERE n.name = $entityName\nMATCH (t:InvestigationTrace)-[:HAS_EVENT]->(e)\nRETURN DISTINCT t.trace_id, t.started_at,\n       t.user_role',
+    },
+    'retrieved': {
+      label:'RETRIEVED', badge:'Audit Chain Relationship', color:'#005490',
+      body:'Created when a Trace-mode investigation retrieves a prior trace. Enables audit chains: you can see which investigation reviewed which prior record. The TraceAgent checks this to prevent self-referential retrieval loops.',
+      props:[],
+      cypher:'MATCH (t1:InvestigationTrace)-[:RETRIEVED]\n      ->(t2:InvestigationTrace)\nRETURN t1.trace_id AS reviewer,\n       t2.trace_id AS reviewed,\n       t2.query    AS reviewed_entity',
+    },
+  },
+};
+
+function gmHighlightSyntax(s) {
+  return s
+    .replace(/\b(MATCH|RETURN|WHERE|WITH|ORDER BY|OPTIONAL MATCH|CREATE|MERGE|SET|DETACH DELETE|DELETE|DISTINCT|AS|IN|AND|OR|NOT|OVER|COUNT)\b/g, '<span class="cy-kw">$1</span>')
+    .replace(/\$\w+/g, '<span class="cy-v">$&</span>')
+    .replace(/:([A-Z][A-Za-z]*)/g, ':<span class="cy-lb">$1</span>');
+}
+
+function gmShowDetail(data) {
+  document.getElementById('gm-idle').style.display = 'none';
+  const c = document.getElementById('gm-content');
+  c.style.display = 'block';
+
+  const propsHtml = data.props && data.props.length
+    ? `<div class="gm-plabel">Properties</div>` +
+      data.props.map(p =>
+        `<div class="gm-prop">
+          <span class="gm-pname">.${p.n}</span>
+          <span class="gm-ptype">${p.t}</span>
+          <span class="gm-pdesc">${p.d}</span>
+        </div>`
+      ).join('')
+    : `<p style="font-size:11.5px;color:var(--ink-4);margin-top:10px;font-family:var(--f-mono);">No properties on this relationship.</p>`;
+
+  const cypherHtml = data.cypher
+    ? `<div class="gm-plabel">Example Cypher</div>
+       <div class="gm-cypher">${gmHighlightSyntax(data.cypher)}</div>`
+    : '';
+
+  c.innerHTML = `
+    <div class="gm-badge" style="background:${data.color}18;color:${data.color};">${data.badge}</div>
+    <div class="gm-dtitle">${data.label}</div>
+    <div class="gm-dbody">${data.body}</div>
+    ${propsHtml}
+    ${cypherHtml}
+  `;
+}
+
+function gmClearSel() {
+  document.querySelectorAll('.gm-node-g.gm-sel, .gm-rel-g.gm-sel')
+    .forEach(el => el.classList.remove('gm-sel'));
+}
+
+/* Wire up node clicks */
+document.querySelectorAll('.gm-node-g[data-nid]').forEach(el => {
+  el.addEventListener('click', function() {
+    gmClearSel();
+    this.classList.add('gm-sel');
+    const data = GM.nodes[this.dataset.nid];
+    if (data) gmShowDetail(data);
+  });
+});
+
+/* Wire up relationship clicks */
+document.querySelectorAll('.gm-rel-g[data-rid]').forEach(el => {
+  el.addEventListener('click', function() {
+    gmClearSel();
+    this.classList.add('gm-sel');
+    const data = GM.rels[this.dataset.rid];
+    if (data) gmShowDetail(data);
+  });
+});
+</script>
+
+
+<!-- ====================================================================
+     PANEL 6  —  KONG CONFIGURATION
+==================================================================== -->
+<style>
+/* ── layout ── */
+.kc-page{max-width:var(--max-w);margin:0 auto;padding:var(--sp-6) var(--sp-7) var(--sp-9);}
+.kc-cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5);margin-top:var(--sp-5);}
+@media(max-width:860px){.kc-cols{grid-template-columns:1fr;}}
+
+/* ── section card ── */
+.kc-section{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);}
+.kc-section-header{padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--border);}
+.kc-section-eye{font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.kc-section-title{font-family:var(--f-display);font-size:17px;font-weight:700;color:#fff;letter-spacing:-.015em;}
+.kc-section-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;}
+.kc-body{padding:var(--sp-4) var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-4);}
+
+/* ── inner blocks ── */
+.kc-block{background:var(--surf-2);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;}
+.kc-block-title{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px 6px;border-bottom:1px solid var(--border);background:var(--surf-3);}
+.kc-block-body{padding:var(--sp-3) var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-2);}
+
+/* ── route chip ── */
+.kc-route{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--r-md);cursor:pointer;user-select:none;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);}
+.kc-route:hover{border-color:var(--kong-2);box-shadow:var(--sh-sm);}
+.kc-route.kc-sel{border-color:var(--kong)!important;box-shadow:0 0 0 3px rgba(0,51,90,.10)!important;}
+.kc-route-left{display:flex;align-items:center;gap:var(--sp-3);}
+.kc-route-method{font-family:var(--f-mono);font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;}
+.kc-route-path{font-family:var(--f-mono);font-size:13px;font-weight:700;color:var(--ink);}
+.kc-route-right{display:flex;align-items:center;gap:var(--sp-2);}
+.kc-pill{font-family:var(--f-mono);font-size:9px;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.kc-plugins{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;padding:0 2px;}
+.kc-plugin{font-family:var(--f-mono);font-size:8.5px;padding:2px 7px;border-radius:3px;border:1px solid;}
+.kc-divider{height:1px;background:var(--border);margin:4px 0;}
+
+/* ── consumers ── */
+.kc-consumer-row{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 0;border-bottom:1px solid var(--border);gap:var(--sp-3);}
+.kc-consumer-row:last-child{border-bottom:none;}
+.kc-consumer-name{font-family:var(--f-mono);font-size:11px;color:var(--ink-2);font-weight:600;}
+.kc-consumer-badge{font-family:var(--f-mono);font-size:9px;padding:2px 7px;border-radius:20px;}
+.kc-consumer-note{font-family:var(--f-mono);font-size:9px;color:var(--ink-4);}
+
+/* ── tools grid ── */
+.kc-tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;}
+.kc-tool{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;
+  border-radius:5px;font-family:var(--f-mono);font-size:9.5px;
+  border:1px solid var(--border);background:#fff;cursor:pointer;user-select:none;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);}
+.kc-tool:hover{border-color:var(--kong-2);box-shadow:var(--sh-sm);}
+.kc-tool.kc-sel{border-color:var(--kong)!important;box-shadow:0 0 0 2px rgba(0,51,90,.08)!important;}
+.kc-tool-name{color:var(--ink-2);}
+.kc-tool-acl{font-size:8px;padding:1px 5px;border-radius:3px;white-space:nowrap;}
+.kc-acl-all{background:rgba(0,200,160,.12);color:#006a52;}
+.kc-acl-deny{background:rgba(200,64,64,.12);color:var(--danger);font-weight:700;}
+
+/* ── detail panel ── */
+.kc-detail{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:var(--sp-5);box-shadow:var(--sh-sm);margin-top:var(--sp-5);}
+.kc-detail-idle{font-family:var(--f-mono);font-size:11px;color:var(--ink-4);
+  text-align:center;padding:var(--sp-5) 0;letter-spacing:.03em;}
+.kc-kv{display:flex;gap:var(--sp-3);padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.kc-kv:last-child{border-bottom:none;}
+.kc-k{font-family:var(--f-mono);font-size:10px;color:var(--ink-4);flex-shrink:0;min-width:130px;padding-top:1px;}
+.kc-v{color:var(--ink-2);line-height:1.55;word-break:break-word;}
+.kc-v code{font-family:var(--f-mono);font-size:10.5px;background:var(--surf-2);
+  border:1px solid var(--border);border-radius:3px;padding:1px 4px;}
+.kc-acl-note{margin-top:12px;padding:10px 12px;border-radius:0 6px 6px 0;font-size:12px;line-height:1.6;}
+.kc-acl-note-label{font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:4px;font-weight:700;}
+</style>
+
+<div class="panel" id="panel-kong">
+  <div class="kc-page">
+
+    <div class="diag-header">
+      <div class="diag-eyebrow">Kong Konnect &middot; entity-risk-ai &middot; Live Configuration</div>
+      <h2 class="diag-title">Control Plane Configuration using Kong</h2>
+      <p class="diag-hint" style="margin-top:6px;">
+        Click any route or tool to inspect its full configuration
+        &nbsp;&middot;&nbsp; /kongai routes excluded
+      </p>
+    </div>
+
+    <div class="kc-cols">
+
+      <!-- ══════════════════════════════ AI GATEWAY (left) ══ -->
+      <div class="kc-section">
+        <div class="kc-section-header"
+             style="background:linear-gradient(135deg,var(--kong) 0%,#005490 100%);">
+          <div class="kc-section-eye">AI Gateway &middot; ai-proxy-advanced</div>
+          <div class="kc-section-title">AI Gateway</div>
+          <div class="kc-section-sub">entity-risk-ai-kong-ai-gateway &middot; Routes LLM calls to Anthropic</div>
+        </div>
+        <div class="kc-body">
+
+          <!-- Service row -->
+          <div class="kc-block">
+            <div class="kc-block-title">Service</div>
+            <div class="kc-block-body">
+              <div class="kc-kv"><span class="kc-k">name</span>
+                <span class="kc-v"><code>entity-risk-ai-kong-ai-gateway</code></span></div>
+              <div class="kc-kv"><span class="kc-k">upstream</span>
+                <span class="kc-v">Anthropic API via ai-proxy-advanced plugin</span></div>
+              <div class="kc-kv"><span class="kc-k">consumer</span>
+                <span class="kc-v"><code>entity-risk-ai-app</code> (X-Kong-API-Key auth)</span></div>
+            </div>
+          </div>
+
+          <!-- Routes -->
+          <div class="kc-block">
+            <div class="kc-block-title">Routes &mdash; click to inspect</div>
+            <div class="kc-block-body">
+
+              <div class="kc-route" onclick="kcSelect(this,'ai-default')">
+                <div class="kc-route-left">
+                  <span class="kc-route-method"
+                        style="background:rgba(0,51,90,.09);color:var(--kong);">POST</span>
+                  <span class="kc-route-path">/ai</span>
+                </div>
+                <div class="kc-route-right">
+                  <span class="kc-pill" style="background:rgba(0,51,90,.08);color:var(--kong);">claude-haiku-4-5</span>
+                  <span class="kc-pill" style="background:rgba(224,122,32,.10);color:#8c4a0a;">20 req/min</span>
+                </div>
+              </div>
+              <div class="kc-plugins">
+                <span class="kc-plugin" style="background:rgba(0,51,90,.07);color:var(--kong);border-color:rgba(0,51,90,.2);">key-auth</span>
+                <span class="kc-plugin" style="background:rgba(0,151,228,.08);color:var(--kong-2);border-color:rgba(0,151,228,.2);">ai-proxy-advanced</span>
+                <span class="kc-plugin" style="background:rgba(224,122,32,.08);color:#8c4a0a;border-color:rgba(224,122,32,.2);">rate-limiting</span>
+              </div>
+
+              <div class="kc-divider"></div>
+
+              <div class="kc-route" onclick="kcSelect(this,'ai-sonnet')">
+                <div class="kc-route-left">
+                  <span class="kc-route-method"
+                        style="background:rgba(0,51,90,.09);color:var(--kong);">POST</span>
+                  <span class="kc-route-path">/ai/sonnet</span>
+                </div>
+                <div class="kc-route-right">
+                  <span class="kc-pill" style="background:rgba(0,200,160,.10);color:#006a52;">claude-sonnet-4-6</span>
+                  <span class="kc-pill" style="background:rgba(224,122,32,.10);color:#8c4a0a;">10 req/min</span>
+                </div>
+              </div>
+              <div class="kc-plugins">
+                <span class="kc-plugin" style="background:rgba(0,51,90,.07);color:var(--kong);border-color:rgba(0,51,90,.2);">key-auth</span>
+                <span class="kc-plugin" style="background:rgba(0,151,228,.08);color:var(--kong-2);border-color:rgba(0,151,228,.2);">ai-proxy-advanced</span>
+                <span class="kc-plugin" style="background:rgba(224,122,32,.08);color:#8c4a0a;border-color:rgba(224,122,32,.2);">rate-limiting</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /ai gateway -->
+
+      <!-- ══════════════════════════════ MCP GATEWAY (right) ══ -->
+      <div class="kc-section">
+        <div class="kc-section-header"
+             style="background:linear-gradient(135deg,#006a52 0%,#008c6e 100%);">
+          <div class="kc-section-eye">MCP Gateway &middot; ai-mcp-proxy</div>
+          <div class="kc-section-title">MCP Gateway</div>
+          <div class="kc-section-sub">mcp-upstream-service &middot; Routes tool calls to Railway MCP server</div>
+        </div>
+        <div class="kc-body">
+
+          <!-- Service row -->
+          <div class="kc-block">
+            <div class="kc-block-title">Service</div>
+            <div class="kc-block-body">
+              <div class="kc-kv"><span class="kc-k">name</span>
+                <span class="kc-v"><code>mcp-upstream-service</code></span></div>
+              <div class="kc-kv"><span class="kc-k">host</span>
+                <span class="kc-v"><code>entity-risk-ai-production.up.railway.app</code></span></div>
+              <div class="kc-kv"><span class="kc-k">protocol / port</span>
+                <span class="kc-v">https / 443</span></div>
+            </div>
+          </div>
+
+          <!-- Route -->
+          <div class="kc-block">
+            <div class="kc-block-title">Route &mdash; click to inspect</div>
+            <div class="kc-block-body">
+              <div class="kc-route" onclick="kcSelect(this,'mcp-route')">
+                <div class="kc-route-left">
+                  <span class="kc-route-method"
+                        style="background:rgba(0,106,82,.12);color:#006a52;">GET/POST</span>
+                  <span class="kc-route-path">/mcp</span>
+                </div>
+                <div class="kc-route-right">
+                  <span class="kc-pill" style="background:rgba(0,106,82,.10);color:#006a52;">Railway upstream</span>
+                </div>
+              </div>
+              <div class="kc-plugins">
+                <span class="kc-plugin" style="background:rgba(0,51,90,.07);color:var(--kong);border-color:rgba(0,51,90,.2);">key-auth</span>
+                <span class="kc-plugin" style="background:rgba(0,106,82,.08);color:#006a52;border-color:rgba(0,106,82,.2);">ai-mcp-proxy</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consumers -->
+          <div class="kc-block">
+            <div class="kc-block-title">Consumers &amp; Groups</div>
+            <div class="kc-block-body">
+              <div class="kc-consumer-row">
+                <span class="kc-consumer-name">entity-risk-ai-app</span>
+                <span class="kc-consumer-badge"
+                      style="background:var(--surf-3);color:var(--ink-4);">ungrouped</span>
+                <span class="kc-consumer-note">orchestrator key</span>
+              </div>
+              <div class="kc-consumer-row">
+                <span class="kc-consumer-name">jr-analyst-app</span>
+                <span class="kc-consumer-badge"
+                      style="background:rgba(224,122,32,.10);color:#8c4a0a;">jr-analyst</span>
+                <span class="kc-consumer-note">restricted access</span>
+              </div>
+              <div class="kc-consumer-row">
+                <span class="kc-consumer-name">sr-analyst-app</span>
+                <span class="kc-consumer-badge"
+                      style="background:rgba(0,200,160,.10);color:#006a52;">sr-analyst</span>
+                <span class="kc-consumer-note">full access</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tools ACL grid -->
+          <div class="kc-block">
+            <div class="kc-block-title">MCP Tools &mdash; 15 tools, click to inspect</div>
+            <div class="kc-block-body" style="padding-bottom:var(--sp-3);">
+              <div style="display:flex;gap:12px;font-family:var(--f-mono);font-size:9px;color:var(--ink-4);margin-bottom:6px;flex-wrap:wrap;">
+                <span style="display:flex;align-items:center;gap:4px;">
+                  <span style="width:8px;height:8px;border-radius:2px;background:rgba(0,200,160,.15);border:1px solid rgba(0,200,160,.4);display:inline-block;"></span>
+                  All roles
+                </span>
+                <span style="display:flex;align-items:center;gap:4px;">
+                  <span style="width:8px;height:8px;border-radius:2px;background:rgba(200,64,64,.14);border:1px solid rgba(200,64,64,.4);display:inline-block;"></span>
+                  jr-analyst denied
+                </span>
+              </div>
+              <div class="kc-tools-grid">
+                <div class="kc-tool" onclick="kcSelect(this,'t-resolve_entity')">
+                  <span class="kc-tool-name">resolve_entity</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-validate_plan')">
+                  <span class="kc-tool-name">validate_plan</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-evaluate_stop_conditions')">
+                  <span class="kc-tool-name">evaluate_stop_conditions</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-entity_lookup')">
+                  <span class="kc-tool-name">entity_lookup</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-company_profile')">
+                  <span class="kc-tool-name">company_profile</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-expand_ownership')">
+                  <span class="kc-tool-name">expand_ownership</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-shared_address_check')">
+                  <span class="kc-tool-name">shared_address_check</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-sic_context')">
+                  <span class="kc-tool-name">sic_context</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-ownership_complexity_check')">
+                  <span class="kc-tool-name">ownership_complexity_check</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-control_signal_check')">
+                  <span class="kc-tool-name">control_signal_check</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-retrieve_trace')">
+                  <span class="kc-tool-name">retrieve_trace</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-find_traces_by_entity')">
+                  <span class="kc-tool-name">find_traces_by_entity</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-list_recent_traces')">
+                  <span class="kc-tool-name">list_recent_traces</span>
+                  <span class="kc-tool-acl kc-acl-all">all</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-address_risk_check')"
+                     style="background:rgba(200,64,64,.04);border-color:rgba(200,64,64,.28);">
+                  <span class="kc-tool-name" style="color:var(--danger);">address_risk_check</span>
+                  <span class="kc-tool-acl kc-acl-deny">deny: jr</span></div>
+                <div class="kc-tool" onclick="kcSelect(this,'t-industry_context_check')"
+                     style="background:rgba(200,64,64,.04);border-color:rgba(200,64,64,.28);">
+                  <span class="kc-tool-name" style="color:var(--danger);">industry_context_check</span>
+                  <span class="kc-tool-acl kc-acl-deny">deny: jr</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /mcp gateway -->
+
+    </div><!-- /kc-cols -->
+
+    <!-- Full-width detail panel -->
+    <div class="kc-detail" id="kc-detail">
+      <div class="kc-detail-idle" id="kc-idle">
+        Click any route or tool above to inspect its configuration
+      </div>
+      <div id="kc-content" style="display:none;"></div>
+    </div>
+
+  </div>
+</div><!-- /panel-kong -->
+
+<script>
+/* ================================================================
+   TAB 6  —  Kong Configuration detail data + interaction
+================================================================ */
+const KC = {
+
+  "ai-default": {
+    title: "/ai \u2014 Default AI Route",
+    badge: "AI Gateway \u00b7 Claude Haiku \u00b7 20\u00a0req/min",
+    color: "#005490",
+    rows: [
+      { k: "Route name",      v: "<code>route-kong-ai-default</code>" },
+      { k: "Path",            v: "<code>/ai</code>" },
+      { k: "Method",          v: "POST" },
+      { k: "Service",         v: "<code>entity-risk-ai-kong-ai-gateway</code>" },
+      { k: "Plugin",          v: "<code>ai-proxy-advanced</code> \u2014 llm_format: anthropic" },
+      { k: "Model",           v: "<code>claude-haiku-4-5-20251001</code> (Anthropic)" },
+      { k: "Route type",      v: "llm/v1/chat" },
+      { k: "Upstream auth",   v: "x-api-key injected by Kong \u2014 app never holds the Anthropic key" },
+      { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-Kong-API-Key header" },
+      { k: "Rate limit",      v: "20 requests / minute per consumer (local policy)" },
+      { k: "429 message",     v: "API rate limit exceeded" },
+      { k: "Streaming",       v: "allow" },
+      { k: "strip_path",      v: "true \u2014 /ai prefix stripped before forwarding to Anthropic" },
+      { k: "Used by",         v: "All three specialist agents (Graph, Risk, Trace) for analysis calls" },
+      { k: "Logging",         v: "log_payloads: true \u00b7 log_statistics: true" }
+    ]
+  },
+
+  "ai-sonnet": {
+    title: "/ai/sonnet \u2014 Planner Route",
+    badge: "AI Gateway \u00b7 Claude Sonnet \u00b7 10\u00a0req/min",
+    color: "#006a52",
+    rows: [
+      { k: "Route name",      v: "<code>route-kong-ai-sonnet</code>" },
+      { k: "Path",            v: "<code>/ai/sonnet</code>" },
+      { k: "Method",          v: "POST" },
+      { k: "Service",         v: "<code>entity-risk-ai-kong-ai-gateway</code>" },
+      { k: "Plugin",          v: "<code>ai-proxy-advanced</code> \u2014 llm_format: anthropic" },
+      { k: "Model",           v: "<code>claude-sonnet-4-6</code> (Anthropic)" },
+      { k: "Route type",      v: "llm/v1/chat" },
+      { k: "Upstream auth",   v: "x-api-key injected by Kong \u2014 app never holds the Anthropic key" },
+      { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-Kong-API-Key header" },
+      { k: "Rate limit",      v: "10 requests / minute per consumer (tighter \u2014 Sonnet is more expensive)" },
+      { k: "429 message",     v: "API rate limit exceeded" },
+      { k: "Streaming",       v: "allow" },
+      { k: "strip_path",      v: "false" },
+      { k: "Used by",         v: "InvestigationPlanner exclusively \u2014 free-text to structured JSON plan" },
+      { k: "Logging",         v: "log_payloads: true \u00b7 log_statistics: true" }
+    ]
+  },
+
+  "mcp-route": {
+    title: "/mcp \u2014 MCP Tool Route",
+    badge: "MCP Gateway \u00b7 Railway upstream \u00b7 key-auth + ACL",
+    color: "#006a52",
+    rows: [
+      { k: "Route name",      v: "<code>mcp-route</code>" },
+      { k: "Path",            v: "<code>/mcp</code>" },
+      { k: "Methods",         v: "GET, POST, DELETE" },
+      { k: "Service",         v: "<code>mcp-upstream-service</code>" },
+      { k: "Upstream host",   v: "<code>entity-risk-ai-production.up.railway.app</code>" },
+      { k: "Upstream port",   v: "443 (https)" },
+      { k: "Plugin: key-auth",v: "Validates X-Kong-API-Key \u2014 hide_credentials: true" },
+      { k: "Plugin: ai-mcp-proxy", v: "mode: passthrough-listener \u2014 proxies MCP JSON-RPC to Railway" },
+      { k: "ACL enforcement", v: "Consumer group membership checked per tool call (see tool grid above)" },
+      { k: "strip_path",      v: "false \u2014 /mcp path preserved when forwarding" },
+      { k: "Logging",         v: "log_payloads: true \u00b7 log_statistics: true \u00b7 log_audits: true" },
+      { k: "Timeout",         v: "60\u202f000 ms connect / read / write" },
+      { k: "Retries",         v: "5" }
+    ]
+  },
+
+  "t-resolve_entity": {
+    title: "resolve_entity", acl: "all",
+    desc: "Resolve a company name to its canonical form in the graph. Performs full-text search then selects the exact-name match if present, otherwise the highest-ranked fuzzy match. Returns canonical_name, company_number, status, exact_match flag, and all candidates."
+  },
+  "t-validate_plan": {
+    title: "validate_plan", acl: "all",
+    desc: "Validate a list of investigation plan steps before execution. Each step dict must contain step_id (non-empty string) and tool_name (must match a known tool). Returns valid steps, errors, and an overall valid flag."
+  },
+  "t-evaluate_stop_conditions": {
+    title: "evaluate_stop_conditions", acl: "all",
+    desc: "Evaluate whether the investigation has gathered sufficient evidence. Pass findings keyed by signal: ownership_complexity, control_signals, address_risk, industry_context, each with a risk_level key (LOW / MEDIUM / HIGH / UNKNOWN). Returns should_stop, escalate, overall_risk, and any missing signals."
+  },
+  "t-entity_lookup": {
+    title: "entity_lookup", acl: "all",
+    desc: "Search for companies whose name contains the given string. Uses the full-text index. Returns up to 10 ranked matches with company_number, status, and relevance score."
+  },
+  "t-company_profile": {
+    title: "company_profile", acl: "all",
+    desc: "Retrieve detailed company profile for a given company number. Returns registration details, company status, and associated metadata stored in the graph."
+  },
+  "t-expand_ownership": {
+    title: "expand_ownership", acl: "all",
+    desc: "Expand the ownership structure of a company. Returns shareholders, beneficial owners, and ownership relationships up to the specified depth from the graph."
+  },
+  "t-shared_address_check": {
+    title: "shared_address_check", acl: "all",
+    desc: "Identify companies sharing the same registered address. Used to detect hidden relationships, clustering, or co-located entities within the graph."
+  },
+  "t-sic_context": {
+    title: "sic_context", acl: "all",
+    desc: "Retrieve industry classification context for a company. Provides SIC-based classification and associated risk context for downstream investigation."
+  },
+  "t-ownership_complexity_check": {
+    title: "ownership_complexity_check", acl: "all",
+    desc: "Analyze the complexity of a company ownership structure. Detects layering, circular ownership, and other patterns that may indicate obfuscation."
+  },
+  "t-control_signal_check": {
+    title: "control_signal_check", acl: "all",
+    desc: "Evaluate control signals within an ownership structure. Assesses voting rights, influence, and indirect control relationships between entities."
+  },
+  "t-retrieve_trace": {
+    title: "retrieve_trace", acl: "all",
+    desc: "Retrieve a stored investigation trace. Returns the full reasoning trace including steps, tool usage, and outcomes for audit and explainability."
+  },
+  "t-find_traces_by_entity": {
+    title: "find_traces_by_entity", acl: "all",
+    desc: "Find investigation traces associated with an entity. Returns historical traces linked to the specified entity for review and analysis."
+  },
+  "t-list_recent_traces": {
+    title: "list_recent_traces", acl: "all",
+    desc: "List recent investigation traces. Returns a list of recently executed traces for monitoring, debugging, and auditing purposes."
+  },
+  "t-address_risk_check": {
+    title: "address_risk_check", acl: "deny",
+    desc: "Assess risk from registered address co-location. Computes co-located total, active count, dissolution rate, and risk_level. Threshold for flagging defaults to 5 co-located companies.",
+    aclNote: "deny: jr-analyst group. Kong returns HTTP 403 before the tool call reaches Railway. The orchestrator propagates this as StepStatus.SKIPPED in the audit trace."
+  },
+  "t-industry_context_check": {
+    title: "industry_context_check", acl: "deny",
+    desc: "Flag industry-level risk based on SIC codes. Checks against known high-scrutiny codes (holding companies, dormant entities) and computes peer dissolution rate.",
+    aclNote: "deny: jr-analyst group. Kong returns HTTP 403 before the tool call reaches Railway. The orchestrator propagates this as StepStatus.SKIPPED in the audit trace."
+  }
+};
+
+function kcSelect(el, id) {
+  document.querySelectorAll(".kc-route.kc-sel, .kc-tool.kc-sel")
+          .forEach(function(e){ e.classList.remove("kc-sel"); });
+  el.classList.add("kc-sel");
+
+  var d = KC[id];
+  if (!d) return;
+
+  document.getElementById("kc-idle").style.display = "none";
+  var c = document.getElementById("kc-content");
+  c.style.display = "block";
+
+  var isRoute = !!d.rows;
+  var badgeBg = (d.color || "#005490") + "18";
+  var html = "";
+
+  // badge + title
+  html += '<div style="display:inline-flex;font-family:var(--f-mono);font-size:9px;'
+        + 'letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:4px;'
+        + 'margin-bottom:10px;background:' + badgeBg + ';color:' + (d.color||"#005490") + ';">'
+        + (d.badge || ("MCP Tool \u00b7 " + (d.acl === "deny" ? "DENY: jr-analyst" : "All roles")))
+        + '</div>';
+
+  html += '<div style="font-family:var(--f-display);font-size:17px;font-weight:700;'
+        + 'color:var(--ink);margin-bottom:12px;letter-spacing:-.015em;">' + d.title + '</div>';
+
+  if (isRoute) {
+    d.rows.forEach(function(r){
+      html += '<div class="kc-kv"><span class="kc-k">' + r.k + '</span>'
+            + '<span class="kc-v">' + r.v + '</span></div>';
+    });
+  } else {
+    // tool
+    html += '<div style="font-size:13px;color:var(--ink-3);line-height:1.72;margin-bottom:12px;">'
+          + d.desc + '</div>';
+
+    if (d.acl === "deny") {
+      html += '<div class="kc-acl-note" style="background:rgba(200,64,64,.06);'
+            + 'border:1px solid rgba(200,64,64,.20);border-left:3px solid var(--danger);">'
+            + '<div class="kc-acl-note-label" style="color:var(--danger);">ACL Enforcement</div>'
+            + '<div style="color:var(--ink-2);">' + d.aclNote + '</div></div>';
+    } else {
+      html += '<div class="kc-acl-note" style="background:rgba(0,200,160,.06);'
+            + 'border:1px solid rgba(0,200,160,.20);border-left:3px solid var(--go);">'
+            + '<div class="kc-acl-note-label" style="color:#006a52;">ACL</div>'
+            + '<div style="color:var(--ink-2);">No restriction \u2014 all consumer groups permitted.</div></div>';
+    }
+    html += '<div class="kc-kv" style="margin-top:12px;">'
+          + '<span class="kc-k">Plugin</span>'
+          + '<span class="kc-v"><code>ai-mcp-proxy</code> \u2014 passthrough-listener mode</span></div>';
+    html += '<div class="kc-kv">'
+          + '<span class="kc-k">Route</span>'
+          + '<span class="kc-v"><code>/mcp</code> via <code>mcp-route</code></span></div>';
+    html += '<div class="kc-kv">'
+          + '<span class="kc-k">Upstream</span>'
+          + '<span class="kc-v">entity-risk-ai-production.up.railway.app:443</span></div>';
+    html += '<div class="kc-kv">'
+          + '<span class="kc-k">Logging</span>'
+          + '<span class="kc-v">log_payloads: true \u00b7 log_statistics: true \u00b7 log_audits: true</span></div>';
+  }
+
+  c.innerHTML = html;
+}
+</script>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <span>Entity Risk AI · AI Use Case · Apache 2.0</span>
+  <div class="footer-links">
+    <a href="https://github.com/emillaurence/entity-risk-ai" target="_blank">GitHub ↗</a>
+    <a href="https://medium.com/@emilpastor/715f943818ec" target="_blank">Blog ↗</a>
+  </div>
+</footer>
+
+<script>
+/* ================================================================
+   DATA — node detail content for each diagram
+================================================================ */
+const EA_DATA = {
+  ui:           { title:'UI Layer', color:'#00335a', badge:'Application', body:'<p>The Streamlit application is the entry point for human analysts. It provides role-based login, progressive rendering of investigation results, and an Audit Replay tab (Senior analysts only). It never calls Kong or Neo4j directly — all actions route through the orchestrator.</p>', props:[{k:'File',v:'app.py · src/app/'},{k:'Auth',v:'Mock login gate (jr_analyst / sr_analyst)'},{k:'Role gate',v:'Policy enforced server-side, not in UI'}] },
+  orchestrator: { title:'Orchestrator', color:'#005490', badge:'Core Controller', body:'<p>The 7-stage workflow controller. It is not an agent — it does not produce summaries or call Neo4j. It delegates planning to the InvestigationPlanner, tool calls to MCPToolClient, and domain work to the three specialist agents.</p><p>Stages: Plan → Trace → Validate → Resolve → Execute → Stop-check → Finalise.</p>', props:[{k:'File',v:'orchestration/orchestrator.py'},{k:'Stages',v:'7'},{k:'Key',v:'Creates trace BEFORE any agent runs'}] },
+  planner:      { title:'Investigation Planner', color:'#005490', badge:'LLM · Sonnet', body:'<p>Converts a free-text user query into a structured JSON execution plan using Claude Sonnet. The plan specifies which agent handles each step, which MCP tool to call, and what parameters to pass.</p><p>In Kong mode, all Sonnet calls route through /ai/sonnet on the Kong AI Gateway — the app never holds the Anthropic API key.</p>', props:[{k:'File',v:'src/orchestration/planner.py'},{k:'Model',v:'Claude Sonnet (configurable)'},{k:'Route',v:'POST /ai/sonnet via Kong AI Gateway'},{k:'Output',v:'JSON plan: mode, entities, steps, stop_conditions'}] },
+  human:        { title:'Human Users', color:'#636b7a', badge:'Principals', body:'<p>Junior and Senior Risk Analysts. Both are governed by the same Kong gateway enforcement as agents — the same key-auth + ACL applies regardless of whether the action originates from a human click or an automated agent step.</p>', props:[{k:'Jr analyst',v:'Restricted: cannot invoke address_risk_check or industry_context_check'},{k:'Sr analyst',v:'Full access to all tools and the Replay tab'},{k:'Credential',v:'Per-role X-Kong-API-Key maps to consumer group'}] },
+  policy:       { title:'Policy Engine', color:'#00335a', badge:'Control Plane', body:'<p>Policies translated into executable rules, evaluated at runtime. In this system, Kong key-auth and ACL plugins are the policy engine: consumer groups encode role, and the ACL plugin enforces tool-level restrictions.</p><p>Policies are defined in Konnect UI (source of truth) — not in YAML checked into the repo.</p>', props:[{k:'Implementation',v:'Kong ACL plugin + consumer groups'},{k:'Jr analyst group',v:'Denies address_risk_check, industry_context_check'},{k:'Sr analyst group',v:'Full access'},{k:'Config location',v:'Konnect Gateway Manager (not repo)'}] },
+  identity:     { title:'Identity & Role Context', color:'#005490', badge:'Control Plane', body:'<p>Session, request, and environmental context resolved at the gateway. In Kong mode, the X-Kong-API-Key header identifies the consumer. Kong maps the consumer to its group, resolving role before any ACL decision is made.</p><p>The same principal model applies to humans (submitting requests via the UI) and agents (dispatching steps via the orchestrator). No separate identity path exists.</p>', props:[{k:'Human identity',v:'X-Kong-API-Key from session (role-specific)'},{k:'Agent identity',v:'Same key — agent acts under the human role'},{k:'No separation',v:'Same gate. Same policy. Every actor.'}] },
+  decision:     { title:'Decision Engine (PDP)', color:'#c84040', badge:'Control Plane · Critical', body:'<p>Allow or deny at runtime. In this system, Kong is the Policy Decision Point. Every tool call and every LLM invocation reaches Kong before reaching any upstream service.</p><p>Denied actions return HTTP 403. The application maps this to acl_denied=True in ToolResult, and the orchestrator marks the step as StepStatus.SKIPPED. The investigation continues — but the denial is recorded.</p>', props:[{k:'Tool permit',v:'Kong forwards to Railway MCP upstream'},{k:'Tool deny',v:'HTTP 403 → StepStatus.SKIPPED → TraceEvent'},{k:'LLM permit',v:'Kong ai-proxy injects auth, forwards to Anthropic'},{k:'No silent pass',v:'Denied ≠ ignored. Denied = logged.'}] },
+  trace:        { title:'Trace Capture & Audit', color:'#00c8a0', badge:'Control Plane', body:'<p>Every action recorded at execution time — permitted and denied. The audit trail is not a log file. It is a Neo4j subgraph: InvestigationTrace → TraceEvent → :ABOUT → business nodes (Company, Address, SIC).</p><p>The trace subgraph is queryable, replayable, and deletable without touching the business graph.</p>', props:[{k:'Node',v:'InvestigationTrace (one per investigation)'},{k:'Events',v:'TraceEvent (one per tool call or decision)'},{k:'Links',v:':ABOUT edges link events to business nodes'},{k:'Proof',v:'The trace proves enforcement occurred'}] },
+  'mcp-tools':  { title:'MCP Tools (Execution)', color:'#636b7a', badge:'Execution Layer', body:'<p>15 tools exposed via FastMCP on Railway. Stateless. Behind Kong — never called directly by the application. Tools include entity_lookup, expand_ownership, address_risk_check, industry_context_check, retrieve_trace, and more.</p>', props:[{k:'Transport',v:'Streamable HTTP (FastMCP)'},{k:'Hosting',v:'Railway'},{k:'Count',v:'15 tools'},{k:'Access',v:'Via Kong MCP Gateway only'}] },
+  llm:          { title:'LLM Services (Execution)', color:'#636b7a', badge:'Execution Layer', body:'<p>Anthropic Claude API. Haiku is used for agent summaries (fast, cheap). Sonnet is used for the Investigation Planner (stronger reasoning). In Kong mode, the application never calls Anthropic directly — all calls route via Kong AI Gateway where the ai-proxy plugin injects the upstream API key.</p>', props:[{k:'Haiku route',v:'POST /ai → api.anthropic.com'},{k:'Sonnet route',v:'POST /ai/sonnet → api.anthropic.com'},{k:'Auth',v:'Injected by Kong ai-proxy plugin'},{k:'App key',v:'Only X-Kong-API-Key — no Anthropic key in app'}] },
+  'graph-db':   { title:'Graph Database (Neo4j)', color:'#006a52', badge:'Execution Layer', body:'<p>Neo4j AuraDB stores the business graph (Company, Person, Address, SIC nodes from Companies House UBO data) and the trace subgraph. Both live in the same instance but are structurally independent — the trace subgraph can be fully deleted without touching the business graph.</p>', props:[{k:'Hosting',v:'Neo4j AuraDB'},{k:'Data',v:'UK Companies House UBO data'},{k:'Schema',v:'Company → OWNS → Company / Person'},{k:'Trace',v:'InvestigationTrace → TraceEvent → :ABOUT → business nodes'}] },
+  audit:        { title:'Audit Storage (Trace Subgraph)', color:'#e07a20', badge:'Execution Layer', body:'<p>The trace subgraph in Neo4j is the persistent proof that enforcement occurred. Every tool call, every agent decision, every permitted and denied action is a TraceEvent node linked to the business nodes it touched via :ABOUT edges.</p>', props:[{k:'Independence',v:'Separate from business graph'},{k:'Queryable',v:'Standard Cypher — searchable by entity, time, user, role'},{k:'Replayable',v:'Senior analysts can replay any investigation'},{k:'Deletable',v:'Safe delete without side effects on business graph'}] },
+  rdbms:        { title:'RDBMS / Operational', color:'#636b7a', badge:'Execution Layer', body:'<p>Relational and operational data stores that may sit alongside the graph in a production deployment. In this system Neo4j covers both business and trace data, but the reference architecture accounts for hybrid persistence where transactional records live in a relational database.</p>', props:[{k:'Role',v:'Relational / operational data storage'},{k:'In this system',v:'Not used — Neo4j AuraDB covers all persistence'},{k:'Pattern',v:'Control plane enforces access identically regardless of store type'}] },
+  vector:       { title:'Vector Index', color:'#636b7a', badge:'Execution Layer', body:'<p>A vector similarity index for retrieval-augmented generation (RAG). The reference architecture includes this as a first-class execution target. The control plane enforces which agents can invoke retrieval tools — the same gate applies to vector calls as to graph calls.</p>', props:[{k:'Role',v:'Embedding-based retrieval / RAG'},{k:'Access',v:'Gated by Kong MCP Gateway — same as all other tools'},{k:'Pattern',v:'Control plane is embedding-store agnostic'}] },
+  apis:         { title:'Enterprise APIs', color:'#636b7a', badge:'Execution Layer', body:'<p>SaaS and internal APIs that agents may call as part of an investigation workflow. In production this could include Companies House API, sanctions screening, or internal data platforms. Each API-backed tool is registered as an MCP tool and gated by Kong.</p>', props:[{k:'Role',v:'External SaaS / internal API integration'},{k:'In this system',v:'Companies House data pre-loaded into Neo4j at ingest'},{k:'Pattern',v:'Each API tool registered in MCP server, enforced at Kong gateway'}] },
+  'event-bus':  { title:'Event Bus', color:'#636b7a', badge:'Execution Layer', body:'<p>An asynchronous message bus for event-driven workflows. In this reference architecture it represents async processing paths — for example, triggering downstream compliance alerts when a HIGH risk investigation completes. The control plane evaluates every action before it reaches the bus.</p>', props:[{k:'Role',v:'Async processing / event-driven workflows'},{k:'In this system',v:'Not implemented — investigations are synchronous'},{k:'Pattern',v:'Permitted events published; denied events logged but not published'}] },
+};
+
+const SA_DATA = {
+  streamlit:      { title:'Streamlit UI', color:'#00335a', badge:'UI Layer', body:'<p>The interactive investigation interface. Provides role-based login, progressive rendering of investigation results as steps complete, an interactive ownership graph (streamlit-agraph), and an Audit Replay tab for Senior analysts.</p>', props:[{k:'File',v:'app.py · src/app/layout.py'},{k:'Auth',v:'Mock login gate, session state'},{k:'Graph',v:'streamlit-agraph for ownership visualisation'},{k:'Replay',v:'Senior analysts only — loads trace by ID'}] },
+  planner:        { title:'Investigation Planner', color:'#005490', badge:'LLM · Sonnet', body:'<p>Converts free-text queries to structured JSON execution plans. Uses Claude Sonnet via /ai/sonnet (Kong AI Gateway in Kong mode). The plan specifies agent, task, and parameters for each step.</p>', props:[{k:'Model',v:'Claude Sonnet'},{k:'Route',v:'POST /ai/sonnet'},{k:'Output',v:'JSON: mode, entities, plan steps, stop_conditions'}] },
+  orchestrator:   { title:'Orchestrator', color:'#00335a', badge:'Core Controller', body:'<p>The 7-stage workflow controller. Not an agent — it orchestrates agents. It calls validate_plan, resolve_entity, dispatches steps to agents, checks stop conditions, and finalises the trace.</p>', props:[{k:'Stages',v:'Plan → Trace → Validate → Resolve → Execute → Stop-check → Finalise'},{k:'Policy',v:'Enforces allowed_tools at step dispatch time'},{k:'File',v:'src/orchestration/orchestrator.py'}] },
+  'graph-agent':  { title:'Graph Agent', color:'#006a52', badge:'Specialist Agent', body:'<p>Handles entity lookup, ownership expansion, address checks, and SIC context retrieval. All tool calls go through MCPToolClient — the agent never queries Neo4j directly. Optional AI enrichment via Claude Haiku for natural-language summaries.</p>', props:[{k:'Tasks',v:'entity_lookup, company_profile, expand_ownership, shared_address_check, sic_context'},{k:'Model',v:'Haiku (summaries, optional)'},{k:'File',v:'src/agents/graph_agent.py'}] },
+  'risk-agent':   { title:'Risk Agent', color:'#006a52', badge:'Specialist Agent', body:'<p>Runs 4 deterministic risk signal checks: ownership complexity, control signals, address risk, and industry context. Each check computes a risk level (LOW / MEDIUM / HIGH / UNKNOWN) from graph data. No LLM needed for the checks themselves — only for narrative synthesis at finalisation.</p>', props:[{k:'Tasks',v:'ownership_complexity_check, control_signal_check, address_risk_check, industry_context_check'},{k:'Risk levels',v:'LOW / MEDIUM / HIGH / UNKNOWN'},{k:'File',v:'src/agents/risk_agent.py'}] },
+  'trace-agent':  { title:'Trace Agent', color:'#006a52', badge:'Specialist Agent', body:'<p>Retrieves, summarises, and replays prior investigation traces. Uses AI (Haiku) to generate audit narratives. Includes a recursion guard: will refuse to retrieve its own operational trace.</p>', props:[{k:'Tasks',v:'retrieve_trace, find_traces_by_entity, retrieve_and_summarize_trace, retrieve_latest_for_entity'},{k:'File',v:'src/agents/trace_agent.py'},{k:'Guard',v:'Recursion guard prevents self-referential retrieval'}] },
+  'mcp-gate':     { title:'Kong MCP Gateway', color:'#00335a', badge:'Gateway · Enforcement', body:'<p>The tool access control plane. Sits between the application and the Railway MCP server. Every tool call carries X-Kong-API-Key. Kong validates the key (key-auth plugin), resolves the consumer group (ACL plugin), and either forwards to the upstream MCP server or returns HTTP 403.</p><p>Junior analysts are denied address_risk_check and industry_context_check at the gateway — not in application code.</p>', props:[{k:'Route',v:'POST /mcp'},{k:'Plugin',v:'key-auth + ACL consumer groups'},{k:'Jr group',v:'Denies: address_risk_check, industry_context_check'},{k:'Sr group',v:'Full access'},{k:'Deny',v:'HTTP 403 → StepStatus.SKIPPED in trace'}] },
+  'fail-closed':  { title:'Fail Closed', color:'#c84040', badge:'Gateway · Critical', body:'<p>When Kong denies a tool call (HTTP 403), the application does NOT silently continue. The denial propagates as acl_denied=True in ToolResult. The orchestrator maps this to StepStatus.SKIPPED. A TraceEvent is still written to Neo4j recording the denial.</p><p>This is the key property: denied actions are not invisible. They are proof.</p>', props:[{k:'HTTP response',v:'403 Forbidden'},{k:'App mapping',v:'acl_denied=True in ToolResult'},{k:'Orchestrator',v:'StepStatus.SKIPPED'},{k:'Trace',v:'TOOL_RETURNED event written regardless'},{k:'Investigation',v:'Continues with remaining permitted steps'}] },
+  'ai-gate':      { title:'Kong AI Gateway', color:'#005490', badge:'Gateway · LLM Control', body:'<p>Routes all Anthropic API calls. Two routes: /ai for agents (Haiku) and /ai/sonnet for the planner (Sonnet). The ai-proxy plugin handles upstream auth injection — the application never sends the Anthropic API key in Kong mode. Rate limiting applied per route.</p>', props:[{k:'Route /ai',v:'Haiku — used by all agents'},{k:'Route /ai/sonnet',v:'Sonnet — used by InvestigationPlanner only'},{k:'Plugin',v:'ai-proxy (Kong AI Gateway native feature)'},{k:'Auth',v:'Kong injects x-api-key — app sends only X-Kong-API-Key'},{k:'Rate limit',v:'Per-route limits via rate-limiting plugin'}] },
+  'mcp-server':   { title:'MCP Server (Railway)', color:'#005490', badge:'Execution · MCP', body:'<p>15 investigation tools exposed via FastMCP with streamable-http transport. Stateless — no session state held between calls. Sits behind Kong MCP Gateway and is never called directly by the application in Kong mode.</p>', props:[{k:'Framework',v:'FastMCP'},{k:'Transport',v:'Streamable HTTP'},{k:'Hosting',v:'Railway'},{k:'Tools',v:'15 (graph + risk + trace)'},{k:'File',v:'src/mcp/server.py'}] },
+  claude:         { title:'Anthropic Claude', color:'#e07a20', badge:'Execution · LLM', body:'<p>Two models in use. Claude Haiku is used by the three specialist agents for optional result enrichment and summaries — fast and cheap. Claude Sonnet is used exclusively by the InvestigationPlanner for structured JSON plan generation — more capable reasoning.</p>', props:[{k:'Haiku',v:'Agents — summaries, enrichment'},{k:'Sonnet',v:'Planner — JSON plan generation'},{k:'In Kong mode',v:'App holds no Anthropic API key'},{k:'Auth',v:'Injected by Kong ai-proxy plugin'}] },
+  neo4j:          { title:'Neo4j Graph Database', color:'#006a52', badge:'Storage · Graph', body:'<p>Neo4j AuraDB stores the business graph populated from Companies House UBO data. Nodes: Company, Person, Address, SIC. Relationships: OWNS, REGISTERED_AT, HAS_SIC, OFFICER_OF.</p><p>The same Neo4j instance also stores the trace subgraph — structurally independent, queryable, and deletable without affecting business data.</p>', props:[{k:'Hosting',v:'Neo4j AuraDB'},{k:'Data source',v:'UK Companies House UBO data'},{k:'Business nodes',v:'Company, Person, Address, SIC'},{k:'Relationships',v:'OWNS, REGISTERED_AT, HAS_SIC, OFFICER_OF'}] },
+  'trace-subgraph':{ title:'Trace Subgraph', color:'#e07a20', badge:'Storage · Audit', body:'<p>The audit trail lives in the same Neo4j instance as the business graph but is fully independent. InvestigationTrace → [:HAS_EVENT] → TraceEvent → [:ABOUT] → business nodes (Company, Person, Address, SIC).</p><p>Traces can be deleted (by trace ID, by entity name, or full wipe) without touching the business graph.</p>', props:[{k:'Root node',v:'InvestigationTrace (one per investigation)'},{k:'Events',v:'TraceEvent (one per tool call / decision)'},{k:'Links',v:':ABOUT links events to business nodes'},{k:'Replay',v:'Senior analysts can load any trace by ID'},{k:'Delete',v:'Safe — business graph untouched'}] },
+};
+
+const SEQ_DATA = {
+  app:         { title:'Application', color:'#00335a', badge:'Actor', body:'<p>The Streamlit UI, Investigation Orchestrator, LLM Planner, and specialist agents all live here. In Kong mode, the application never holds upstream credentials — it authenticates to Kong using X-Kong-API-Key and lets Kong handle the rest.</p>', props:[{k:'Components',v:'Streamlit UI, Orchestrator, Planner, Agents'},{k:'Key held',v:'X-Kong-API-Key (consumer key only)'},{k:'Not held',v:'Anthropic API key (injected by Kong ai-proxy)'}] },
+  'kong-mcp':  { title:'Kong MCP Gateway', color:'#00335a', badge:'Gateway · Enforcement', body:'<p>Every MCP tool call routes through here. Kong validates X-Kong-API-Key (key-auth plugin), resolves the consumer group, checks the ACL allowlist, and either forwards the request to the Railway MCP upstream or returns HTTP 403.</p><p>This is the single enforcement point for tool access. No bypass path exists.</p>', props:[{k:'Plugin',v:'key-auth + ACL consumer groups'},{k:'Permitted',v:'Forwarded to Railway MCP upstream'},{k:'Denied',v:'HTTP 403 — propagated as StepStatus.SKIPPED'}] },
+  'kong-ai':   { title:'Kong AI Gateway', color:'#005490', badge:'Gateway · LLM', body:'<p>All Anthropic API calls route through here. The ai-proxy plugin handles upstream auth injection. The application sends X-Kong-API-Key and a standard Anthropic Messages API request body — Kong strips the key and injects x-api-key to Anthropic.</p>', props:[{k:'Routes',v:'/ai (Haiku), /ai/sonnet (Sonnet)'},{k:'Plugin',v:'ai-proxy — Kong AI Gateway native feature'},{k:'Rate limit',v:'Per-route limits via rate-limiting plugin'},{k:'Auth',v:'Kong injects x-api-key — app sends only consumer key'}] },
+  upstream:    { title:'Upstream Services', color:'#636b7a', badge:'Execution', body:'<p>Two upstream services: the FastMCP server on Railway (receives tool calls via Kong MCP Gateway) and the Anthropic API (receives LLM calls via Kong AI Gateway). Neither is ever called directly by the application in Kong mode.</p>', props:[{k:'MCP Server',v:'Railway · FastMCP · 15 tools'},{k:'Anthropic',v:'api.anthropic.com · Haiku + Sonnet'}] },
+  'msg-plan':  { title:'Planning Phase', color:'#005490', badge:'APP Phase', body:'<p>The InvestigationPlanner sends a free-text query to Claude Sonnet via Kong AI Gateway (/ai/sonnet). The ai-proxy plugin validates the Kong API key, applies the rate limit, and forwards the request to Anthropic. Sonnet returns a structured JSON execution plan.</p>', props:[{k:'Route',v:'POST /ai/sonnet'},{k:'Auth',v:'X-Kong-API-Key → Kong validates → ai-proxy injects x-api-key'},{k:'Output',v:'JSON plan: mode, entities, steps, stop_conditions'}] },
+  'msg-plan-return':{ title:'JSON Plan Returned', color:'#636b7a', badge:'Response', body:'<p>Claude Sonnet returns the structured execution plan through Kong AI Gateway back to the Orchestrator. The Orchestrator then validates the plan, resolves entities, and begins step-by-step execution.</p>', props:[{k:'Content',v:'JSON: mode, entities, plan steps'},{k:'Next',v:'Orchestrator validates then dispatches steps'}] },
+  'msg-resolve':{ title:'Entity Resolution via MCP', color:'#00335a', badge:'GATEWAY Phase', body:'<p>The Orchestrator calls resolve_entity via Kong MCP Gateway, sending X-Kong-API-Key. Kong validates the key (key-auth plugin) and forwards to the Railway MCP server. The tool performs a full-text search and returns a canonical company name.</p>', props:[{k:'Tool',v:'resolve_entity'},{k:'Header',v:'X-Kong-API-Key'},{k:'Route',v:'POST /mcp'},{k:'Plugin',v:'key-auth validates, ACL checks allowlist'}] },
+  'msg-acl':   { title:'ACL Consumer Group Check', color:'#00335a', badge:'GATEWAY · Kong Internal', body:'<p>After key-auth validates the API key, Kong resolves the consumer and checks its group membership against the ACL allowlist for the requested tool. This happens before the request reaches the upstream MCP server — enforcement happens at the gateway, not in the application.</p>', props:[{k:'Jr analyst consumer',v:'address_risk_check → DENIED'},{k:'Jr analyst consumer',v:'industry_context_check → DENIED'},{k:'Jr analyst consumer',v:'All other tools → PERMITTED'},{k:'Sr analyst consumer',v:'All tools → PERMITTED'}] },
+  'msg-forward':{ title:'Forward to MCP Upstream', color:'#005490', badge:'GATEWAY Phase', body:'<p>For permitted tool calls, Kong forwards the MCP request to the Railway FastMCP server. Kong strips the X-Kong-API-Key header before forwarding (hide-credentials: on). The upstream never sees the consumer key.</p>', props:[{k:'Upstream',v:'https://entity-risk-ai-production.up.railway.app/mcp'},{k:'Header stripped',v:'X-Kong-API-Key removed by Kong'},{k:'Protocol',v:'MCP streamable-http (JSON-RPC 2.0)'}] },
+  'msg-canonical':{ title:'Canonical Name Returned', color:'#636b7a', badge:'Response', body:'<p>The MCP server returns the resolved canonical company name (e.g. "VODAFONE 2 LIMITED") through Kong back to the Orchestrator. The Orchestrator injects this canonical name into subsequent plan steps before dispatching agents.</p>', props:[{k:'Content',v:'canonical_name, company_number, status, match_score_pct'},{k:'Next',v:'Orchestrator injects canonical name into remaining steps'}] },
+  'msg-permitted':{ title:'Permitted Tool Call', color:'#00c8a0', badge:'Permitted Path ✓', body:'<p>When Kong permits a tool call (key valid + ACL allows), the request is forwarded to the Railway MCP server. The tool executes, returns a ToolResult, and the agent logs a TOOL_RETURNED TraceEvent in Neo4j. The investigation continues to the next step.</p>', props:[{k:'Kong response',v:'2xx — forwarded to upstream'},{k:'ToolResult',v:'success=True, data={...}, summary="..."'},{k:'TraceEvent',v:'TOOL_RETURNED written to Neo4j with data_json'},{k:'Investigation',v:'Continues to next step'}] },
+  'msg-denied':{ title:'Denied Tool Call', color:'#c84040', badge:'Denied Path 🚫', body:'<p>When Kong denies a tool call (HTTP 403 from ACL plugin), the application maps this to acl_denied=True in ToolResult. The Orchestrator marks the step as StepStatus.SKIPPED with a policy denial skip_reason. A TraceEvent is still written to Neo4j — the denial is recorded, not hidden.</p><p>The investigation continues with remaining permitted steps.</p>', props:[{k:'Kong response',v:'HTTP 403 Forbidden'},{k:'App mapping',v:'acl_denied=True in ToolResult'},{k:'Orchestrator',v:'StepStatus.SKIPPED'},{k:'TraceEvent',v:'Written — denial is proof, not silence'},{k:'Investigation',v:'Continues with remaining steps'}] },
+  'msg-trace': { title:'Trace Persistence', color:'#00c8a0', badge:'TRACE Phase', body:'<p>After each step — whether permitted or denied — TraceService persists a TraceEvent to Neo4j. The event includes: event_type, tool_name, input_summary, output_summary, data_json, agent_name, and :ABOUT links to the business nodes touched.</p><p>Both permitted and denied outcomes are recorded. The trace is proof enforcement occurred.</p>', props:[{k:'Node',v:'TraceEvent'},{k:'Links',v:':ABOUT → Company, Address, SIC, Person'},{k:'Includes',v:'Permitted steps AND denied steps'},{k:'Source of truth',v:'Neo4j trace subgraph'}] },
+  'msg-result':{ title:'Final Result to UI', color:'#636b7a', badge:'Completion', body:'<p>After all steps complete, the Orchestrator builds an OrchestratorResult containing: step results, final AI-synthesised narrative, resolved entities, trace_id, and warnings. The Streamlit UI renders this progressively as steps complete via a background thread and polling fragment.</p>', props:[{k:'Contains',v:'step_results, final_answer, resolved_entities, trace_id'},{k:'UI rendering',v:'Progressive — steps appear as they complete'},{k:'Trace ID',v:'Displayed in UI for audit replay'}] },
+};
+
+/* ================================================================
+   DETAIL PANEL RENDERER
+================================================================ */
+function renderDetail(panelId, idleId, contentId, data) {
+  const panel   = document.getElementById(panelId);
+  const idle    = document.getElementById(idleId);
+  const content = document.getElementById(contentId);
+  if (!data) return;
+
+  idle.style.display = 'none';
+  content.style.display = 'block';
+
+  const propsHtml = data.props ? data.props.map(p =>
+    `<div class="dp-prop">
+      <span class="dp-prop-key">${p.k}</span>
+      <span class="dp-prop-val">${p.v}</span>
+    </div>`
+  ).join('') : '';
+
+  content.innerHTML = `
+    <div class="dp-badge" style="background:${data.color}18;color:${data.color};">${data.badge}</div>
+    <div class="dp-title">${data.title}</div>
+    <div class="dp-body">${data.body}</div>
+    ${propsHtml ? `<div class="dp-props">${propsHtml}</div>` : ''}
+  `;
+}
+
+/* ================================================================
+   NODE CLICK HANDLERS
+================================================================ */
+// Clear all selections in a diagram
+function clearSelections(diag) {
+  document.querySelectorAll(`[data-diag="${diag}"]`).forEach(el => {
+    el.classList.remove('selected', 'active-row', 'active-step', 'active-msg');
+  });
+}
+
+// Enforcement Architecture
+document.querySelectorAll('[data-diag="ea"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const node = this.dataset.node;
+    if (node === 'controlplane') return;
+    clearSelections('ea');
+    this.classList.add('selected');
+    renderDetail('ea-detail', 'ea-idle', 'ea-content', EA_DATA[node]);
+  });
+});
+
+// Solution Architecture
+document.querySelectorAll('[data-diag="sa"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const node = this.dataset.node;
+    clearSelections('sa');
+    this.classList.add('selected');
+    renderDetail('sa-detail', 'sa-idle', 'sa-content', SA_DATA[node]);
+  });
+});
+
+// Enforcement Sequence
+document.querySelectorAll('[data-diag="seq"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const node = this.dataset.node;
+    clearSelections('seq');
+    this.classList.add('selected');
+    // Also highlight all rows with same data-node
+    document.querySelectorAll(`[data-diag="seq"][data-node="${node}"]`).forEach(r => {
+      r.classList.add('selected');
+    });
+    renderDetail('seq-detail', 'seq-idle', 'seq-content', SEQ_DATA[node]);
+  });
+});
+
+/* ================================================================
+   TAB SWITCHING
+================================================================ */
+const tabBtns = document.querySelectorAll('.tab-btn');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => { b.classList.toggle('active', b === btn); b.setAttribute('aria-selected', String(b===btn)); });
+    // Query live each click so panel-graph (appended after this script) is included
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === btn.dataset.target));
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+</script>
+
+</body>
+</html>
