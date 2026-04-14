@@ -1899,13 +1899,14 @@ document.querySelectorAll('.gm-rel-g[data-rid]').forEach(el => {
                 </div>
                 <div class="kc-route-right">
                   <span class="kc-pill" style="background:rgba(0,51,90,.08);color:var(--kong);">claude-haiku-4-5</span>
-                  <span class="kc-pill" style="background:rgba(224,122,32,.10);color:#8c4a0a;">20 req/min</span>
+                  <span class="kc-pill" style="background:rgba(224,122,32,.10);color:#8c4a0a;">50,000 tok/min</span>
                 </div>
               </div>
               <div class="kc-plugins">
                 <span class="kc-plugin" style="background:rgba(0,51,90,.07);color:var(--kong);border-color:rgba(0,51,90,.2);">key-auth</span>
                 <span class="kc-plugin" style="background:rgba(0,151,228,.08);color:var(--kong-2);border-color:rgba(0,151,228,.2);">ai-proxy-advanced</span>
-                <span class="kc-plugin" style="background:rgba(224,122,32,.08);color:#8c4a0a;border-color:rgba(224,122,32,.2);">rate-limiting</span>
+                <span class="kc-plugin" style="background:rgba(224,122,32,.08);color:#8c4a0a;border-color:rgba(224,122,32,.2);">ai-rate-limiting-advanced</span>
+                <span class="kc-plugin" style="background:rgba(200,64,26,.08);color:#8c2010;border-color:rgba(200,64,26,.2);">ai-prompt-guard</span>
               </div>
 
               <div class="kc-divider"></div>
@@ -1918,13 +1919,14 @@ document.querySelectorAll('.gm-rel-g[data-rid]').forEach(el => {
                 </div>
                 <div class="kc-route-right">
                   <span class="kc-pill" style="background:rgba(0,200,160,.10);color:#006a52;">claude-sonnet-4-6</span>
-                  <span class="kc-pill" style="background:rgba(224,122,32,.10);color:#8c4a0a;">10 req/min</span>
+                  <span class="kc-pill" style="background:rgba(224,122,32,.10);color:#8c4a0a;">20,000 tok/min</span>
                 </div>
               </div>
               <div class="kc-plugins">
                 <span class="kc-plugin" style="background:rgba(0,51,90,.07);color:var(--kong);border-color:rgba(0,51,90,.2);">key-auth</span>
                 <span class="kc-plugin" style="background:rgba(0,151,228,.08);color:var(--kong-2);border-color:rgba(0,151,228,.2);">ai-proxy-advanced</span>
-                <span class="kc-plugin" style="background:rgba(224,122,32,.08);color:#8c4a0a;border-color:rgba(224,122,32,.2);">rate-limiting</span>
+                <span class="kc-plugin" style="background:rgba(224,122,32,.08);color:#8c4a0a;border-color:rgba(224,122,32,.2);">ai-rate-limiting-advanced</span>
+                <span class="kc-plugin" style="background:rgba(200,64,26,.08);color:#8c2010;border-color:rgba(200,64,26,.2);">ai-prompt-guard</span>
               </div>
 
             </div>
@@ -2092,7 +2094,7 @@ const KC = {
 
   "ai-default": {
     title: "/ai \u2014 Default AI Route",
-    badge: "AI Gateway \u00b7 Claude Haiku \u00b7 20\u00a0req/min",
+    badge: "AI Gateway \u00b7 Claude Haiku \u00b7 50,000\u00a0tok/min",
     color: "#005490",
     rows: [
       { k: "Route name",      v: "<code>route-kong-ai-default</code>" },
@@ -2104,8 +2106,9 @@ const KC = {
       { k: "Route type",      v: "llm/v1/chat" },
       { k: "Upstream auth",   v: "x-api-key injected by Kong \u2014 app never holds the Anthropic key" },
       { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-Kong-API-Key header" },
-      { k: "Rate limit",      v: "20 requests / minute per consumer (local policy)" },
-      { k: "429 message",     v: "API rate limit exceeded" },
+      { k: "Rate limit",      v: "50,000 tokens / minute per consumer (ai-rate-limiting-advanced · sliding window · total tokens)" },
+      { k: "429 message",     v: "AI token rate limit exceeded" },
+      { k: "Plugin: ai-prompt-guard", v: "Blocks: ignore.*instructions · forget.*previous · you are now" },
       { k: "Streaming",       v: "allow" },
       { k: "strip_path",      v: "true \u2014 /ai prefix stripped before forwarding to Anthropic" },
       { k: "Used by",         v: "All three specialist agents (Graph, Risk, Trace) for analysis calls" },
@@ -2115,7 +2118,7 @@ const KC = {
 
   "ai-sonnet": {
     title: "/ai/sonnet \u2014 Planner Route",
-    badge: "AI Gateway \u00b7 Claude Sonnet \u00b7 10\u00a0req/min",
+    badge: "AI Gateway \u00b7 Claude Sonnet \u00b7 20,000\u00a0tok/min",
     color: "#006a52",
     rows: [
       { k: "Route name",      v: "<code>route-kong-ai-sonnet</code>" },
@@ -2127,8 +2130,9 @@ const KC = {
       { k: "Route type",      v: "llm/v1/chat" },
       { k: "Upstream auth",   v: "x-api-key injected by Kong \u2014 app never holds the Anthropic key" },
       { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-Kong-API-Key header" },
-      { k: "Rate limit",      v: "10 requests / minute per consumer (tighter \u2014 Sonnet is more expensive)" },
-      { k: "429 message",     v: "API rate limit exceeded" },
+      { k: "Rate limit",      v: "20,000 tokens / minute per consumer (ai-rate-limiting-advanced \u00b7 sliding window \u00b7 total tokens)" },
+      { k: "429 message",     v: "AI token rate limit exceeded" },
+      { k: "Plugin: ai-prompt-guard", v: "Blocks: ignore.*instructions · forget.*previous · you are now" },
       { k: "Streaming",       v: "allow" },
       { k: "strip_path",      v: "false" },
       { k: "Used by",         v: "InvestigationPlanner exclusively \u2014 free-text to structured JSON plan" },
