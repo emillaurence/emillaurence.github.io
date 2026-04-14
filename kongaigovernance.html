@@ -558,6 +558,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
 <nav class="tab-nav" role="tablist">
   <div class="tab-nav-inner">
     <button class="tab-btn active" data-target="panel-summary">Summary</button>
+    <button class="tab-btn" data-target="panel-problem">The Problem</button>
     <button class="tab-btn" data-target="panel-enforce">Reference Architecture</button>
     <button class="tab-btn" data-target="panel-solution">Solution Architecture</button>
     <button class="tab-btn" data-target="panel-sequence">System Control Flow</button>
@@ -660,6 +661,90 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
 <!-- ================================================================
      PANEL 2 — ENFORCEMENT ARCHITECTURE (interactive)
 ================================================================ -->
+
+<!-- ================================================================
+     PANEL — THE PROBLEM
+================================================================ -->
+<div class="panel" id="panel-problem">
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-kicker"><span class="kicker-dot"></span>The Problem &middot; Entity Risk AI</p>
+        <h1 class="hero-headline">AI agents expose governance gaps.<br><em>They don&apos;t create them.</em></h1>
+        <p class="hero-body">Organisations have policies, roles, and approval workflows. What most don&apos;t have is a single point where those policies are enforced at the moment a decision is made &mdash; before an action reaches any system.</p>
+      </div>
+    </div>
+  </section>
+  <div class="summary-body">
+
+    <!-- Situation -->
+    <div style="margin-bottom:var(--sp-7);">
+      <div class="section-eyebrow">Situation</div>
+      <div class="section-title" style="margin-bottom:var(--sp-4);">AI agents make existing permissiveness executable at scale</div>
+      <div class="exec-pullout">
+        <p>Enterprises operating in regulated industries &mdash; financial services, government, telco &mdash; have invested heavily in governance frameworks: role-based access, approval workflows, audit logging. But these controls live in documents, not in systems. When AI agents arrive, they execute every permitted path, consistently, at machine speed. What was occasional human error becomes guaranteed systemic behaviour.</p>
+      </div>
+      <div class="cards" style="margin-top:var(--sp-5);">
+        <div class="card"><div class="card-icon ci-navy">&#128451;</div><div class="card-title">Governance describes intent</div><div class="card-desc">Policies define what should happen. Without an enforcement layer, they have no mechanism to determine what actually does happen &mdash; especially at agent speed.</div></div>
+        <div class="card"><div class="card-icon ci-danger">&#9889;</div><div class="card-title">Agents don&apos;t hesitate</div><div class="card-desc">A human pauses, asks for exceptions, exercises judgement. An agent executes every permitted path, every time, without friction. Permissive systems become guaranteed outcomes.</div></div>
+        <div class="card"><div class="card-icon ci-amber">&#128065;</div><div class="card-title">Audit trails come after the fact</div><div class="card-desc">Log files record what happened. They don&apos;t prevent it. A governance model built on logs is a post-mortem system &mdash; not a control system.</div></div>
+      </div>
+    </div>
+
+    <!-- Task -->
+    <div style="margin-bottom:var(--sp-7);">
+      <div class="section-eyebrow">Task</div>
+      <div class="section-title" style="margin-bottom:var(--sp-4);">Enforce what AI can actually do &mdash; not just what policy says it should</div>
+      <div class="prose-cols">
+        <div class="prose-block">
+          <h3>The requirement</h3>
+          <p>Design a multi-agent financial crime investigation system where every tool call and every LLM invocation is evaluated against policy before it reaches any upstream service. Governance must be enforced at execution &mdash; not described in a README. Denied actions must be blocked, logged, and traceable. No bypass paths.</p>
+        </div>
+        <div class="prose-block">
+          <h3>The constraint</h3>
+          <p>The same rules must apply to human analysts and AI agents equally. A junior analyst restricted from a sensitive tool must face the same gate whether they click a button or an agent acts on their behalf. Role-based access cannot live in application code &mdash; it must be centralised and fail-closed.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action -->
+    <div style="margin-bottom:var(--sp-7);">
+      <div class="section-eyebrow">Action</div>
+      <div class="section-title" style="margin-bottom:var(--sp-4);">A control plane that sits between intent and execution</div>
+      <div class="layers-band">
+        <div class="layers-band-label">Four-layer architecture</div>
+        <div class="layers-grid" style="grid-template-columns:repeat(4,1fr);">
+          <div class="layer-cell"><div class="layer-num">LAYER 1</div><div class="layer-name">Application</div><div class="layer-detail">Streamlit UI, Investigation Planner, Orchestrator, and three specialist agents &mdash; Graph, Risk, Trace</div></div>
+          <div class="layer-cell"><div class="layer-num">LAYER 2</div><div class="layer-name">Control Plane</div><div class="layer-detail">MCP Gateway enforces tool-level ACL. AI Gateway routes and rate-limits all LLM traffic. Both fail-closed on denial</div></div>
+          <div class="layer-cell"><div class="layer-num">LAYER 3</div><div class="layer-name">Execution</div><div class="layer-detail">FastMCP server on Railway. Anthropic Claude API. Neither is ever called directly by the application</div></div>
+          <div class="layer-cell"><div class="layer-num">LAYER 4</div><div class="layer-name">Storage</div><div class="layer-detail">Neo4j AuraDB &mdash; business graph and trace subgraph in one instance. Every action persisted as a TraceEvent node</div></div>
+        </div>
+      </div>
+      <div class="cards" style="margin-top:var(--sp-5);">
+        <div class="card"><div class="card-icon ci-navy">&#128274;</div><div class="card-title">Dual gateway enforcement</div><div class="card-desc">MCP Gateway controls which tools each consumer group can call. AI Gateway controls which models are accessible and at what rate. Two enforcement points, one principle.</div></div>
+        <div class="card"><div class="card-icon ci-teal">&#128336;</div><div class="card-title">Fail-closed by design</div><div class="card-desc">HTTP 403 denials propagate as StepStatus.SKIPPED in the audit trace. Permitted and denied outcomes are both recorded &mdash; never silent.</div></div>
+        <div class="card"><div class="card-icon ci-blue">&#128269;</div><div class="card-title">Graph-native audit trail</div><div class="card-desc">Every action persisted as a TraceEvent node in Neo4j, linked to the business nodes it touched. Queryable, replayable, and deletable without side effects.</div></div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div style="margin-bottom:var(--sp-7);">
+      <div class="section-eyebrow">Result</div>
+      <div class="section-title" style="margin-bottom:var(--sp-4);">Governance enforced at execution. Every time. For every actor.</div>
+      <div class="exec-pullout">
+        <p>Entity Risk AI demonstrates that a gateway control plane is the only architectural pattern that makes AI governance real. Policies are not described &mdash; they are <strong>enforced at the moment of execution</strong>, for humans and agents equally, with a queryable audit trail that proves enforcement occurred.</p>
+      </div>
+      <ul class="why-list">
+        <li class="why-item"><div class="why-num">1</div><div class="why-text"><strong>Same rules, every actor.</strong> Junior and senior analysts have structurally different tool access enforced at the gateway via consumer groups &mdash; not in application code. The gate applies to agents acting on their behalf identically.</div></li>
+        <li class="why-item"><div class="why-num">2</div><div class="why-text"><strong>No upstream credentials in the application.</strong> The app holds only a consumer key. Kong injects the Anthropic API key and the upstream MCP credentials. Compromise of the application does not expose upstream systems.</div></li>
+        <li class="why-item"><div class="why-num">3</div><div class="why-text"><strong>The audit trail is proof, not documentation.</strong> TraceEvent nodes are written at execution time &mdash; retroactively demonstrable, not reconstructed from logs.</div></li>
+        <li class="why-item"><div class="why-num">4</div><div class="why-text"><strong>Production-deployable, not a proof of concept.</strong> Open-sourced Apache 2.0, hosted on Railway and Neo4j AuraDB, built on public Companies House UBO data.</div></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
 <div class="panel" id="panel-enforce">
   <div class="diag-page">
 
