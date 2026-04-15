@@ -834,25 +834,36 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
           </div>
         </div>
 
-        <!-- EXECUTION / RESOURCE LAYER -->
+        <!-- EXECUTION LAYER -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-4);">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--sp-3);">
             <div style="display:flex;align-items:center;gap:var(--sp-2);">
               <span style="width:8px;height:8px;border-radius:50%;background:#00c8a0;display:inline-block;"></span>
-              <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);">Execution / Resource Layer</span>
+              <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);">Execution Layer</span>
             </div>
             <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--kong-3);">Runtime Systems</span>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);margin-bottom:var(--sp-2);">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
             <div class="inode ea-exec-node" data-diag="ea" data-node="mcp-tools"><div class="n-icon">🔧</div><div class="n-label">MCP Tools</div><div class="n-sub">tool invocations</div></div>
             <div class="inode ea-exec-node" data-diag="ea" data-node="llm"><div class="n-icon">💬</div><div class="n-label">LLM Services</div><div class="n-sub">model inference</div></div>
-            <div class="inode ea-exec-node" data-diag="ea" data-node="graph-db"><div class="n-icon">🕸️</div><div class="n-label">Graph Database</div><div class="n-sub">knowledge graph</div></div>
-            <div class="inode ea-exec-node" data-diag="ea" data-node="rdbms"><div class="n-icon">🗄️</div><div class="n-label">RDBMS / Operational</div><div class="n-sub">relational stores</div></div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
-            <div class="inode ea-exec-node" data-diag="ea" data-node="vector"><div class="n-icon">🔍</div><div class="n-label">Vector Index</div><div class="n-sub">retrieval / RAG</div></div>
             <div class="inode ea-exec-node" data-diag="ea" data-node="apis"><div class="n-icon">🌐</div><div class="n-label">Enterprise APIs</div><div class="n-sub">SaaS / internal</div></div>
             <div class="inode ea-exec-node" data-diag="ea" data-node="event-bus"><div class="n-icon">⚡</div><div class="n-label">Event Bus</div><div class="n-sub">async processing</div></div>
+          </div>
+        </div>
+
+        <!-- STORAGE LAYER -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-4);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--sp-3);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <span style="width:8px;height:8px;border-radius:50%;background:#9ba3b0;display:inline-block;"></span>
+              <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-4);">Storage Layer</span>
+            </div>
+            <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);">Persistence</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
+            <div class="inode ea-exec-node" data-diag="ea" data-node="graph-db"><div class="n-icon">🕸️</div><div class="n-label">Graph Database</div><div class="n-sub">knowledge graph</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="rdbms"><div class="n-icon">🗄️</div><div class="n-label">RDBMS / Operational</div><div class="n-sub">relational stores</div></div>
+            <div class="inode ea-exec-node" data-diag="ea" data-node="vector"><div class="n-icon">🔍</div><div class="n-label">Vector Index</div><div class="n-sub">retrieval / RAG</div></div>
             <div class="inode ea-exec-node" data-diag="ea" data-node="audit"><div class="n-icon">🗂️</div><div class="n-label">Audit Storage</div><div class="n-sub">trace persistence</div></div>
           </div>
         </div>
