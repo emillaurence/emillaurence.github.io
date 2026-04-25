@@ -19,9 +19,9 @@
       --surf-3: #e8e6de;
       --border: #e2e0d8;
       --border-2: #cac8be;
-      --kong: #00335a;
-      --kong-2: #005490;
-      --kong-3: #0075c2;
+      --navy: #00335a;
+      --navy-2: #005490;
+      --navy-3: #0075c2;
       --accent: #0097e4;
       --go: #00c8a0;
       --warn: #e07a20;
@@ -64,7 +64,7 @@
     }
 
     .logo-box {
-      width: 30px; height: 30px; background: var(--kong);
+      width: 30px; height: 30px; background: var(--navy);
       border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center;
     }
 
@@ -98,7 +98,7 @@
 
     /* ── HERO ── */
     .hero {
-      background: var(--kong);
+      background: var(--navy);
       color: #fff;
       padding: 96px 2rem 64px;
       margin-top: var(--header-h);
@@ -224,7 +224,7 @@
 
     .about-pullout {
       background: #fff; border: 1px solid var(--border);
-      border-left: 3px solid var(--kong);
+      border-left: 3px solid var(--navy);
       border-radius: 0 var(--r-md) var(--r-md) 0;
       padding: 20px 24px; margin-bottom: 32px; box-shadow: var(--sh-sm);
     }
@@ -269,12 +269,12 @@
 
     .writing-item:last-child { border-bottom: 1px solid var(--border); }
 
-    .writing-item:hover .writing-arrow { color: var(--kong); opacity: 1; transform: translateX(3px); }
-    .writing-item:hover .writing-title { color: var(--kong); }
+    .writing-item:hover .writing-arrow { color: var(--navy); opacity: 1; transform: translateX(3px); }
+    .writing-item:hover .writing-title { color: var(--navy); }
 
     .writing-platform {
       font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--kong-3);
+      text-transform: uppercase; color: var(--navy-3);
       background: rgba(0,117,194,.08); border-radius: var(--r-sm);
       padding: 3px 8px; display: inline-block;
     }
@@ -315,7 +315,7 @@
     }
 
     .tl-company {
-      font-family: var(--f-mono); font-size: 10px; color: var(--kong-3);
+      font-family: var(--f-mono); font-size: 10px; color: var(--navy-3);
       letter-spacing: .06em; margin-bottom: 6px;
     }
 
@@ -336,7 +336,7 @@
 
     .speaking-type {
       font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--kong-3); margin-bottom: 12px; display: block;
+      text-transform: uppercase; color: var(--navy-3); margin-bottom: 12px; display: block;
     }
 
     .speaking-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
@@ -360,7 +360,7 @@
       font-weight: 700; line-height: 1.15; margin-bottom: 10px; color: var(--ink);
     }
 
-    .contact-heading em { font-style: italic; color: var(--kong-3); }
+    .contact-heading em { font-style: italic; color: var(--navy-3); }
 
     .contact-sub {
       color: var(--ink-3); margin-bottom: 28px; max-width: 480px; font-size: 14.5px;
@@ -376,7 +376,7 @@
     }
 
     .contact-link:last-child { border-bottom: 1px solid var(--border); }
-    .contact-link:hover { padding-left: 8px; color: var(--kong); }
+    .contact-link:hover { padding-left: 8px; color: var(--navy); }
 
     .contact-link-icon {
       font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em;
@@ -421,6 +421,32 @@
       .writing-item { grid-template-columns: 90px 1fr 20px; gap: 12px; }
       .speaking-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
+    }
+
+    .podcast-item { align-items: center; }
+    .podcast-content {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 20px; flex: 1;
+    }
+    .podcast-thumb {
+      position: relative; flex-shrink: 0;
+      width: 148px; height: 100px;
+      border-radius: 6px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .podcast-thumb img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .podcast-play {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.28);
+      color: #fff; font-size: 18px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .podcast-item:hover .podcast-play { opacity: 1; }
+    @media (max-width: 700px) {
+      .podcast-thumb { display: none; }
     }
   </style>
 </head>
@@ -551,25 +577,82 @@
   <!-- Writing -->
   <section id="writing">
     <div class="section-wrap">
-      <p class="section-eyebrow reveal">02 — Writing</p>
-      <h2 class="section-title reveal">Case Studies and Articles</h2>
+      <p class="section-eyebrow reveal">02 — Ideas and Work</p>
+      <h2 class="section-title reveal">Built, Written, Spoken</h2>
       <hr class="section-divider" />
       <div class="writing-list reveal">
 
-        <a class="writing-item" href="loanguardai.html">
+        <a class="writing-item podcast-item" href="loanguardai.html">
           <span class="writing-platform">Case Study</span>
-          <div>
-            <p class="writing-title">LoanGuard AI</p>
-            <p class="writing-desc">A multi-agent GraphRAG compliance platform built on Neo4j and Claude. Graph-native audit trails, APRA regulatory data, and what vanilla RAG misses in production.</p>
+          <div class="podcast-content">
+            <div>
+              <p class="writing-title">LoanGuard AI</p>
+              <p class="writing-desc">A multi-agent GraphRAG compliance platform built on Neo4j and Claude. Graph-native audit trails, APRA regulatory data, and what vanilla RAG misses in production.</p>
+            </div>
+            <div class="podcast-thumb">
+              <img src="loanguard-thumb.png" alt="LoanGuard AI preview" />
+              <div class="podcast-play">&#9654;</div>
+            </div>
           </div>
           <span class="writing-arrow">→</span>
         </a>
 
-        <a class="writing-item" href="kongaigovernance.html">
+        <a class="writing-item podcast-item" href="aigovernance.html">
           <span class="writing-platform">Case Study</span>
-          <div>
-            <p class="writing-title">Entity Risk AI</p>
-            <p class="writing-desc">Agents don't break governance. They prove it was never there. A reference architecture for enforcing what AI can actually do at execution — not just what policy says it should.</p>
+          <div class="podcast-content">
+            <div>
+              <p class="writing-title">Entity Risk AI</p>
+              <p class="writing-desc">Agents don't break governance. They prove it was never there. A reference architecture for enforcing what AI can actually do at execution — not just what policy says it should.</p>
+            </div>
+            <div class="podcast-thumb">
+              <img src="aigovernance-thumb.png" alt="Entity Risk AI preview" />
+              <div class="podcast-play">&#9654;</div>
+            </div>
+          </div>
+          <span class="writing-arrow">→</span>
+        </a>
+
+        <a class="writing-item podcast-item" href="https://www.youtube.com/watch?v=IGsA0wf6S04&t=318s" target="_blank" rel="noopener">
+          <span class="writing-platform">Podcast</span>
+          <div class="podcast-content">
+            <div>
+              <p class="writing-title">Degree vs AI Skills: A Filipino Tech Leader's Path From Manila to Australia</p>
+              <p class="writing-desc">On navigating systems as an outsider, the value of curiosity over credentials, and what the Filipino tech diaspora can teach the industry about resilience.</p>
+            </div>
+            <div class="podcast-thumb">
+              <img src="https://img.youtube.com/vi/IGsA0wf6S04/hqdefault.jpg" alt="Podcast thumbnail" />
+              <div class="podcast-play">&#9654;</div>
+            </div>
+          </div>
+          <span class="writing-arrow">→</span>
+        </a>
+
+        <a class="writing-item podcast-item" href="https://www.youtube.com/watch?v=6P7yCxy-qOI&t=1341s" target="_blank" rel="noopener">
+          <span class="writing-platform">Podcast</span>
+          <div class="podcast-content">
+            <div>
+              <p class="writing-title">How to Stay Relevant When AI Can Do Your Job</p>
+              <p class="writing-desc">What separates practitioners who thrive from those who get displaced — and why the answer isn't learning more tools.</p>
+            </div>
+            <div class="podcast-thumb">
+              <img src="https://img.youtube.com/vi/6P7yCxy-qOI/hqdefault.jpg" alt="Podcast thumbnail" />
+              <div class="podcast-play">&#9654;</div>
+            </div>
+          </div>
+          <span class="writing-arrow">→</span>
+        </a>
+
+        <a class="writing-item podcast-item" href="https://www.youtube.com/watch?v=gvOzs_vBx6s" target="_blank" rel="noopener">
+          <span class="writing-platform">Podcast</span>
+          <div class="podcast-content">
+            <div>
+              <p class="writing-title">Graph Databases and AI: What Most Companies Still Don't Understand</p>
+              <p class="writing-desc">Why graph is not a niche technology, what vanilla RAG misses, and how the right data model changes what AI can actually reason over.</p>
+            </div>
+            <div class="podcast-thumb">
+              <img src="https://img.youtube.com/vi/gvOzs_vBx6s/hqdefault.jpg" alt="Podcast thumbnail" />
+              <div class="podcast-play">&#9654;</div>
+            </div>
           </div>
           <span class="writing-arrow">→</span>
         </a>
