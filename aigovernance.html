@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <link rel="icon" type="image/png" href="avatar.png" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Entity Risk AI — Governed Agentic AI with Kong</title>
+<title>Entity Risk AI — Governed Agentic AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -578,10 +578,10 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
       <div>
         <p class="hero-kicker"><span class="kicker-dot"></span>Governed Agentic AI · Reference Architecture</p>
         <h1 class="hero-headline">Governance was always<br>an enforcement problem.<br><em>AI just removed the friction that hid it.</em></h1>
-        <p class="hero-body">A multi-agent financial crime investigation system built on Neo4j, Anthropic Claude, and Kong — demonstrating that a gateway control plane is the only way to make AI governance real at execution.</p>
+        <p class="hero-body">A multi-agent financial crime investigation system built on Neo4j, Anthropic Claude, and a dual gateway control plane — demonstrating that a gateway control plane is the only way to make AI governance real at execution.</p>
         <div class="hero-tags">
           <span class="tag">Neo4j AuraDB</span><span class="tag">Claude Haiku + Sonnet</span>
-          <span class="tag">Kong MCP Gateway</span><span class="tag">Kong AI Gateway</span>
+          <span class="tag">MCP Gateway</span><span class="tag">AI Gateway</span>
           <span class="tag">FastMCP · Railway</span><span class="tag">Role-Based ACL</span>
           <span class="tag">Graph-Native Audit</span><span class="tag">Apache 2.0</span>
         </div>
@@ -591,7 +591,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
         <div class="aside-stats">
           <div class="aside-stat"><div class="aside-stat-value">15</div><div class="aside-stat-label">MCP Tools</div></div>
           <div class="aside-stat"><div class="aside-stat-value">3</div><div class="aside-stat-label">AI Agents</div></div>
-          <div class="aside-stat"><div class="aside-stat-value">2</div><div class="aside-stat-label">Kong Gates</div></div>
+          <div class="aside-stat"><div class="aside-stat-value">2</div><div class="aside-stat-label">Gateway Layers</div></div>
           <div class="aside-stat"><div class="aside-stat-value">4</div><div class="aside-stat-label">System Layers</div></div>
           <div class="aside-stat"><div class="aside-stat-value">7</div><div class="aside-stat-label">Orch. Stages</div></div>
           <div class="aside-stat"><div class="aside-stat-value">0</div><div class="aside-stat-label">Bypass Paths</div></div>
@@ -602,7 +602,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
   <div class="summary-body">
     <div class="exec-pullout">
       <div class="section-eyebrow">Executive Summary</div>
-      <p>Most AI governance frameworks describe what <em>should</em> happen. This system enforces what <em>can</em> happen. <strong>Entity Risk AI</strong> is a fully governed multi-agent investigation platform. Every tool call and every LLM invocation routes through <strong>Kong's dual gateway layer</strong> before reaching any upstream service. Denied actions are blocked, logged, and traceable. No agent — and no human — bypasses the control plane. The audit trail lives in Neo4j as a queryable subgraph, not a flat log file.</p>
+      <p>Most AI governance frameworks describe what <em>should</em> happen. This system enforces what <em>can</em> happen. <strong>Entity Risk AI</strong> is a fully governed multi-agent investigation platform. Every tool call and every LLM invocation routes through a <strong>dual gateway control plane</strong> before reaching any upstream service. Denied actions are blocked, logged, and traceable. No agent — and no human — bypasses the control plane. The audit trail lives in Neo4j as a queryable subgraph, not a flat log file.</p>
     </div>
     <div class="section-eyebrow mt-6">The Problem</div>
     <div class="section-title">Why Governance Fails at Execution</div>
@@ -621,27 +621,27 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
     <div class="section-eyebrow">Architectural Highlights</div>
     <div class="section-title">What Makes This System Different</div>
     <div class="cards mb-8">
-      <div class="card"><div class="card-icon ci-navy">🔐</div><div class="card-title">Dual Kong Gateway</div><div class="card-desc">Kong MCP Gateway enforces tool-level access via key-auth and consumer-group ACL. Kong AI Gateway routes and rate-limits all LLM traffic. No agent holds upstream credentials.</div></div>
+      <div class="card"><div class="card-icon ci-navy">🔐</div><div class="card-title">Dual Gateway Control Plane</div><div class="card-desc">The MCP Gateway enforces tool-level access via key-auth and consumer-group ACL. The AI Gateway routes and rate-limits all LLM traffic. No agent holds upstream credentials.</div></div>
       <div class="card"><div class="card-icon ci-blue">🤖</div><div class="card-title">Multi-Agent Orchestration</div><div class="card-desc">Graph, Risk, and Trace agents orchestrated by Claude Sonnet. Each dispatches only through MCP — never touching the database directly. A 7-stage workflow controls the full lifecycle.</div></div>
       <div class="card"><div class="card-icon ci-teal">🕸️</div><div class="card-title">Graph-Native Audit Trail</div><div class="card-desc">Every action persisted as a TraceEvent in Neo4j, linked to the business nodes it touched. A queryable subgraph — independent, replayable, and deletable without side effects.</div></div>
-      <div class="card"><div class="card-icon ci-amber">🛡️</div><div class="card-title">Fail-Closed by Default</div><div class="card-desc">Kong denials (HTTP 403) propagate as <span class="mono">StepStatus.SKIPPED</span> in the trace. Never silent. Permitted and denied outcomes are both recorded.</div></div>
-      <div class="card"><div class="card-icon ci-danger">👤</div><div class="card-title">Same Rules, Every Actor</div><div class="card-desc">Junior and Senior analysts have structurally different tool access enforced at the Kong gateway via consumer groups — not in application code. Same gate for humans and agents. Every time.</div></div>
+      <div class="card"><div class="card-icon ci-amber">🛡️</div><div class="card-title">Fail-Closed by Default</div><div class="card-desc">Gateway denials (HTTP 403) propagate as <span class="mono">StepStatus.SKIPPED</span> in the trace. Never silent. Permitted and denied outcomes are both recorded.</div></div>
+      <div class="card"><div class="card-icon ci-danger">👤</div><div class="card-title">Same Rules, Every Actor</div><div class="card-desc">Junior and Senior analysts have structurally different tool access enforced at the gateway via consumer groups — not in application code. Same gate for humans and agents. Every time.</div></div>
     </div>
     <div class="layers-band">
       <div class="layers-band-label">System Architecture · Four Layers · Two Gateways · One Principle</div>
       <div class="layers-grid">
         <div class="layer-cell"><div class="layer-num">Layer 01</div><div class="layer-name">Application</div><div class="layer-detail">Streamlit UI · LLM Planner · Specialist Agents · Orchestrator</div></div>
-        <div class="layer-cell"><div class="layer-num">Layer 02</div><div class="layer-name">Gateway</div><div class="layer-detail">Kong MCP Gate · Kong AI Gate · key-auth · ACL · rate-limit</div></div>
+        <div class="layer-cell"><div class="layer-num">Layer 02</div><div class="layer-name">Gateway</div><div class="layer-detail">MCP Gateway · AI Gateway · key-auth · ACL · rate-limit</div></div>
         <div class="layer-cell"><div class="layer-num">Layer 03</div><div class="layer-name">Execution</div><div class="layer-detail">FastMCP Server · Anthropic Claude API · Railway hosting</div></div>
         <div class="layer-cell"><div class="layer-num">Layer 04</div><div class="layer-name">Storage</div><div class="layer-detail">Neo4j AuraDB · Business Graph · Trace Subgraph</div></div>
       </div>
     </div>
     <div class="kong-role">
-      <div class="section-eyebrow">Kong's Role</div>
+      <div class="section-eyebrow">Gateway Control Plane</div>
       <div class="section-title">Two Gateways. One Enforcement Principle.</div>
       <div class="kong-role-grid">
         <div class="kong-card"><div class="kong-card-header"><span class="kong-badge kb-mcp">MCP Gateway</span><span class="kong-card-title">Tool Access Control</span></div><p class="kong-card-body">Routes all 15 investigation tools through Kong's <span class="mono">/mcp</span> route with key-auth validation. Consumer groups enforce per-role restrictions. Denials return HTTP 403 and are traced.</p></div>
-        <div class="kong-card"><div class="kong-card-header"><span class="kong-badge kb-ai">AI Gateway</span><span class="kong-card-title">LLM Traffic Control</span></div><p class="kong-card-body">All Anthropic calls route through Kong's AI Gateway. The planner uses <span class="mono">/ai/sonnet</span>; agents use <span class="mono">/ai</span>. The app never holds the Anthropic API key in Kong mode.</p></div>
+        <div class="kong-card"><div class="kong-card-header"><span class="kong-badge kb-ai">AI Gateway</span><span class="kong-card-title">LLM Traffic Control</span></div><p class="kong-card-body">All Anthropic calls route through Kong's AI Gateway. The planner uses <span class="mono">/ai/sonnet</span>; agents use <span class="mono">/ai</span>. The app never holds the Anthropic API key.</p></div>
       </div>
     </div>
     <div class="why-section">
@@ -649,7 +649,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
       <div class="section-title">Five Reasons This Architecture Is Significant</div>
       <ul class="why-list">
         <li class="why-item"><span class="why-num">1</span><span class="why-text"><strong>Agents don't introduce new risk.</strong> They make existing system permissiveness executable at scale. This addresses the root cause — the absence of an enforcement layer.</span></li>
-        <li class="why-item"><span class="why-num">2</span><span class="why-text"><strong>Kong becomes the control plane for agentic AI.</strong> The single enforcement point between intent and execution — for both tool calls and model invocations.</span></li>
+        <li class="why-item"><span class="why-num">2</span><span class="why-text"><strong>The gateway becomes the control plane for agentic AI.</strong> The single enforcement point between intent and execution — for both tool calls and model invocations.</span></li>
         <li class="why-item"><span class="why-num">3</span><span class="why-text"><strong>The audit trail is proof, not documentation.</strong> Every action captured at execution time in a queryable graph. Retroactively demonstrable and reliable.</span></li>
         <li class="why-item"><span class="why-num">4</span><span class="why-text"><strong>The same rules apply to everyone.</strong> Humans and agents governed identically. Same gate. Same policy. Every time. No carve-outs.</span></li>
         <li class="why-item"><span class="why-num">5</span><span class="why-text"><strong>Production-deployable, not a proof of concept.</strong> Open-sourced Apache 2.0, hosted on Railway + Neo4j AuraDB, built on public Companies House UBO data.</span></li>
@@ -736,7 +736,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
       </div>
       <ul class="why-list">
         <li class="why-item"><div class="why-num">1</div><div class="why-text"><strong>Same rules, every actor.</strong> Junior and senior analysts have structurally different tool access enforced at the gateway via consumer groups &mdash; not in application code. The gate applies to agents acting on their behalf identically.</div></li>
-        <li class="why-item"><div class="why-num">2</div><div class="why-text"><strong>No upstream credentials in the application.</strong> The app holds only a consumer key. Kong injects the Anthropic API key and the upstream MCP credentials. Compromise of the application does not expose upstream systems.</div></li>
+        <li class="why-item"><div class="why-num">2</div><div class="why-text"><strong>No upstream credentials in the application.</strong> The app holds only a consumer key. The gateway injects the Anthropic API key and the upstream MCP credentials. Compromise of the application does not expose upstream systems.</div></li>
         <li class="why-item"><div class="why-num">3</div><div class="why-text"><strong>The audit trail is proof, not documentation.</strong> TraceEvent nodes are written at execution time &mdash; retroactively demonstrable, not reconstructed from logs.</div></li>
         <li class="why-item"><div class="why-num">4</div><div class="why-text"><strong>Production-deployable, not a proof of concept.</strong> Open-sourced Apache 2.0, hosted on Railway and Neo4j AuraDB, built on public Companies House UBO data.</div></li>
       </ul>
@@ -1040,7 +1040,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
             <div class="sa-gw-grid">
               <div class="sa-gw-node" data-diag="sa" data-node="mcp-gate">
                 <div class="n-icon">🛡️</div>
-                <div class="n-label">Kong MCP Gateway</div>
+                <div class="n-label">MCP Gateway</div>
                 <div class="n-sub">/mcp · key-auth · ACL · consumer groups</div>
               </div>
               <div class="sa-gw-node sa-fail" data-diag="sa" data-node="fail-closed">
@@ -1050,7 +1050,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
               </div>
               <div class="sa-gw-node" data-diag="sa" data-node="ai-gate">
                 <div class="n-icon">🤖</div>
-                <div class="n-label">Kong AI Gateway</div>
+                <div class="n-label">AI Gateway</div>
                 <div class="n-sub">/ai · /ai/sonnet · ai-proxy · rate-limit</div>
               </div>
             </div>
@@ -1154,12 +1154,12 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
           </div>
           <div class="seq-part sp-mcp inode" data-diag="seq" data-node="kong-mcp">
             <div class="seq-part-icon">🛡️</div>
-            <div class="seq-part-label">Kong MCP Gateway</div>
+            <div class="seq-part-label">MCP Gateway</div>
             <div class="seq-part-sub">/mcp · key-auth · ACL</div>
           </div>
           <div class="seq-part sp-ai inode" data-diag="seq" data-node="kong-ai">
             <div class="seq-part-icon">🤖</div>
-            <div class="seq-part-label">Kong AI Gateway</div>
+            <div class="seq-part-label">AI Gateway</div>
             <div class="seq-part-sub">/ai · /ai/sonnet · ai-proxy</div>
           </div>
           <div class="seq-part sp-up inode" data-diag="seq" data-node="upstream">
@@ -1179,7 +1179,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
               <span class="seq-chip sc-ai">Planner → generate plan</span>
             </div>
             <div></div>
-            <!-- Arrow col 1→3: spans app to kong-ai -->
+            <!-- Arrow col 1→3: spans app to ai-gate -->
             <div style="grid-column:1/4;position:relative;display:flex;align-items:center;">
             </div>
             <div></div>
@@ -1218,7 +1218,7 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
           <div class="seq-row" data-diag="seq" data-node="msg-resolve">
             <div style="grid-column:1/3;display:flex;align-items:center;padding:0 8px;">
               <div style="flex:1;border-bottom:2px solid var(--kong);"></div>
-              <span class="seq-chip sc-mcp" style="flex-shrink:0;margin:0 6px;">resolve_entity · X-Kong-API-Key</span>
+              <span class="seq-chip sc-mcp" style="flex-shrink:0;margin:0 6px;">resolve_entity · X-API-Key</span>
               <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--kong);"></div>
             </div>
             <div></div><div></div>
@@ -1283,11 +1283,11 @@ main{margin-top:var(--chrome-h);min-height:calc(100vh - var(--chrome-h));}
             <div></div><div></div>
           </div>
 
-          <!-- Kong 403 -->
+          <!-- Gateway 403 -->
           <div class="seq-row deny-row" data-diag="seq" data-node="msg-denied">
             <div></div>
             <div style="display:flex;align-items:center;justify-content:center;padding:4px;">
-              <span class="seq-chip sc-deny" style="font-size:8.5px;">Kong returns HTTP 403 · ACL denial → StepStatus.SKIPPED</span>
+              <span class="seq-chip sc-deny" style="font-size:8.5px;">Gateway returns HTTP 403 · ACL denial → StepStatus.SKIPPED</span>
             </div>
             <div></div><div></div>
           </div>
@@ -1697,9 +1697,9 @@ const GM = {
         {n:'mode',           t:'String',   d:'investigate | trace'},
         {n:'user_id',        t:'String',   d:'Authenticated user identifier'},
         {n:'user_role',      t:'String',   d:'jr_risk_analyst | sr_risk_analyst'},
-        {n:'auth_provider',  t:'String',   d:'mock | dev_bypass | (future: kong)'},
+        {n:'auth_provider',  t:'String',   d:'mock | dev_bypass | (future: gateway)'},
         {n:'session_id',     t:'String',   d:'UUID of the Streamlit session'},
-        {n:'gateway_mode',   t:'String',   d:'local | remote | kong'},
+        {n:'gateway_mode',   t:'String',   d:'local | remote | gateway'},
         {n:'started_at',     t:'DateTime', d:'UTC timestamp of trace creation'},
         {n:'ended_at',       t:'DateTime', d:'UTC timestamp of finalisation (null while running)'},
         {n:'final_summary',  t:'String',   d:'AI-synthesised risk narrative written at finalise stage'},
@@ -1949,11 +1949,11 @@ document.querySelectorAll('.gm-rel-g[data-rid]').forEach(el => {
   <div class="kc-page">
 
     <div class="diag-header">
-      <div class="diag-eyebrow">Kong Konnect &middot; entity-risk-ai &middot; Live Configuration</div>
-      <h2 class="diag-title">Control Plane Configuration using Kong</h2>
+      <div class="diag-eyebrow">entity-risk-ai &middot; Live Configuration</div>
+      <h2 class="diag-title">Control Plane Configuration</h2>
       <p class="diag-hint" style="margin-top:6px;">
         Click any route or tool to inspect its full configuration
-        &nbsp;&middot;&nbsp; /kongai routes excluded
+        
       </p>
     </div>
 
@@ -1965,7 +1965,7 @@ document.querySelectorAll('.gm-rel-g[data-rid]').forEach(el => {
              style="background:linear-gradient(135deg,var(--kong) 0%,#005490 100%);">
           <div class="kc-section-eye">AI Gateway &middot; ai-proxy-advanced</div>
           <div class="kc-section-title">AI Gateway</div>
-          <div class="kc-section-sub">entity-risk-ai-kong-ai-gateway &middot; Routes LLM calls to Anthropic</div>
+          <div class="kc-section-sub">AI Gateway Service &middot; Routes LLM calls to Anthropic</div>
         </div>
         <div class="kc-body">
 
@@ -1974,11 +1974,11 @@ document.querySelectorAll('.gm-rel-g[data-rid]').forEach(el => {
             <div class="kc-block-title">Service</div>
             <div class="kc-block-body">
               <div class="kc-kv"><span class="kc-k">name</span>
-                <span class="kc-v"><code>entity-risk-ai-kong-ai-gateway</code></span></div>
+                <span class="kc-v"><code>ai-gateway-service</code></span></div>
               <div class="kc-kv"><span class="kc-k">upstream</span>
                 <span class="kc-v">Anthropic API via ai-proxy-advanced plugin</span></div>
               <div class="kc-kv"><span class="kc-k">consumer</span>
-                <span class="kc-v"><code>entity-risk-ai-app</code> (X-Kong-API-Key auth)</span></div>
+                <span class="kc-v"><code>entity-risk-ai-app</code> (X-API-Key auth)</span></div>
             </div>
           </div>
 
@@ -2184,7 +2184,7 @@ document.querySelectorAll('.gm-rel-g[data-rid]').forEach(el => {
 
 <script>
 /* ================================================================
-   TAB 6  —  Kong Configuration detail data + interaction
+   TAB 6  —  Control Plane Configuration detail data + interaction
 ================================================================ */
 const KC = {
 
@@ -2193,15 +2193,15 @@ const KC = {
     badge: "AI Gateway \u00b7 Claude Haiku \u00b7 50,000\u00a0tok/min",
     color: "#005490",
     rows: [
-      { k: "Route name",      v: "<code>route-kong-ai-default</code>" },
+      { k: "Route name",      v: "<code>route-ai-default</code>" },
       { k: "Path",            v: "<code>/ai</code>" },
       { k: "Method",          v: "POST" },
-      { k: "Service",         v: "<code>entity-risk-ai-kong-ai-gateway</code>" },
+      { k: "Service",         v: "<code>ai-gateway-service</code>" },
       { k: "Plugin",          v: "<code>ai-proxy-advanced</code> \u2014 llm_format: anthropic" },
       { k: "Model",           v: "<code>claude-haiku-4-5-20251001</code> (Anthropic)" },
       { k: "Route type",      v: "llm/v1/chat" },
-      { k: "Upstream auth",   v: "x-api-key injected by Kong \u2014 app never holds the Anthropic key" },
-      { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-Kong-API-Key header" },
+      { k: "Upstream auth",   v: "x-api-key injected by gateway \u2014 app never holds the Anthropic key" },
+      { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-API-Key header" },
       { k: "Rate limit",      v: "50,000 tokens / minute per consumer (ai-rate-limiting-advanced · sliding window · total tokens)" },
       { k: "429 message",     v: "AI token rate limit exceeded" },
       { k: "Plugin: ai-prompt-guard", v: "Blocks: ignore.*instructions · forget.*previous · you are now" },
@@ -2217,15 +2217,15 @@ const KC = {
     badge: "AI Gateway \u00b7 Claude Sonnet \u00b7 20,000\u00a0tok/min",
     color: "#006a52",
     rows: [
-      { k: "Route name",      v: "<code>route-kong-ai-sonnet</code>" },
+      { k: "Route name",      v: "<code>route-ai-sonnet</code>" },
       { k: "Path",            v: "<code>/ai/sonnet</code>" },
       { k: "Method",          v: "POST" },
-      { k: "Service",         v: "<code>entity-risk-ai-kong-ai-gateway</code>" },
+      { k: "Service",         v: "<code>ai-gateway-service</code>" },
       { k: "Plugin",          v: "<code>ai-proxy-advanced</code> \u2014 llm_format: anthropic" },
       { k: "Model",           v: "<code>claude-sonnet-4-6</code> (Anthropic)" },
       { k: "Route type",      v: "llm/v1/chat" },
-      { k: "Upstream auth",   v: "x-api-key injected by Kong \u2014 app never holds the Anthropic key" },
-      { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-Kong-API-Key header" },
+      { k: "Upstream auth",   v: "x-api-key injected by gateway \u2014 app never holds the Anthropic key" },
+      { k: "Consumer auth",   v: "<code>entity-risk-ai-app</code> via X-API-Key header" },
       { k: "Rate limit",      v: "20,000 tokens / minute per consumer (ai-rate-limiting-advanced \u00b7 sliding window \u00b7 total tokens)" },
       { k: "429 message",     v: "AI token rate limit exceeded" },
       { k: "Plugin: ai-prompt-guard", v: "Blocks: ignore.*instructions · forget.*previous · you are now" },
@@ -2247,7 +2247,7 @@ const KC = {
       { k: "Service",         v: "<code>mcp-upstream-service</code>" },
       { k: "Upstream host",   v: "<code>entity-risk-ai-production.up.railway.app</code>" },
       { k: "Upstream port",   v: "443 (https)" },
-      { k: "Plugin: key-auth",v: "Validates X-Kong-API-Key \u2014 hide_credentials: true" },
+      { k: "Plugin: key-auth",v: "Validates X-API-Key \u2014 hide_credentials: true" },
       { k: "Plugin: ai-mcp-proxy", v: "mode: passthrough-listener \u2014 proxies MCP JSON-RPC to Railway" },
       { k: "ACL enforcement", v: "Consumer group membership checked per tool call (see tool grid above)" },
       { k: "strip_path",      v: "false \u2014 /mcp path preserved when forwarding" },
@@ -2312,12 +2312,12 @@ const KC = {
   "t-address_risk_check": {
     title: "address_risk_check", acl: "deny",
     desc: "Assess risk from registered address co-location. Computes co-located total, active count, dissolution rate, and risk_level. Threshold for flagging defaults to 5 co-located companies.",
-    aclNote: "deny: jr-analyst group. Kong returns HTTP 403 before the tool call reaches Railway. The orchestrator propagates this as StepStatus.SKIPPED in the audit trace."
+    aclNote: "deny: jr-analyst group. Gateway returns HTTP 403 before the tool call reaches Railway. The orchestrator propagates this as StepStatus.SKIPPED in the audit trace."
   },
   "t-industry_context_check": {
     title: "industry_context_check", acl: "deny",
     desc: "Flag industry-level risk based on SIC codes. Checks against known high-scrutiny codes (holding companies, dormant entities) and computes peer dissolution rate.",
-    aclNote: "deny: jr-analyst group. Kong returns HTTP 403 before the tool call reaches Railway. The orchestrator propagates this as StepStatus.SKIPPED in the audit trace."
+    aclNote: "deny: jr-analyst group. Gateway returns HTTP 403 before the tool call reaches Railway. The orchestrator propagates this as StepStatus.SKIPPED in the audit trace."
   }
 };
 
@@ -2417,53 +2417,53 @@ function kcSelect(el, id) {
    DATA — node detail content for each diagram
 ================================================================ */
 const EA_DATA = {
-  ui:           { title:'UI Layer', color:'#00335a', badge:'Application', body:'<p>The Streamlit application is the entry point for human analysts. It provides role-based login, progressive rendering of investigation results, and an Audit Replay tab (Senior analysts only). It never calls Kong or Neo4j directly — all actions route through the orchestrator.</p>', props:[{k:'File',v:'app.py · src/app/'},{k:'Auth',v:'Mock login gate (jr_analyst / sr_analyst)'},{k:'Role gate',v:'Policy enforced server-side, not in UI'}] },
+  ui:           { title:'UI Layer', color:'#00335a', badge:'Application', body:'<p>The Streamlit application is the entry point for human analysts. It provides role-based login, progressive rendering of investigation results, and an Audit Replay tab (Senior analysts only). It never calls the gateway or Neo4j directly — all actions route through the orchestrator.</p>', props:[{k:'File',v:'app.py · src/app/'},{k:'Auth',v:'Mock login gate (jr_analyst / sr_analyst)'},{k:'Role gate',v:'Policy enforced server-side, not in UI'}] },
   orchestrator: { title:'Orchestrator', color:'#005490', badge:'Core Controller', body:'<p>The 7-stage workflow controller. It is not an agent — it does not produce summaries or call Neo4j. It delegates planning to the InvestigationPlanner, tool calls to MCPToolClient, and domain work to the three specialist agents.</p><p>Stages: Plan → Trace → Validate → Resolve → Execute → Stop-check → Finalise.</p>', props:[{k:'File',v:'orchestration/orchestrator.py'},{k:'Stages',v:'7'},{k:'Key',v:'Creates trace BEFORE any agent runs'}] },
-  planner:      { title:'Investigation Planner', color:'#005490', badge:'LLM · Sonnet', body:'<p>Converts a free-text user query into a structured JSON execution plan using Claude Sonnet. The plan specifies which agent handles each step, which MCP tool to call, and what parameters to pass.</p><p>In Kong mode, all Sonnet calls route through /ai/sonnet on the Kong AI Gateway — the app never holds the Anthropic API key.</p>', props:[{k:'File',v:'src/orchestration/planner.py'},{k:'Model',v:'Claude Sonnet (configurable)'},{k:'Route',v:'POST /ai/sonnet via Kong AI Gateway'},{k:'Output',v:'JSON plan: mode, entities, steps, stop_conditions'}] },
-  human:        { title:'Human Users', color:'#636b7a', badge:'Principals', body:'<p>Junior and Senior Risk Analysts. Both are governed by the same Kong gateway enforcement as agents — the same key-auth + ACL applies regardless of whether the action originates from a human click or an automated agent step.</p>', props:[{k:'Jr analyst',v:'Restricted: cannot invoke address_risk_check or industry_context_check'},{k:'Sr analyst',v:'Full access to all tools and the Replay tab'},{k:'Credential',v:'Per-role X-Kong-API-Key maps to consumer group'}] },
-  policy:       { title:'Policy Engine', color:'#00335a', badge:'Control Plane', body:'<p>Policies translated into executable rules, evaluated at runtime. In this system, Kong key-auth and ACL plugins are the policy engine: consumer groups encode role, and the ACL plugin enforces tool-level restrictions.</p><p>Policies are defined in Konnect UI (source of truth) — not in YAML checked into the repo.</p>', props:[{k:'Implementation',v:'Kong ACL plugin + consumer groups'},{k:'Jr analyst group',v:'Denies address_risk_check, industry_context_check'},{k:'Sr analyst group',v:'Full access'},{k:'Config location',v:'Konnect Gateway Manager (not repo)'}] },
-  identity:     { title:'Identity & Role Context', color:'#005490', badge:'Control Plane', body:'<p>Session, request, and environmental context resolved at the gateway. In Kong mode, the X-Kong-API-Key header identifies the consumer. Kong maps the consumer to its group, resolving role before any ACL decision is made.</p><p>The same principal model applies to humans (submitting requests via the UI) and agents (dispatching steps via the orchestrator). No separate identity path exists.</p>', props:[{k:'Human identity',v:'X-Kong-API-Key from session (role-specific)'},{k:'Agent identity',v:'Same key — agent acts under the human role'},{k:'No separation',v:'Same gate. Same policy. Every actor.'}] },
-  decision:     { title:'Decision Engine (PDP)', color:'#c84040', badge:'Control Plane · Critical', body:'<p>Allow or deny at runtime. In this system, Kong is the Policy Decision Point. Every tool call and every LLM invocation reaches Kong before reaching any upstream service.</p><p>Denied actions return HTTP 403. The application maps this to acl_denied=True in ToolResult, and the orchestrator marks the step as StepStatus.SKIPPED. The investigation continues — but the denial is recorded.</p>', props:[{k:'Tool permit',v:'Kong forwards to Railway MCP upstream'},{k:'Tool deny',v:'HTTP 403 → StepStatus.SKIPPED → TraceEvent'},{k:'LLM permit',v:'Kong ai-proxy injects auth, forwards to Anthropic'},{k:'No silent pass',v:'Denied ≠ ignored. Denied = logged.'}] },
+  planner:      { title:'Investigation Planner', color:'#005490', badge:'LLM · Sonnet', body:'<p>Converts a free-text user query into a structured JSON execution plan using Claude Sonnet. The plan specifies which agent handles each step, which MCP tool to call, and what parameters to pass.</p><p>All Sonnet calls route through /ai/sonnet on the AI Gateway — the app never holds the Anthropic API key.</p>', props:[{k:'File',v:'src/orchestration/planner.py'},{k:'Model',v:'Claude Sonnet (configurable)'},{k:'Route',v:'POST /ai/sonnet via AI Gateway'},{k:'Output',v:'JSON plan: mode, entities, steps, stop_conditions'}] },
+  human:        { title:'Human Users', color:'#636b7a', badge:'Principals', body:'<p>Junior and Senior Risk Analysts. Both are governed by the same gateway enforcement as agents — the same key-auth + ACL applies regardless of whether the action originates from a human click or an automated agent step.</p>', props:[{k:'Jr analyst',v:'Restricted: cannot invoke address_risk_check or industry_context_check'},{k:'Sr analyst',v:'Full access to all tools and the Replay tab'},{k:'Credential',v:'Per-role X-API-Key maps to consumer group'}] },
+  policy:       { title:'Policy Engine', color:'#00335a', badge:'Control Plane', body:'<p>Policies translated into executable rules, evaluated at runtime. In this system, The key-auth and ACL gateway plugins are the policy engine: consumer groups encode role, and the ACL plugin enforces tool-level restrictions.</p><p>Policies are defined in the gateway control plane (source of truth) — not in YAML checked into the repo.</p>', props:[{k:'Implementation',v:'ACL gateway plugin + consumer groups'},{k:'Jr analyst group',v:'Denies address_risk_check, industry_context_check'},{k:'Sr analyst group',v:'Full access'},{k:'Config location',v:'Konnect Gateway Manager (not repo)'}] },
+  identity:     { title:'Identity & Role Context', color:'#005490', badge:'Control Plane', body:'<p>Session, request, and environmental context resolved at the gateway. The X-API-Key header identifies the consumer. The gateway maps the consumer to its group, resolving role before any ACL decision is made.</p><p>The same principal model applies to humans (submitting requests via the UI) and agents (dispatching steps via the orchestrator). No separate identity path exists.</p>', props:[{k:'Human identity',v:'X-API-Key from session (role-specific)'},{k:'Agent identity',v:'Same key — agent acts under the human role'},{k:'No separation',v:'Same gate. Same policy. Every actor.'}] },
+  decision:     { title:'Decision Engine (PDP)', color:'#c84040', badge:'Control Plane · Critical', body:'<p>Allow or deny at runtime. The gateway is the Policy Decision Point. Every tool call and every LLM invocation reaches the gateway before reaching any upstream service.</p><p>Denied actions return HTTP 403. The application maps this to acl_denied=True in ToolResult, and the orchestrator marks the step as StepStatus.SKIPPED. The investigation continues — but the denial is recorded.</p>', props:[{k:'Tool permit',v:'Gateway forwards to Railway MCP upstream'},{k:'Tool deny',v:'HTTP 403 → StepStatus.SKIPPED → TraceEvent'},{k:'LLM permit',v:'Gateway ai-proxy injects auth, forwards to Anthropic'},{k:'No silent pass',v:'Denied ≠ ignored. Denied = logged.'}] },
   trace:        { title:'Trace Capture & Audit', color:'#00c8a0', badge:'Control Plane', body:'<p>Every action recorded at execution time — permitted and denied. The audit trail is not a log file. It is a Neo4j subgraph: InvestigationTrace → TraceEvent → :ABOUT → business nodes (Company, Address, SIC).</p><p>The trace subgraph is queryable, replayable, and deletable without touching the business graph.</p>', props:[{k:'Node',v:'InvestigationTrace (one per investigation)'},{k:'Events',v:'TraceEvent (one per tool call or decision)'},{k:'Links',v:':ABOUT edges link events to business nodes'},{k:'Proof',v:'The trace proves enforcement occurred'}] },
-  'mcp-tools':  { title:'MCP Tools (Execution)', color:'#636b7a', badge:'Execution Layer', body:'<p>15 tools exposed via FastMCP on Railway. Stateless. Behind Kong — never called directly by the application. Tools include entity_lookup, expand_ownership, address_risk_check, industry_context_check, retrieve_trace, and more.</p>', props:[{k:'Transport',v:'Streamable HTTP (FastMCP)'},{k:'Hosting',v:'Railway'},{k:'Count',v:'15 tools'},{k:'Access',v:'Via Kong MCP Gateway only'}] },
-  llm:          { title:'LLM Services (Execution)', color:'#636b7a', badge:'Execution Layer', body:'<p>Anthropic Claude API. Haiku is used for agent summaries (fast, cheap). Sonnet is used for the Investigation Planner (stronger reasoning). In Kong mode, the application never calls Anthropic directly — all calls route via Kong AI Gateway where the ai-proxy plugin injects the upstream API key.</p>', props:[{k:'Haiku route',v:'POST /ai → api.anthropic.com'},{k:'Sonnet route',v:'POST /ai/sonnet → api.anthropic.com'},{k:'Auth',v:'Injected by Kong ai-proxy plugin'},{k:'App key',v:'Only X-Kong-API-Key — no Anthropic key in app'}] },
+  'mcp-tools':  { title:'MCP Tools (Execution)', color:'#636b7a', badge:'Execution Layer', body:'<p>15 tools exposed via FastMCP on Railway. Stateless. Behind the gateway — never called directly by the application. Tools include entity_lookup, expand_ownership, address_risk_check, industry_context_check, retrieve_trace, and more.</p>', props:[{k:'Transport',v:'Streamable HTTP (FastMCP)'},{k:'Hosting',v:'Railway'},{k:'Count',v:'15 tools'},{k:'Access',v:'Via MCP Gateway only'}] },
+  llm:          { title:'LLM Services (Execution)', color:'#636b7a', badge:'Execution Layer', body:'<p>Anthropic Claude API. Haiku is used for agent summaries (fast, cheap). Sonnet is used for the Investigation Planner (stronger reasoning). The application never calls Anthropic directly — all calls route via the AI Gateway where the ai-proxy plugin injects the upstream API key.</p>', props:[{k:'Haiku route',v:'POST /ai → api.anthropic.com'},{k:'Sonnet route',v:'POST /ai/sonnet → api.anthropic.com'},{k:'Auth',v:'Injected by AI Gateway ai-proxy plugin'},{k:'App key',v:'Only X-API-Key — no Anthropic key in app'}] },
   'graph-db':   { title:'Graph Database (Neo4j)', color:'#006a52', badge:'Execution Layer', body:'<p>Neo4j AuraDB stores the business graph (Company, Person, Address, SIC nodes from Companies House UBO data) and the trace subgraph. Both live in the same instance but are structurally independent — the trace subgraph can be fully deleted without touching the business graph.</p>', props:[{k:'Hosting',v:'Neo4j AuraDB'},{k:'Data',v:'UK Companies House UBO data'},{k:'Schema',v:'Company → OWNS → Company / Person'},{k:'Trace',v:'InvestigationTrace → TraceEvent → :ABOUT → business nodes'}] },
   audit:        { title:'Audit Storage (Trace Subgraph)', color:'#e07a20', badge:'Execution Layer', body:'<p>The trace subgraph in Neo4j is the persistent proof that enforcement occurred. Every tool call, every agent decision, every permitted and denied action is a TraceEvent node linked to the business nodes it touched via :ABOUT edges.</p>', props:[{k:'Independence',v:'Separate from business graph'},{k:'Queryable',v:'Standard Cypher — searchable by entity, time, user, role'},{k:'Replayable',v:'Senior analysts can replay any investigation'},{k:'Deletable',v:'Safe delete without side effects on business graph'}] },
   rdbms:        { title:'RDBMS / Operational', color:'#636b7a', badge:'Execution Layer', body:'<p>Relational and operational data stores that may sit alongside the graph in a production deployment. In this system Neo4j covers both business and trace data, but the reference architecture accounts for hybrid persistence where transactional records live in a relational database.</p>', props:[{k:'Role',v:'Relational / operational data storage'},{k:'In this system',v:'Not used — Neo4j AuraDB covers all persistence'},{k:'Pattern',v:'Control plane enforces access identically regardless of store type'}] },
-  vector:       { title:'Vector Index', color:'#636b7a', badge:'Execution Layer', body:'<p>A vector similarity index for retrieval-augmented generation (RAG). The reference architecture includes this as a first-class execution target. The control plane enforces which agents can invoke retrieval tools — the same gate applies to vector calls as to graph calls.</p>', props:[{k:'Role',v:'Embedding-based retrieval / RAG'},{k:'Access',v:'Gated by Kong MCP Gateway — same as all other tools'},{k:'Pattern',v:'Control plane is embedding-store agnostic'}] },
-  apis:         { title:'Enterprise APIs', color:'#636b7a', badge:'Execution Layer', body:'<p>SaaS and internal APIs that agents may call as part of an investigation workflow. In production this could include Companies House API, sanctions screening, or internal data platforms. Each API-backed tool is registered as an MCP tool and gated by Kong.</p>', props:[{k:'Role',v:'External SaaS / internal API integration'},{k:'In this system',v:'Companies House data pre-loaded into Neo4j at ingest'},{k:'Pattern',v:'Each API tool registered in MCP server, enforced at Kong gateway'}] },
+  vector:       { title:'Vector Index', color:'#636b7a', badge:'Execution Layer', body:'<p>A vector similarity index for retrieval-augmented generation (RAG). The reference architecture includes this as a first-class execution target. The control plane enforces which agents can invoke retrieval tools — the same gate applies to vector calls as to graph calls.</p>', props:[{k:'Role',v:'Embedding-based retrieval / RAG'},{k:'Access',v:'Gated by MCP Gateway — same as all other tools'},{k:'Pattern',v:'Control plane is embedding-store agnostic'}] },
+  apis:         { title:'Enterprise APIs', color:'#636b7a', badge:'Execution Layer', body:'<p>SaaS and internal APIs that agents may call as part of an investigation workflow. In production this could include Companies House API, sanctions screening, or internal data platforms. Each API-backed tool is registered as an MCP tool and gated by the MCP Gateway.</p>', props:[{k:'Role',v:'External SaaS / internal API integration'},{k:'In this system',v:'Companies House data pre-loaded into Neo4j at ingest'},{k:'Pattern',v:'Each API tool registered in MCP server, enforced at the gateway'}] },
   'event-bus':  { title:'Event Bus', color:'#636b7a', badge:'Execution Layer', body:'<p>An asynchronous message bus for event-driven workflows. In this reference architecture it represents async processing paths — for example, triggering downstream compliance alerts when a HIGH risk investigation completes. The control plane evaluates every action before it reaches the bus.</p>', props:[{k:'Role',v:'Async processing / event-driven workflows'},{k:'In this system',v:'Not implemented — investigations are synchronous'},{k:'Pattern',v:'Permitted events published; denied events logged but not published'}] },
 };
 
 const SA_DATA = {
   streamlit:      { title:'Streamlit UI', color:'#00335a', badge:'UI Layer', body:'<p>The interactive investigation interface. Provides role-based login, progressive rendering of investigation results as steps complete, an interactive ownership graph (streamlit-agraph), and an Audit Replay tab for Senior analysts.</p>', props:[{k:'File',v:'app.py · src/app/layout.py'},{k:'Auth',v:'Mock login gate, session state'},{k:'Graph',v:'streamlit-agraph for ownership visualisation'},{k:'Replay',v:'Senior analysts only — loads trace by ID'}] },
-  planner:        { title:'Investigation Planner', color:'#005490', badge:'LLM · Sonnet', body:'<p>Converts free-text queries to structured JSON execution plans. Uses Claude Sonnet via /ai/sonnet (Kong AI Gateway in Kong mode). The plan specifies agent, task, and parameters for each step.</p>', props:[{k:'Model',v:'Claude Sonnet'},{k:'Route',v:'POST /ai/sonnet'},{k:'Output',v:'JSON: mode, entities, plan steps, stop_conditions'}] },
+  planner:        { title:'Investigation Planner', color:'#005490', badge:'LLM · Sonnet', body:'<p>Converts free-text queries to structured JSON execution plans. Uses Claude Sonnet via /ai/sonnet (AI Gateway). The plan specifies agent, task, and parameters for each step.</p>', props:[{k:'Model',v:'Claude Sonnet'},{k:'Route',v:'POST /ai/sonnet'},{k:'Output',v:'JSON: mode, entities, plan steps, stop_conditions'}] },
   orchestrator:   { title:'Orchestrator', color:'#00335a', badge:'Core Controller', body:'<p>The 7-stage workflow controller. Not an agent — it orchestrates agents. It calls validate_plan, resolve_entity, dispatches steps to agents, checks stop conditions, and finalises the trace.</p>', props:[{k:'Stages',v:'Plan → Trace → Validate → Resolve → Execute → Stop-check → Finalise'},{k:'Policy',v:'Enforces allowed_tools at step dispatch time'},{k:'File',v:'src/orchestration/orchestrator.py'}] },
   'graph-agent':  { title:'Graph Agent', color:'#006a52', badge:'Specialist Agent', body:'<p>Handles entity lookup, ownership expansion, address checks, and SIC context retrieval. All tool calls go through MCPToolClient — the agent never queries Neo4j directly. Optional AI enrichment via Claude Haiku for natural-language summaries.</p>', props:[{k:'Tasks',v:'entity_lookup, company_profile, expand_ownership, shared_address_check, sic_context'},{k:'Model',v:'Haiku (summaries, optional)'},{k:'File',v:'src/agents/graph_agent.py'}] },
   'risk-agent':   { title:'Risk Agent', color:'#006a52', badge:'Specialist Agent', body:'<p>Runs 4 deterministic risk signal checks: ownership complexity, control signals, address risk, and industry context. Each check computes a risk level (LOW / MEDIUM / HIGH / UNKNOWN) from graph data. No LLM needed for the checks themselves — only for narrative synthesis at finalisation.</p>', props:[{k:'Tasks',v:'ownership_complexity_check, control_signal_check, address_risk_check, industry_context_check'},{k:'Risk levels',v:'LOW / MEDIUM / HIGH / UNKNOWN'},{k:'File',v:'src/agents/risk_agent.py'}] },
   'trace-agent':  { title:'Trace Agent', color:'#006a52', badge:'Specialist Agent', body:'<p>Retrieves, summarises, and replays prior investigation traces. Uses AI (Haiku) to generate audit narratives. Includes a recursion guard: will refuse to retrieve its own operational trace.</p>', props:[{k:'Tasks',v:'retrieve_trace, find_traces_by_entity, retrieve_and_summarize_trace, retrieve_latest_for_entity'},{k:'File',v:'src/agents/trace_agent.py'},{k:'Guard',v:'Recursion guard prevents self-referential retrieval'}] },
-  'mcp-gate':     { title:'Kong MCP Gateway', color:'#00335a', badge:'Gateway · Enforcement', body:'<p>The tool access control plane. Sits between the application and the Railway MCP server. Every tool call carries X-Kong-API-Key. Kong validates the key (key-auth plugin), resolves the consumer group (ACL plugin), and either forwards to the upstream MCP server or returns HTTP 403.</p><p>Junior analysts are denied address_risk_check and industry_context_check at the gateway — not in application code.</p>', props:[{k:'Route',v:'POST /mcp'},{k:'Plugin',v:'key-auth + ACL consumer groups'},{k:'Jr group',v:'Denies: address_risk_check, industry_context_check'},{k:'Sr group',v:'Full access'},{k:'Deny',v:'HTTP 403 → StepStatus.SKIPPED in trace'}] },
-  'fail-closed':  { title:'Fail Closed', color:'#c84040', badge:'Gateway · Critical', body:'<p>When Kong denies a tool call (HTTP 403), the application does NOT silently continue. The denial propagates as acl_denied=True in ToolResult. The orchestrator maps this to StepStatus.SKIPPED. A TraceEvent is still written to Neo4j recording the denial.</p><p>This is the key property: denied actions are not invisible. They are proof.</p>', props:[{k:'HTTP response',v:'403 Forbidden'},{k:'App mapping',v:'acl_denied=True in ToolResult'},{k:'Orchestrator',v:'StepStatus.SKIPPED'},{k:'Trace',v:'TOOL_RETURNED event written regardless'},{k:'Investigation',v:'Continues with remaining permitted steps'}] },
-  'ai-gate':      { title:'Kong AI Gateway', color:'#005490', badge:'Gateway · LLM Control', body:'<p>Routes all Anthropic API calls. Two routes: /ai for agents (Haiku) and /ai/sonnet for the planner (Sonnet). The ai-proxy plugin handles upstream auth injection — the application never sends the Anthropic API key in Kong mode. Rate limiting applied per route.</p>', props:[{k:'Route /ai',v:'Haiku — used by all agents'},{k:'Route /ai/sonnet',v:'Sonnet — used by InvestigationPlanner only'},{k:'Plugin',v:'ai-proxy (Kong AI Gateway native feature)'},{k:'Auth',v:'Kong injects x-api-key — app sends only X-Kong-API-Key'},{k:'Rate limit',v:'Per-route limits via rate-limiting plugin'}] },
-  'mcp-server':   { title:'MCP Server (Railway)', color:'#005490', badge:'Execution · MCP', body:'<p>15 investigation tools exposed via FastMCP with streamable-http transport. Stateless — no session state held between calls. Sits behind Kong MCP Gateway and is never called directly by the application in Kong mode.</p>', props:[{k:'Framework',v:'FastMCP'},{k:'Transport',v:'Streamable HTTP'},{k:'Hosting',v:'Railway'},{k:'Tools',v:'15 (graph + risk + trace)'},{k:'File',v:'src/mcp/server.py'}] },
-  claude:         { title:'Anthropic Claude', color:'#e07a20', badge:'Execution · LLM', body:'<p>Two models in use. Claude Haiku is used by the three specialist agents for optional result enrichment and summaries — fast and cheap. Claude Sonnet is used exclusively by the InvestigationPlanner for structured JSON plan generation — more capable reasoning.</p>', props:[{k:'Haiku',v:'Agents — summaries, enrichment'},{k:'Sonnet',v:'Planner — JSON plan generation'},{k:'In Kong mode',v:'App holds no Anthropic API key'},{k:'Auth',v:'Injected by Kong ai-proxy plugin'}] },
+  'mcp-gate':     { title:'MCP Gateway', color:'#00335a', badge:'Gateway · Enforcement', body:'<p>The tool access control plane. Sits between the application and the Railway MCP server. Every tool call carries X-API-Key. The gateway validates the key (key-auth plugin), resolves the consumer group (ACL plugin), and either forwards to the upstream MCP server or returns HTTP 403.</p><p>Junior analysts are denied address_risk_check and industry_context_check at the gateway — not in application code.</p>', props:[{k:'Route',v:'POST /mcp'},{k:'Plugin',v:'key-auth + ACL consumer groups'},{k:'Jr group',v:'Denies: address_risk_check, industry_context_check'},{k:'Sr group',v:'Full access'},{k:'Deny',v:'HTTP 403 → StepStatus.SKIPPED in trace'}] },
+  'fail-closed':  { title:'Fail Closed', color:'#c84040', badge:'Gateway · Critical', body:'<p>When the gateway denies a tool call (HTTP 403), the application does NOT silently continue. The denial propagates as acl_denied=True in ToolResult. The orchestrator maps this to StepStatus.SKIPPED. A TraceEvent is still written to Neo4j recording the denial.</p><p>This is the key property: denied actions are not invisible. They are proof.</p>', props:[{k:'HTTP response',v:'403 Forbidden'},{k:'App mapping',v:'acl_denied=True in ToolResult'},{k:'Orchestrator',v:'StepStatus.SKIPPED'},{k:'Trace',v:'TOOL_RETURNED event written regardless'},{k:'Investigation',v:'Continues with remaining permitted steps'}] },
+  'ai-gate':      { title:'AI Gateway', color:'#005490', badge:'Gateway · LLM Control', body:'<p>Routes all Anthropic API calls. Two routes: /ai for agents (Haiku) and /ai/sonnet for the planner (Sonnet). The ai-proxy plugin handles upstream auth injection — the application never sends the Anthropic API key. Rate limiting applied per route.</p>', props:[{k:'Route /ai',v:'Haiku — used by all agents'},{k:'Route /ai/sonnet',v:'Sonnet — used by InvestigationPlanner only'},{k:'Plugin',v:'ai-proxy (AI Gateway native feature)'},{k:'Auth',v:'Gateway injects x-api-key — app sends only X-API-Key'},{k:'Rate limit',v:'Per-route limits via rate-limiting plugin'}] },
+  'mcp-server':   { title:'MCP Server (Railway)', color:'#005490', badge:'Execution · MCP', body:'<p>15 investigation tools exposed via FastMCP with streamable-http transport. Stateless — no session state held between calls. Sits behind the MCP Gateway and is never called directly by the application.</p>', props:[{k:'Framework',v:'FastMCP'},{k:'Transport',v:'Streamable HTTP'},{k:'Hosting',v:'Railway'},{k:'Tools',v:'15 (graph + risk + trace)'},{k:'File',v:'src/mcp/server.py'}] },
+  claude:         { title:'Anthropic Claude', color:'#e07a20', badge:'Execution · LLM', body:'<p>Two models in use. Claude Haiku is used by the three specialist agents for optional result enrichment and summaries — fast and cheap. Claude Sonnet is used exclusively by the InvestigationPlanner for structured JSON plan generation — more capable reasoning.</p>', props:[{k:'Haiku',v:'Agents — summaries, enrichment'},{k:'Sonnet',v:'Planner — JSON plan generation'},{k:'Gateway mode',v:'App holds no Anthropic API key'},{k:'Auth',v:'Injected by AI Gateway ai-proxy plugin'}] },
   neo4j:          { title:'Neo4j Graph Database', color:'#006a52', badge:'Storage · Graph', body:'<p>Neo4j AuraDB stores the business graph populated from Companies House UBO data. Nodes: Company, Person, Address, SIC. Relationships: OWNS, REGISTERED_AT, HAS_SIC, OFFICER_OF.</p><p>The same Neo4j instance also stores the trace subgraph — structurally independent, queryable, and deletable without affecting business data.</p>', props:[{k:'Hosting',v:'Neo4j AuraDB'},{k:'Data source',v:'UK Companies House UBO data'},{k:'Business nodes',v:'Company, Person, Address, SIC'},{k:'Relationships',v:'OWNS, REGISTERED_AT, HAS_SIC, OFFICER_OF'}] },
   'trace-subgraph':{ title:'Trace Subgraph', color:'#e07a20', badge:'Storage · Audit', body:'<p>The audit trail lives in the same Neo4j instance as the business graph but is fully independent. InvestigationTrace → [:HAS_EVENT] → TraceEvent → [:ABOUT] → business nodes (Company, Person, Address, SIC).</p><p>Traces can be deleted (by trace ID, by entity name, or full wipe) without touching the business graph.</p>', props:[{k:'Root node',v:'InvestigationTrace (one per investigation)'},{k:'Events',v:'TraceEvent (one per tool call / decision)'},{k:'Links',v:':ABOUT links events to business nodes'},{k:'Replay',v:'Senior analysts can load any trace by ID'},{k:'Delete',v:'Safe — business graph untouched'}] },
 };
 
 const SEQ_DATA = {
-  app:         { title:'Application', color:'#00335a', badge:'Actor', body:'<p>The Streamlit UI, Investigation Orchestrator, LLM Planner, and specialist agents all live here. In Kong mode, the application never holds upstream credentials — it authenticates to Kong using X-Kong-API-Key and lets Kong handle the rest.</p>', props:[{k:'Components',v:'Streamlit UI, Orchestrator, Planner, Agents'},{k:'Key held',v:'X-Kong-API-Key (consumer key only)'},{k:'Not held',v:'Anthropic API key (injected by Kong ai-proxy)'}] },
-  'kong-mcp':  { title:'Kong MCP Gateway', color:'#00335a', badge:'Gateway · Enforcement', body:'<p>Every MCP tool call routes through here. Kong validates X-Kong-API-Key (key-auth plugin), resolves the consumer group, checks the ACL allowlist, and either forwards the request to the Railway MCP upstream or returns HTTP 403.</p><p>This is the single enforcement point for tool access. No bypass path exists.</p>', props:[{k:'Plugin',v:'key-auth + ACL consumer groups'},{k:'Permitted',v:'Forwarded to Railway MCP upstream'},{k:'Denied',v:'HTTP 403 — propagated as StepStatus.SKIPPED'}] },
-  'kong-ai':   { title:'Kong AI Gateway', color:'#005490', badge:'Gateway · LLM', body:'<p>All Anthropic API calls route through here. The ai-proxy plugin handles upstream auth injection. The application sends X-Kong-API-Key and a standard Anthropic Messages API request body — Kong strips the key and injects x-api-key to Anthropic.</p>', props:[{k:'Routes',v:'/ai (Haiku), /ai/sonnet (Sonnet)'},{k:'Plugin',v:'ai-proxy — Kong AI Gateway native feature'},{k:'Rate limit',v:'Per-route limits via rate-limiting plugin'},{k:'Auth',v:'Kong injects x-api-key — app sends only consumer key'}] },
-  upstream:    { title:'Upstream Services', color:'#636b7a', badge:'Execution', body:'<p>Two upstream services: the FastMCP server on Railway (receives tool calls via Kong MCP Gateway) and the Anthropic API (receives LLM calls via Kong AI Gateway). Neither is ever called directly by the application in Kong mode.</p>', props:[{k:'MCP Server',v:'Railway · FastMCP · 15 tools'},{k:'Anthropic',v:'api.anthropic.com · Haiku + Sonnet'}] },
-  'msg-plan':  { title:'Planning Phase', color:'#005490', badge:'APP Phase', body:'<p>The InvestigationPlanner sends a free-text query to Claude Sonnet via Kong AI Gateway (/ai/sonnet). The ai-proxy plugin validates the Kong API key, applies the rate limit, and forwards the request to Anthropic. Sonnet returns a structured JSON execution plan.</p>', props:[{k:'Route',v:'POST /ai/sonnet'},{k:'Auth',v:'X-Kong-API-Key → Kong validates → ai-proxy injects x-api-key'},{k:'Output',v:'JSON plan: mode, entities, steps, stop_conditions'}] },
-  'msg-plan-return':{ title:'JSON Plan Returned', color:'#636b7a', badge:'Response', body:'<p>Claude Sonnet returns the structured execution plan through Kong AI Gateway back to the Orchestrator. The Orchestrator then validates the plan, resolves entities, and begins step-by-step execution.</p>', props:[{k:'Content',v:'JSON: mode, entities, plan steps'},{k:'Next',v:'Orchestrator validates then dispatches steps'}] },
-  'msg-resolve':{ title:'Entity Resolution via MCP', color:'#00335a', badge:'GATEWAY Phase', body:'<p>The Orchestrator calls resolve_entity via Kong MCP Gateway, sending X-Kong-API-Key. Kong validates the key (key-auth plugin) and forwards to the Railway MCP server. The tool performs a full-text search and returns a canonical company name.</p>', props:[{k:'Tool',v:'resolve_entity'},{k:'Header',v:'X-Kong-API-Key'},{k:'Route',v:'POST /mcp'},{k:'Plugin',v:'key-auth validates, ACL checks allowlist'}] },
-  'msg-acl':   { title:'ACL Consumer Group Check', color:'#00335a', badge:'GATEWAY · Kong Internal', body:'<p>After key-auth validates the API key, Kong resolves the consumer and checks its group membership against the ACL allowlist for the requested tool. This happens before the request reaches the upstream MCP server — enforcement happens at the gateway, not in the application.</p>', props:[{k:'Jr analyst consumer',v:'address_risk_check → DENIED'},{k:'Jr analyst consumer',v:'industry_context_check → DENIED'},{k:'Jr analyst consumer',v:'All other tools → PERMITTED'},{k:'Sr analyst consumer',v:'All tools → PERMITTED'}] },
-  'msg-forward':{ title:'Forward to MCP Upstream', color:'#005490', badge:'GATEWAY Phase', body:'<p>For permitted tool calls, Kong forwards the MCP request to the Railway FastMCP server. Kong strips the X-Kong-API-Key header before forwarding (hide-credentials: on). The upstream never sees the consumer key.</p>', props:[{k:'Upstream',v:'https://entity-risk-ai-production.up.railway.app/mcp'},{k:'Header stripped',v:'X-Kong-API-Key removed by Kong'},{k:'Protocol',v:'MCP streamable-http (JSON-RPC 2.0)'}] },
-  'msg-canonical':{ title:'Canonical Name Returned', color:'#636b7a', badge:'Response', body:'<p>The MCP server returns the resolved canonical company name (e.g. "VODAFONE 2 LIMITED") through Kong back to the Orchestrator. The Orchestrator injects this canonical name into subsequent plan steps before dispatching agents.</p>', props:[{k:'Content',v:'canonical_name, company_number, status, match_score_pct'},{k:'Next',v:'Orchestrator injects canonical name into remaining steps'}] },
-  'msg-permitted':{ title:'Permitted Tool Call', color:'#00c8a0', badge:'Permitted Path ✓', body:'<p>When Kong permits a tool call (key valid + ACL allows), the request is forwarded to the Railway MCP server. The tool executes, returns a ToolResult, and the agent logs a TOOL_RETURNED TraceEvent in Neo4j. The investigation continues to the next step.</p>', props:[{k:'Kong response',v:'2xx — forwarded to upstream'},{k:'ToolResult',v:'success=True, data={...}, summary="..."'},{k:'TraceEvent',v:'TOOL_RETURNED written to Neo4j with data_json'},{k:'Investigation',v:'Continues to next step'}] },
-  'msg-denied':{ title:'Denied Tool Call', color:'#c84040', badge:'Denied Path 🚫', body:'<p>When Kong denies a tool call (HTTP 403 from ACL plugin), the application maps this to acl_denied=True in ToolResult. The Orchestrator marks the step as StepStatus.SKIPPED with a policy denial skip_reason. A TraceEvent is still written to Neo4j — the denial is recorded, not hidden.</p><p>The investigation continues with remaining permitted steps.</p>', props:[{k:'Kong response',v:'HTTP 403 Forbidden'},{k:'App mapping',v:'acl_denied=True in ToolResult'},{k:'Orchestrator',v:'StepStatus.SKIPPED'},{k:'TraceEvent',v:'Written — denial is proof, not silence'},{k:'Investigation',v:'Continues with remaining steps'}] },
+  app:         { title:'Application', color:'#00335a', badge:'Actor', body:'<p>The Streamlit UI, Investigation Orchestrator, LLM Planner, and specialist agents all live here. Gateway mode, the application never holds upstream credentials — it authenticates using X-API-Key and lets the gateway handle the rest.</p>', props:[{k:'Components',v:'Streamlit UI, Orchestrator, Planner, Agents'},{k:'Key held',v:'X-API-Key (consumer key only)'},{k:'Not held',v:'Anthropic API key (injected by the ai-proxy plugin)'}] },
+  'kong-mcp':  { title:'MCP Gateway', color:'#00335a', badge:'Gateway · Enforcement', body:'<p>Every MCP tool call routes through here. Kong validates X-API-Key (key-auth plugin), resolves the consumer group, checks the ACL allowlist, and either forwards the request to the Railway MCP upstream or returns HTTP 403.</p><p>This is the single enforcement point for tool access. No bypass path exists.</p>', props:[{k:'Plugin',v:'key-auth + ACL consumer groups'},{k:'Permitted',v:'Forwarded to Railway MCP upstream'},{k:'Denied',v:'HTTP 403 — propagated as StepStatus.SKIPPED'}] },
+  'kong-ai':   { title:'AI Gateway', color:'#005490', badge:'Gateway · LLM', body:'<p>All Anthropic API calls route through here. The ai-proxy plugin handles upstream auth injection. The application sends X-API-Key and a standard Anthropic Messages API request body — Kong strips the key and injects x-api-key to Anthropic.</p>', props:[{k:'Routes',v:'/ai (Haiku), /ai/sonnet (Sonnet)'},{k:'Plugin',v:'ai-proxy — Kong AI Gateway native feature'},{k:'Rate limit',v:'Per-route limits via rate-limiting plugin'},{k:'Auth',v:'Gateway injects x-api-key — app sends only consumer key'}] },
+  upstream:    { title:'Upstream Services', color:'#636b7a', badge:'Execution', body:'<p>Two upstream services: the FastMCP server on Railway (receives tool calls via the MCP Gateway) and the Anthropic API (receives LLM calls via the AI Gateway). Neither is ever called directly by the application.</p>', props:[{k:'MCP Server',v:'Railway · FastMCP · 15 tools'},{k:'Anthropic',v:'api.anthropic.com · Haiku + Sonnet'}] },
+  'msg-plan':  { title:'Planning Phase', color:'#005490', badge:'APP Phase', body:'<p>The InvestigationPlanner sends a free-text query to Claude Sonnet via the AI Gateway (/ai/sonnet). The ai-proxy plugin validates the API key, applies the rate limit, and forwards the request to Anthropic. Sonnet returns a structured JSON execution plan.</p>', props:[{k:'Route',v:'POST /ai/sonnet'},{k:'Auth',v:'X-API-Key → Gateway validates → ai-proxy injects x-api-key'},{k:'Output',v:'JSON plan: mode, entities, steps, stop_conditions'}] },
+  'msg-plan-return':{ title:'JSON Plan Returned', color:'#636b7a', badge:'Response', body:'<p>Claude Sonnet returns the structured execution plan through the AI Gateway back to the Orchestrator. The Orchestrator then validates the plan, resolves entities, and begins step-by-step execution.</p>', props:[{k:'Content',v:'JSON: mode, entities, plan steps'},{k:'Next',v:'Orchestrator validates then dispatches steps'}] },
+  'msg-resolve':{ title:'Entity Resolution via MCP', color:'#00335a', badge:'GATEWAY Phase', body:'<p>The Orchestrator calls resolve_entity via the MCP Gateway, sending X-API-Key. The gateway validates the key (key-auth plugin) and forwards to the Railway MCP server. The tool performs a full-text search and returns a canonical company name.</p>', props:[{k:'Tool',v:'resolve_entity'},{k:'Header',v:'X-API-Key'},{k:'Route',v:'POST /mcp'},{k:'Plugin',v:'key-auth validates, ACL checks allowlist'}] },
+  'msg-acl':   { title:'ACL Consumer Group Check', color:'#00335a', badge:'GATEWAY · Internal', body:'<p>After key-auth validates the API key, the gateway resolves the consumer and checks its group membership against the ACL allowlist for the requested tool. This happens before the request reaches the upstream MCP server — enforcement happens at the gateway, not in the application.</p>', props:[{k:'Jr analyst consumer',v:'address_risk_check → DENIED'},{k:'Jr analyst consumer',v:'industry_context_check → DENIED'},{k:'Jr analyst consumer',v:'All other tools → PERMITTED'},{k:'Sr analyst consumer',v:'All tools → PERMITTED'}] },
+  'msg-forward':{ title:'Forward to MCP Upstream', color:'#005490', badge:'GATEWAY Phase', body:'<p>For permitted tool calls, the gateway forwards the MCP request to the Railway FastMCP server. The gateway strips the X-API-Key header before forwarding (hide-credentials: on). The upstream never sees the consumer key.</p>', props:[{k:'Upstream',v:'https://entity-risk-ai-production.up.railway.app/mcp'},{k:'Header stripped',v:'X-API-Key removed by gateway'},{k:'Protocol',v:'MCP streamable-http (JSON-RPC 2.0)'}] },
+  'msg-canonical':{ title:'Canonical Name Returned', color:'#636b7a', badge:'Response', body:'<p>The MCP server returns the resolved canonical company name (e.g. "VODAFONE 2 LIMITED") through the gateway back to the Orchestrator. The Orchestrator injects this canonical name into subsequent plan steps before dispatching agents.</p>', props:[{k:'Content',v:'canonical_name, company_number, status, match_score_pct'},{k:'Next',v:'Orchestrator injects canonical name into remaining steps'}] },
+  'msg-permitted':{ title:'Permitted Tool Call', color:'#00c8a0', badge:'Permitted Path ✓', body:'<p>When the gateway permits a tool call (key valid + ACL allows), the request is forwarded to the Railway MCP server. The tool executes, returns a ToolResult, and the agent logs a TOOL_RETURNED TraceEvent in Neo4j. The investigation continues to the next step.</p>', props:[{k:'Gateway response',v:'2xx — forwarded to upstream'},{k:'ToolResult',v:'success=True, data={...}, summary="..."'},{k:'TraceEvent',v:'TOOL_RETURNED written to Neo4j with data_json'},{k:'Investigation',v:'Continues to next step'}] },
+  'msg-denied':{ title:'Denied Tool Call', color:'#c84040', badge:'Denied Path 🚫', body:'<p>When the gateway denies a tool call (HTTP 403 from ACL plugin), the application maps this to acl_denied=True in ToolResult. The Orchestrator marks the step as StepStatus.SKIPPED with a policy denial skip_reason. A TraceEvent is still written to Neo4j — the denial is recorded, not hidden.</p><p>The investigation continues with remaining permitted steps.</p>', props:[{k:'Gateway response',v:'HTTP 403 Forbidden'},{k:'App mapping',v:'acl_denied=True in ToolResult'},{k:'Orchestrator',v:'StepStatus.SKIPPED'},{k:'TraceEvent',v:'Written — denial is proof, not silence'},{k:'Investigation',v:'Continues with remaining steps'}] },
   'msg-trace': { title:'Trace Persistence', color:'#00c8a0', badge:'TRACE Phase', body:'<p>After each step — whether permitted or denied — TraceService persists a TraceEvent to Neo4j. The event includes: event_type, tool_name, input_summary, output_summary, data_json, agent_name, and :ABOUT links to the business nodes touched.</p><p>Both permitted and denied outcomes are recorded. The trace is proof enforcement occurred.</p>', props:[{k:'Node',v:'TraceEvent'},{k:'Links',v:':ABOUT → Company, Address, SIC, Person'},{k:'Includes',v:'Permitted steps AND denied steps'},{k:'Source of truth',v:'Neo4j trace subgraph'}] },
   'msg-result':{ title:'Final Result to UI', color:'#636b7a', badge:'Completion', body:'<p>After all steps complete, the Orchestrator builds an OrchestratorResult containing: step results, final AI-synthesised narrative, resolved entities, trace_id, and warnings. The Streamlit UI renders this progressively as steps complete via a background thread and polling fragment.</p>', props:[{k:'Contains',v:'step_results, final_answer, resolved_entities, trace_id'},{k:'UI rendering',v:'Progressive — steps appear as they complete'},{k:'Trace ID',v:'Displayed in UI for audit replay'}] },
 };
