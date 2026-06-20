@@ -283,9 +283,18 @@
       font-family: var(--f-display); font-size: 1rem;
       font-weight: 700; margin-bottom: 3px; color: var(--ink);
       transition: color var(--dur) var(--ease);
+      display: block; text-decoration: none;
     }
 
     .writing-desc { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+
+    .writing-extra-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: var(--f-mono); font-size: 11px; color: var(--navy-3);
+      margin-top: 8px; position: relative; z-index: 2;
+      transition: color var(--dur) var(--ease);
+    }
+    .writing-extra-link:hover { color: var(--navy); text-decoration: underline; }
 
     .writing-arrow {
       font-size: 1.1rem; color: var(--ink-4); opacity: 0.4;
@@ -657,6 +666,22 @@
           <span class="writing-arrow">→</span>
         </a>
 
+        <div class="writing-item podcast-item" style="cursor: default;">
+          <span class="writing-platform">Conference Talk</span>
+          <div class="podcast-content">
+            <div>
+              <a class="writing-title" href="https://neo4j.com/videos/049-connected-data-lakehouse-neo4j-and-databricks-reference-data-architecture-nodes2022/" target="_blank" rel="noopener">Connected Data Lakehouse: Neo4j and Databricks Reference Data Architecture</a>
+              <p class="writing-desc">NODES2022 (APAC). A reference architecture demonstrating how Neo4j and Databricks combine connected data and big data to ingest, transform, and analyse a supply chain dataset, predicting delays and modelling the network as a graph. Co-presented with Ajmal Aziz.</p>
+              <a class="writing-extra-link" href="https://dist.neo4j.com/nodes-20202-slides/049%20Connected%20Data%20Lakehouse%20Neo4j%20and%20Databricks%20Reference%20Data%20Architecture%20-%20NODES2022%20-%20APAC%20Intermediate%204%20-%20Emil%20Pastor%2C%20Ajmal%20Aziz.pdf" target="_blank" rel="noopener">↳ View slides (PDF)</a>
+            </div>
+            <a class="podcast-thumb" href="https://www.youtube.com/watch?v=22qstAxlWMI" target="_blank" rel="noopener">
+              <img src="https://img.youtube.com/vi/22qstAxlWMI/maxresdefault.jpg" alt="NODES2022 talk preview" />
+              <div class="podcast-play">&#9654;</div>
+            </a>
+          </div>
+          <a class="writing-arrow" href="https://neo4j.com/videos/049-connected-data-lakehouse-neo4j-and-databricks-reference-data-architecture-nodes2022/" target="_blank" rel="noopener" style="text-decoration:none;">→</a>
+        </div>
+
       </div>
     </div>
   </section>
@@ -730,6 +755,7 @@
           <span class="speaking-type">Conference Speaking</span>
           <ul class="speaking-list">
             <li>Gartner Data and Analytics Summit</li>
+            <li>NODES (Neo4j Online Developer Expo and Summit)</li>
             <li>Graph Summit ANZ</li>
             <li>ANZ Data Engineering Meetups</li>
             <li>Open Data Science Conference</li>
